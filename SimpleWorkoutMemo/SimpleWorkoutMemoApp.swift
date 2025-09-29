@@ -10,9 +10,13 @@ import SwiftData
 
 @main
 struct SimpleWorkoutMemoApp: App {
+    
+    @UIApplicationDelegateAdaptor (AppDelegate.self) var appDelegate
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            WorkoutDay.self,
+            Exercise.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -24,9 +28,19 @@ struct SimpleWorkoutMemoApp: App {
     }()
 
     var body: some Scene {
+        @State var viewModel = HomeViewModel()
         WindowGroup {
-            ContentView()
+            HomeView(viewModel: viewModel)
+                .preferredColorScheme(.dark)
+                .environmentObject(AppStorageManager.shared)
         }
         .modelContainer(sharedModelContainer)
+    }
+}
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        
+        return true
     }
 }

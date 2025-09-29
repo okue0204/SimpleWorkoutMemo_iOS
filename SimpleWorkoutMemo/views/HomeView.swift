@@ -1,0 +1,122 @@
+//
+//  ContentView.swift
+//  SimpleWorkoutMemo
+//
+//  Created by 奥江英隆 on 2025/09/20.
+//
+
+import SwiftUI
+import SwiftData
+
+struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var appStorageManager: AppStorageManager
+    @State var viewModel: HomeViewModel
+    @State private var isShowSelectedWorkoutMenu: Bool = false
+    @State private var isShowAddWorkoutMenu: Bool = false
+    @State private var isShowSetting: Bool = false
+    @State private var updateWorkoutDay: WorkoutDay?
+    @State private var isInitialized = false
+    @FocusState private var focusedField: FocusField?
+    
+    @Query private var workoutDays: [WorkoutDay]
+    
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            VStack(spacing: 0) {
+                HeaderView(title: "Today's Workout Memory",
+                           imageResource: .icWorkoutSetting) {
+                    isShowSetting.toggle()
+                }
+                ScrollView {
+                    HStack {
+                        Text(DateFormatter.dateToString(Date()))
+                            .font(.regular(size: 18))
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
+                    let workoutDays = workoutDays.filter { day in
+                        day.createdAt.zeroClock == Date().zeroClock
+                    }
+                    ForEach(workoutDays, id: \.id) { workoutDay in
+                        ForEach(Array(workoutDay.workouts.enumerated()), id: \.offset) { index, workout in
+                            WorkoutItemView(focusedField: $focusedField, workout: workout) {
+                                viewModel.addSetInfo(workoutDay, at: index)
+                            } onRemoveSetInfo: { _ in
+                                viewModel.removeSetInfo(workoutDay: workoutDay, at: index)
+                            } onUpdateWorkoutSetInfo: { workoutSetInfo in
+                                viewModel.update(workout: workout, with: workoutSetInfo, at: index)
+                            }
+                            .padding(.vertical, 6)
+                        }
+                    }
+                    Color.clear.padding(.bottom, 60)
+                }
+            }
+            if isInitialized {
+                MenuView(viewModel: viewModel)
+                    .padding(.top, 12)
+            }
+        }
+        .onAppear(perform: {
+            viewModel.setContext(context: modelContext)
+            if appStorageManager.isFirstTimeAppLaunch {
+                viewModel.saveDefaultExercise()
+                appStorageManager.isFirstTimeAppLaunch = false
+            }
+            isInitialized = true
+        })
+        .onDisappear(perform: {
+            viewModel.save(updateWorkoutDay)
+        })
+        .onTapGesture {
+            focusedField = nil
+        }
+        .sheet(isPresented: $isShowSelectedWorkoutMenu) {
+            SelectWorkoutMenuView()
+        }
+    }
+}
+
+// MARK: - Extension HomeView
+extension HomeView {
+    struct MenuView: View {
+        @Query private var exercises: [Exercise]
+        @State var viewModel: HomeViewModel
+    
+        var body: some View {
+            Menu {
+                ForEach(Parts.allCases.reversed(), id: \.self) { part in
+                    let exercises = exercises.filter { $0.parts == part }
+                    if !exercises.isEmpty {
+                        Menu(part.title) {
+                            ForEach(exercises, id: \.id) { exercise in
+                                Button(exercise.exerciseName) {
+                                    viewModel.addWorkout(
+                                        .init(exercise: exercise,
+                                              workoutSetInfo: [.init(weight: "", rep: "")])
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(Color(.systemGray3))
+                        .frame(width: 80, height: 80)
+                    Image(.icWorkoutAdd)
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .foregroundStyle(.blue)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Preview
+#Preview {
+    HomeView(viewModel: HomeViewModel())
+}
