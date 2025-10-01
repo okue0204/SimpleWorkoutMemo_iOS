@@ -10,10 +10,11 @@ import SwiftData
 import SwiftUI
 
 protocol WorkoutRepository {
-    func save(_ workouts: WorkoutDay) throws
-    func update() throws
+    func save() throws
+    func insert(_ workouts: WorkoutDay) throws
     func fetch(for date: Date?) -> [WorkoutDay]
-    func delete(_ workouts: WorkoutDay)
+    func delete(_ workouts: WorkoutDay) throws
+    func delete(_ workoutSetInfo: WorkoutSetInfo) throws
 }
 
 class WorkoutRepositoryImpl: WorkoutRepository {
@@ -26,21 +27,27 @@ class WorkoutRepositoryImpl: WorkoutRepository {
         self.modelContext = modelContext
     }
     
-    func save(_ workoutDay: WorkoutDay) throws {
-        modelContext.insert(workoutDay)
+    func save() throws {
         try modelContext.save()
     }
     
-    func update() throws {
-        try modelContext.save()
+    func insert(_ workoutDay: WorkoutDay) throws {
+        modelContext.insert(workoutDay)
+        try save()
     }
     
     func fetch(for date: Date?) -> [WorkoutDay] {
         workoutDays
     }
     
-    func delete(_ workoutDay: WorkoutDay) {
+    func delete(_ workoutDay: WorkoutDay) throws {
         modelContext.delete(workoutDay)
+        try save()
+    }
+    
+    func delete(_ workoutSetInfo: WorkoutSetInfo) throws {
+        modelContext.delete(workoutSetInfo)
+        try save()
     }
 }
 
@@ -52,11 +59,11 @@ class WorkoutRepositoryMock: WorkoutRepository {
         self.modelContext = modelContext
     }
     
-    func save(_ workoutDay: WorkoutDay) {
+    func save() throws {
         
     }
     
-    func update() throws {
+    func insert(_ workouts: WorkoutDay) throws {
         
     }
     
@@ -210,7 +217,11 @@ class WorkoutRepositoryMock: WorkoutRepository {
         ]
     }
     
-    func delete(_ workouts: WorkoutDay) {
+    func delete(_ workouts: WorkoutDay) throws {
+        
+    }
+    
+    func delete(_ workoutSetInfo: WorkoutSetInfo) throws {
         
     }
 }

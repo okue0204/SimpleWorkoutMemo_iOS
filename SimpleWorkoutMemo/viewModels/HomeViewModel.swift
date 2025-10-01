@@ -41,7 +41,7 @@ class HomeViewModel {
             return
         }
         do {
-            try workoutRepository.save(workoutDay)
+            try workoutRepository.insert(workoutDay)
         } catch {
             onFailureWorkoutSave.toggle()
         }
@@ -55,7 +55,7 @@ class HomeViewModel {
             }) {
                 workout.workoutSetInfo[index] = setInfo
             }
-            try workoutRepository.update()
+            try workoutRepository.save()
         } catch {
             
         }
@@ -68,7 +68,11 @@ class HomeViewModel {
     
     func delete(_ workoutDay: WorkoutDay) {
         guard let workoutRepository else { return }
-        workoutRepository.delete(workoutDay)
+        do {
+            try workoutRepository.delete(workoutDay)
+        } catch {
+            
+        }
     }
     
     func addWorkout(_ workout: Workout, date: Date = Date()) {
@@ -83,15 +87,22 @@ class HomeViewModel {
     }
     
     func addSetInfo(_ workoutDay: WorkoutDay, at workoutIndex: Int) {
+        guard let workoutRepository else { return }
         let workoutSetInfo = WorkoutSetInfo(weight: "", rep: "", workout: workoutDay.workouts[workoutIndex])
         workoutDay.workouts[workoutIndex].workoutSetInfo.append(workoutSetInfo)
-        try? modelContext?.save()
+        do {
+            try workoutRepository.save()
+        } catch {
+            
+        }
     }
     
     func removeSetInfo(workoutDay: WorkoutDay, at workoutIndex: Int) {
-        if let removeSetInfo = workoutDay.workouts[workoutIndex].sortedWorkoutSetInfo.last {
-            modelContext?.delete(removeSetInfo)
-            try? modelContext?.save()
+        guard let workoutRepository, let removeSetInfo = workoutDay.workouts[workoutIndex].sortedWorkoutSetInfo.last else { return }
+        do {
+            try workoutRepository.delete(removeSetInfo)
+        } catch {
+            
         }
     }
     

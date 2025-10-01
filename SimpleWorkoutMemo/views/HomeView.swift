@@ -93,10 +93,6 @@ extension HomeView {
                             ForEach(exercises, id: \.id) { exercise in
                                 Button(exercise.exerciseName) {
                                     viewModel.addWorkout(.init(exercise: exercise))
-//                                    viewModel.addWorkout(
-//                                        .init(exercise: exercise,
-//                                              workoutSetInfo: [.init(weight: "", rep: "")])
-//                                    )
                                 }
                             }
                         }
