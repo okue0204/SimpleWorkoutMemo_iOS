@@ -10,8 +10,10 @@ import SwiftUI
 struct WorkoutItemView: View {
     
     @FocusState.Binding var focusedField: FocusField?
+    @Bindable var workout: Workout
     
-    let workout: Workout
+    private static let maxLength: Int = 5
+    
     let onAddSetInfo: () -> Void
     let onRemoveSetInfo: (Int) -> Void
     let onUpdateWorkoutSetInfo: (WorkoutSetInfo) -> Void
@@ -81,22 +83,38 @@ struct WorkoutItemView: View {
             .padding(.vertical, 12)
             Divider()
             VStack(spacing: 0) {
-                ForEach(Array(workout.workoutSetInfo.enumerated()), id: \.offset) { offset, set in
+                ForEach(workout.sortedWorkoutSetInfo, id: \.id) { set in
                     HStack {
-                        Text("\(offset + 1)")
-                            .font(.medium(size: 22))
-                            .foregroundStyle(.white)
-                            .padding(.leading, 12)
+                        if let index = workout.sortedWorkoutSetInfo.firstIndex(where: { $0.id == set.id }) {
+                            Text("\(index + 1)")
+                                .font(.medium(size: 22))
+                                .foregroundStyle(.white)
+                                .padding(.leading, 12)
+                        }
                         Text("set")
                             .font(.regular(size: 16))
                             .foregroundStyle(.white)
                             .offset(y: 2)
                         Spacer()
                         HStack {
-                            MaxLengthTextFieldView(workoutSetInfo: set,
-                                                   focusedField: $focusedField,
-                                                   workoutInputType: .weight) { setInfo in
-                                onUpdateWorkoutSetInfo(setInfo)
+                            let focusField = FocusField(id: set.id)
+                            TextField("0", text: Binding(
+                                get: { set.weight },
+                                set: { value in
+                                    set.weight = String(value.prefix(Self.maxLength))
+                                    onUpdateWorkoutSetInfo(set)
+                                }))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .keyboardType(.decimalPad)
+                            .font(.regular(size: 16))
+                            .frame(minWidth: 50)
+                            .contentShape(.rect)
+                            .background(Color.gray.opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .focused($focusedField, equals: focusField)
+                            .onTapGesture {
+                                focusedField = focusField
                             }
                             Text("kg")
                                 .font(.regular(size: 16))
@@ -106,10 +124,23 @@ struct WorkoutItemView: View {
                                 .frame(width: 12, height: 12)
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 12)
-                            MaxLengthTextFieldView(workoutSetInfo: set,
-                                                   focusedField: $focusedField,
-                                                   workoutInputType: .rep) { setInfo in
-                                onUpdateWorkoutSetInfo(setInfo)
+                            TextField("0", text: Binding(
+                                get: { set.rep },
+                                set: { value in
+                                    set.rep = String(value.prefix(Self.maxLength))
+                                    onUpdateWorkoutSetInfo(set)
+                                }))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .keyboardType(.decimalPad)
+                            .font(.regular(size: 16))
+                            .frame(minWidth: 50)
+                            .contentShape(.rect)
+                            .background(Color.gray.opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .focused($focusedField, equals: focusField)
+                            .onTapGesture {
+                                focusedField = focusField
                             }
                             Text("rep")
                                 .font(.regular(size: 16))
@@ -118,8 +149,6 @@ struct WorkoutItemView: View {
                         .padding(.horizontal, 12)
                     }
                     .padding(.vertical, 6)
-                    Divider()
-                        .padding(.leading, 12)
                 }
             }
             .padding(.horizontal, 12)
@@ -138,15 +167,12 @@ struct WorkoutItemView: View {
                                                    workoutType: .freeWeight,
                                                    exerciseName: "ダンベルプレス"),
                                    workoutSetInfo: [
-                                    .init(weight: "30", rep: "10"),
-                                    .init(weight: "30", rep: "10"),
-                                    .init(weight: "30", rep: "10"),
-                                    .init(weight: "30", rep: "10")
+                                    
                                    ])) {
-        
-    } onRemoveSetInfo: { _ in
-        
-    } onUpdateWorkoutSetInfo: { _ in
-        
-    }
+                                       
+                                   } onRemoveSetInfo: { _ in
+                                       
+                                   } onUpdateWorkoutSetInfo: { _ in
+                                       
+                                   }
 }

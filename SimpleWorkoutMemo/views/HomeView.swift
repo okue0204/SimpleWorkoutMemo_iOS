@@ -39,13 +39,13 @@ struct HomeView: View {
                         day.createdAt.zeroClock == Date().zeroClock
                     }
                     ForEach(workoutDays, id: \.id) { workoutDay in
-                        ForEach(Array(workoutDay.workouts.enumerated()), id: \.offset) { index, workout in
+                        ForEach(workoutDay.workouts, id: \.id) { workout in
                             WorkoutItemView(focusedField: $focusedField, workout: workout) {
-                                viewModel.addSetInfo(workoutDay, at: index)
+                                viewModel.addSetInfo(workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
                             } onRemoveSetInfo: { _ in
-                                viewModel.removeSetInfo(workoutDay: workoutDay, at: index)
+                                viewModel.removeSetInfo(workoutDay: workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
                             } onUpdateWorkoutSetInfo: { workoutSetInfo in
-                                viewModel.update(workout: workout, with: workoutSetInfo, at: index)
+                                viewModel.update(workout: workout, with: workoutSetInfo, at: workoutDay.workouts.firstIndex(of: workout)!)
                             }
                             .padding(.vertical, 6)
                         }
@@ -92,10 +92,11 @@ extension HomeView {
                         Menu(part.title) {
                             ForEach(exercises, id: \.id) { exercise in
                                 Button(exercise.exerciseName) {
-                                    viewModel.addWorkout(
-                                        .init(exercise: exercise,
-                                              workoutSetInfo: [.init(weight: "", rep: "")])
-                                    )
+                                    viewModel.addWorkout(.init(exercise: exercise))
+//                                    viewModel.addWorkout(
+//                                        .init(exercise: exercise,
+//                                              workoutSetInfo: [.init(weight: "", rep: "")])
+//                                    )
                                 }
                             }
                         }

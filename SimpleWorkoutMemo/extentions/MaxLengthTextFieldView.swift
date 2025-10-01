@@ -11,10 +11,10 @@ import SwiftUI
 struct MaxLengthTextFieldView: View {
     
     @State var workoutSetInfo: WorkoutSetInfo
+    @Binding var text: String
     @FocusState.Binding var focusedField: FocusField?
     
     let workoutInputType: WorkoutInputType
-    let onUpdateSetInfo: (WorkoutSetInfo) -> Void
     
     private static let maxLength: Int = 5
     
@@ -33,11 +33,10 @@ struct MaxLengthTextFieldView: View {
             .onChange(of: workoutInputType == .weight ? workoutSetInfo.weight : workoutSetInfo.rep) { oldValue, newValue in
                 if newValue.count <= Self.maxLength {
                     if workoutInputType == .weight {
-                        workoutSetInfo.weight = String(newValue.prefix(Self.maxLength))
+                        text = String(newValue.prefix(Self.maxLength))
                     } else {
-                        workoutSetInfo.rep = String(newValue.prefix(Self.maxLength))
+                        text = String(newValue.prefix(Self.maxLength))
                     }
-                    onUpdateSetInfo(workoutSetInfo)
                 }
             }
             .onTapGesture {

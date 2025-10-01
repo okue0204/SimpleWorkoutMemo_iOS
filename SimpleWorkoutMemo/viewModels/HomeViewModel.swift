@@ -72,6 +72,8 @@ class HomeViewModel {
     }
     
     func addWorkout(_ workout: Workout, date: Date = Date()) {
+        let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: workout)
+        workout.workoutSetInfo.append(setInfo)
         let workoutDay = WorkoutDay(createdAt: date, workouts: [workout])
         save(workoutDay)
     }
@@ -81,16 +83,16 @@ class HomeViewModel {
     }
     
     func addSetInfo(_ workoutDay: WorkoutDay, at workoutIndex: Int) {
-        let workoutSetInfo = WorkoutSetInfo(weight: "", rep: "")
+        let workoutSetInfo = WorkoutSetInfo(weight: "", rep: "", workout: workoutDay.workouts[workoutIndex])
         workoutDay.workouts[workoutIndex].workoutSetInfo.append(workoutSetInfo)
-        save(workoutDay)
-//        updateWorkout()
+        try? modelContext?.save()
     }
     
     func removeSetInfo(workoutDay: WorkoutDay, at workoutIndex: Int) {
-        workoutDay.workouts[workoutIndex].workoutSetInfo.removeLast()
-        save(workoutDay)
-//        updateWorkout()
+        if let removeSetInfo = workoutDay.workouts[workoutIndex].sortedWorkoutSetInfo.last {
+            modelContext?.delete(removeSetInfo)
+            try? modelContext?.save()
+        }
     }
     
     // MARK: - exercise

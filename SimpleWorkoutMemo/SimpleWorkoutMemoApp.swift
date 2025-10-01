@@ -16,7 +16,8 @@ struct SimpleWorkoutMemoApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             WorkoutDay.self,
-            Exercise.self
+            Exercise.self,
+            WorkoutSetInfo.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

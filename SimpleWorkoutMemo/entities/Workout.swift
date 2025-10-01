@@ -9,13 +9,18 @@ import Foundation
 import SwiftData
 
 @Model
-class Workout: Identifiable {
-    var id = UUID().uuidString
+class Workout: Identifiable, ObservableObject {
+    @Attribute(.unique) var id: String = UUID().uuidString
     var exercise: Exercise
-    var workoutSetInfo: [WorkoutSetInfo]
+    @Relationship(deleteRule: .cascade, inverse: \WorkoutSetInfo.workout)
+    var workoutSetInfo: [WorkoutSetInfo] = []
     
-    init(exercise: Exercise, workoutSetInfo: [WorkoutSetInfo]) {
+    init(exercise: Exercise, workoutSetInfo: [WorkoutSetInfo] = []) {
         self.exercise = exercise
         self.workoutSetInfo = workoutSetInfo
+    }
+    
+    var sortedWorkoutSetInfo: [WorkoutSetInfo] {
+        workoutSetInfo.sorted { $0.createdAt < $1.createdAt }
     }
 }
