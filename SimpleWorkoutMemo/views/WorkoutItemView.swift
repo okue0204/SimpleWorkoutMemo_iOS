@@ -17,70 +17,89 @@ struct WorkoutItemView: View {
     let onAddSetInfo: () -> Void
     let onRemoveSetInfo: (Int) -> Void
     let onUpdateWorkoutSetInfo: (WorkoutSetInfo) -> Void
+    let onDeleteWorkout: (Workout) -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 0) {
+        VStack(spacing: 0) {
+            HStack(alignment: .top, spacing: 0) {
                 ZStack {
                     Circle().fill(workout.exercise.parts.color.opacity(0.6))
                         .frame(width: 50, height: 50)
                     Text(workout.exercise.parts.title)
-                        .font(.medium(size: 20))
+                        .font(.medium(size: 16))
                 }
+                .padding(.top, 12)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(workout.exercise.exerciseName)
                         .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
                         .background(workout.exercise.parts.color.opacity(0.2))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .font(.medium(size: 16))
+                        .font(.medium(size: 12))
                         .foregroundStyle(workout.exercise.parts.color)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 4)
+                        .padding(.leading, 6)
+                        .padding(.bottom, 4)
                     Text("合計 : \(workout.workoutSetInfo.count)セット")
-                        .font(.regular(size: 14))
-                        .padding(.leading, 16)
+                        .font(.regular(size: 12))
+                        .padding(.leading, 12)
                 }
+                .padding(.vertical, 12)
                 Spacer()
                 HStack(spacing: 12) {
-                    Button(action: {
-                        // set数を減らす
-                        guard workout.workoutSetInfo.count != 1 else {
-                            return
-                        }
-                        if let index = workout.workoutSetInfo.firstIndex(where: { info in
-                            info.id == workout.workoutSetInfo.last?.id
+                    HStack(spacing: 12) {
+                        Button(action: {
+                            // set数を減らす
+                            guard workout.workoutSetInfo.count != 1 else {
+                                return
+                            }
+                            if let index = workout.workoutSetInfo.firstIndex(where: { info in
+                                info.id == workout.workoutSetInfo.last?.id
+                            }) {
+                                onRemoveSetInfo(index)
+                            }
                         }) {
-                            onRemoveSetInfo(index)
+                            Image(.icWorkoutMinus)
+                                .resizable()
+                                .frame(width: 16, height: 16)
+                                .foregroundStyle(.blue)
                         }
-                    }) {
-                        Image(.icWorkoutMinus)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.blue)
-                    }
-                    Rectangle()
-                        .frame(width: 1, height: 16)
-                        .foregroundStyle(.gray)
-                    Button(action: {
-                        // set数を増やす
-                        guard workout.workoutSetInfo.count < 10 else {
-                            return
+                        Rectangle()
+                            .frame(width: 1, height: 16)
+                            .foregroundStyle(.gray)
+                        Button(action: {
+                            // set数を増やす
+                            guard workout.workoutSetInfo.count < 10 else {
+                                return
+                            }
+                            onAddSetInfo()
+                        }) {
+                            Image(.icWorkoutAdd)
+                                .resizable()
+                                .frame(width: 16, height: 16)
+                                .foregroundStyle(.blue)
                         }
-                        onAddSetInfo()
-                    }) {
-                        Image(.icWorkoutAdd)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.blue)
                     }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 8)
+                    .background(Color(.systemGray5))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    Button {
+                        // workoutを削除
+                        onDeleteWorkout(workout)
+                    } label: {
+                        Image(.icWorkoutClose)
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                            .foregroundStyle(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                    }
+                    .background(Color(.systemGray5))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
-                .padding(.vertical, 8)
-                .padding(.horizontal, 8)
-                .background(Color(.systemGray5))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.top, 12)
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 12)
             Divider()
             VStack(spacing: 0) {
                 ForEach(workout.sortedWorkoutSetInfo, id: \.id) { set in
@@ -165,7 +184,7 @@ struct WorkoutItemView: View {
     WorkoutItemView(focusedField: $focusedField,
                     workout: .init(exercise: .init(parts: .chest,
                                                    workoutType: .freeWeight,
-                                                   exerciseName: "ダンベルプレス"),
+                                                   exerciseName: "トライセプスエクステンション"),
                                    workoutSetInfo: [
                                     
                                    ])) {
@@ -173,6 +192,8 @@ struct WorkoutItemView: View {
                                    } onRemoveSetInfo: { _ in
                                        
                                    } onUpdateWorkoutSetInfo: { _ in
+                                       
+                                   } onDeleteWorkout: { _ in 
                                        
                                    }
 }

@@ -14,7 +14,7 @@ class WorkoutSetInfo: Identifiable {
     var weight: String
     var rep: String
     var createdAt: Date = Date()
-    @Relationship var workout: Workout
+    @Relationship var workout: Workout?
     
     init(weight: String, rep: String, workout: Workout) {
         self.weight = weight

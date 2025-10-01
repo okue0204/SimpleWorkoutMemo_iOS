@@ -14,6 +14,7 @@ protocol WorkoutRepository {
     func insert(_ workouts: WorkoutDay) throws
     func fetch(for date: Date?) -> [WorkoutDay]
     func delete(_ workouts: WorkoutDay) throws
+    func delete(_ workout: Workout) throws
     func delete(_ workoutSetInfo: WorkoutSetInfo) throws
 }
 
@@ -42,6 +43,11 @@ class WorkoutRepositoryImpl: WorkoutRepository {
     
     func delete(_ workoutDay: WorkoutDay) throws {
         modelContext.delete(workoutDay)
+        try save()
+    }
+    
+    func delete(_ workout: Workout) throws {
+        modelContext.delete(workout)
         try save()
     }
     
@@ -218,6 +224,10 @@ class WorkoutRepositoryMock: WorkoutRepository {
     }
     
     func delete(_ workouts: WorkoutDay) throws {
+        
+    }
+    
+    func delete(_ workout: Workout) throws {
         
     }
     

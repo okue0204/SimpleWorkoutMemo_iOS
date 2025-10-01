@@ -46,6 +46,9 @@ struct HomeView: View {
                                 viewModel.removeSetInfo(workoutDay: workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
                             } onUpdateWorkoutSetInfo: { workoutSetInfo in
                                 viewModel.update(workout: workout, with: workoutSetInfo, at: workoutDay.workouts.firstIndex(of: workout)!)
+                            } onDeleteWorkout: { workout in
+                                let index = workoutDay.workouts.firstIndex(of: workout)!
+                                viewModel.removeWorkout(workoutDay, at: index)
                             }
                             .padding(.vertical, 6)
                         }
@@ -116,4 +119,5 @@ extension HomeView {
 // MARK: - Preview
 #Preview {
     HomeView(viewModel: HomeViewModel())
+        .environmentObject(AppStorageManager.shared)
 }

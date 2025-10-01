@@ -83,7 +83,12 @@ class HomeViewModel {
     }
     
     func removeWorkout(_ workoutDay: WorkoutDay, at index: Int) {
-        
+        do {
+            let removeWorkout = workoutDay.workouts[index]
+            try workoutRepository?.delete(removeWorkout)
+        } catch {
+            
+        }
     }
     
     func addSetInfo(_ workoutDay: WorkoutDay, at workoutIndex: Int) {
