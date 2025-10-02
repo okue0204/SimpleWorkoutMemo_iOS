@@ -20,86 +20,42 @@ struct WorkoutItemView: View {
     let onDeleteWorkout: (Workout) -> Void
     
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(alignment: .top, spacing: 0) {
-                ZStack {
-                    Circle().fill(workout.exercise.parts.color.opacity(0.6))
-                        .frame(width: 50, height: 50)
-                    Text(workout.exercise.parts.title)
-                        .font(.medium(size: 16))
-                }
-                .padding(.top, 12)
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(workout.exercise.exerciseName)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(workout.exercise.parts.color.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .font(.medium(size: 12))
-                        .foregroundStyle(workout.exercise.parts.color)
-                        .padding(.leading, 6)
-                        .padding(.bottom, 4)
-                    Text("合計 : \(workout.workoutSetInfo.count)セット")
-                        .font(.regular(size: 12))
-                        .padding(.leading, 12)
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    ZStack {
+                        Circle().fill(workout.exercise.parts.color.opacity(0.6))
+                            .frame(width: 50, height: 50)
+                        Text(workout.exercise.parts.title)
+                            .font(.medium(size: 16))
+                    }
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(workout.exercise.exerciseName)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(workout.exercise.parts.color.opacity(0.2))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .font(.medium(size: 12))
+                            .foregroundStyle(workout.exercise.parts.color)
+                        HStack(spacing: 12) {
+                            Text("\(workout.workoutSetInfo.count)セット : \(workout.totalRep)回")
+                                .font(.regular(size: 12))
+                            Text("重量 : \(workout.totalWeight)kg")
+                                .font(.regular(size: 12))
+                        }
+                        .padding(.leading, 8)
+                    }
+                    .padding(.leading, 12)
                 }
                 .padding(.vertical, 12)
+                .padding(.leading, 12)
                 Spacer()
-                HStack(spacing: 12) {
-                    HStack(spacing: 12) {
-                        Button(action: {
-                            // set数を減らす
-                            guard workout.workoutSetInfo.count != 1 else {
-                                return
-                            }
-                            if let index = workout.workoutSetInfo.firstIndex(where: { info in
-                                info.id == workout.workoutSetInfo.last?.id
-                            }) {
-                                onRemoveSetInfo(index)
-                            }
-                        }) {
-                            Image(.icWorkoutMinus)
-                                .resizable()
-                                .frame(width: 16, height: 16)
-                                .foregroundStyle(.blue)
-                        }
-                        Rectangle()
-                            .frame(width: 1, height: 16)
-                            .foregroundStyle(.gray)
-                        Button(action: {
-                            // set数を増やす
-                            guard workout.workoutSetInfo.count < 10 else {
-                                return
-                            }
-                            onAddSetInfo()
-                        }) {
-                            Image(.icWorkoutAdd)
-                                .resizable()
-                                .frame(width: 16, height: 16)
-                                .foregroundStyle(.blue)
-                        }
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 8)
-                    .background(Color(.systemGray5))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    Button {
-                        // workoutを削除
-                        onDeleteWorkout(workout)
-                    } label: {
-                        Image(.icWorkoutClose)
-                            .resizable()
-                            .frame(width: 14, height: 14)
-                            .foregroundStyle(.gray)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 8)
-                    }
-                    .background(Color(.systemGray5))
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                }
-                .padding(.top, 12)
+                WorkoutSetControlView(workout: workout,
+                                      onAddSetInfo: onAddSetInfo,
+                                      onRemoveSetInfo: onRemoveSetInfo)
+                .offset(y: -12)
+                .padding(.trailing, 12)
             }
-            .padding(.horizontal, 12)
             Divider()
             VStack(spacing: 0) {
                 ForEach(workout.sortedWorkoutSetInfo, id: \.id) { set in
@@ -171,10 +127,79 @@ struct WorkoutItemView: View {
                 }
             }
             .padding(.horizontal, 12)
+            .padding(.vertical, 12)
+            Divider()
+            HStack {
+                Spacer()
+                Menu {
+                    Button(role: .destructive) {
+                        onDeleteWorkout(workout)
+                    } label: {
+                        Label("トレーニングの削除", systemImage: "trash")
+                    }
+                } label: {
+                    Image(.icWorkoutMore)
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(.gray)
+                        .padding(.vertical, 4)
+                        .padding(.trailing, 20)
+                }
+            }
+            .padding(.top, 6)
         }
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .padding(.horizontal, 20)
+    }
+}
+
+extension WorkoutItemView {
+    struct WorkoutSetControlView: View {
+        
+        let workout: Workout
+        let onAddSetInfo: () -> Void
+        let onRemoveSetInfo: (Int) -> Void
+        
+        var body: some View {
+            HStack(spacing: 12) {
+                Button(action: {
+                    // set数を減らす
+                    guard workout.workoutSetInfo.count != 1 else {
+                        return
+                    }
+                    if let index = workout.workoutSetInfo.firstIndex(where: { info in
+                        info.id == workout.workoutSetInfo.last?.id
+                    }) {
+                        onRemoveSetInfo(index)
+                    }
+                }) {
+                    Image(.icWorkoutMinus)
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                        .foregroundStyle(.blue)
+                }
+                Rectangle()
+                    .frame(width: 1, height: 16)
+                    .foregroundStyle(.gray)
+                Button(action: {
+                    // set数を増やす
+                    guard workout.workoutSetInfo.count < 10 else {
+                        return
+                    }
+                    onAddSetInfo()
+                }) {
+                    Image(.icWorkoutAdd)
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                        .foregroundStyle(.blue)
+                }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 8)
+            .background(Color(.systemGray5))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
     }
 }
 

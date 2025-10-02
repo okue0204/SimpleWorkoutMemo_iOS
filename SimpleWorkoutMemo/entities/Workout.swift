@@ -23,4 +23,18 @@ class Workout: Identifiable, ObservableObject {
     var sortedWorkoutSetInfo: [WorkoutSetInfo] {
         workoutSetInfo.sorted { $0.createdAt < $1.createdAt }
     }
+    
+    var totalWeight: String {
+        let totalWeight = workoutSetInfo.reduce(into: 0) { partialResult, workoutSetInfo in
+            partialResult += (Double(workoutSetInfo.rep) ?? 0) * (Double(workoutSetInfo.weight) ?? 0)
+        }
+        return String(Int(totalWeight))
+    }
+    
+    var totalRep: String {
+        let totalRep = workoutSetInfo.reduce(into: 0) { partialResult, setInfo in
+            partialResult += Int(setInfo.rep) ?? 0
+        }
+        return String(totalRep)
+    }
 }

@@ -40,7 +40,8 @@ struct HomeView: View {
                     }
                     ForEach(workoutDays, id: \.id) { workoutDay in
                         ForEach(workoutDay.workouts, id: \.id) { workout in
-                            WorkoutItemView(focusedField: $focusedField, workout: workout) {
+                            WorkoutItemView(focusedField: $focusedField,
+                                            workout: workout) {
                                 viewModel.addSetInfo(workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
                             } onRemoveSetInfo: { _ in
                                 viewModel.removeSetInfo(workoutDay: workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
@@ -68,9 +69,14 @@ struct HomeView: View {
                 appStorageManager.isFirstTimeAppLaunch = false
             }
             isInitialized = true
+            if let todayWorkoutDay = workoutDays.first(where: { workoutDay in
+                workoutDay.createdAt.zeroClock == Date().zeroClock
+            }) {
+                viewModel.calculateTotalWeight(workoutDay: todayWorkoutDay)
+            }
         })
         .onDisappear(perform: {
-            viewModel.save(updateWorkoutDay)
+//            viewModel.save(updateWorkoutDay)
         })
         .onTapGesture {
             focusedField = nil
@@ -84,6 +90,7 @@ struct HomeView: View {
 // MARK: - Extension HomeView
 extension HomeView {
     struct MenuView: View {
+        @Query private var workoutDays: [WorkoutDay]
         @Query private var exercises: [Exercise]
         @State var viewModel: HomeViewModel
     
@@ -95,7 +102,7 @@ extension HomeView {
                         Menu(part.title) {
                             ForEach(exercises, id: \.id) { exercise in
                                 Button(exercise.exerciseName) {
-                                    viewModel.addWorkout(.init(exercise: exercise))
+                                    viewModel.addWorkout(workoutDays, exercise: exercise)
                                 }
                             }
                         }

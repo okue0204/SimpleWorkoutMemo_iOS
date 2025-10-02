@@ -15,6 +15,7 @@ class HomeViewModel {
     
     var workoutDays: [WorkoutDay] = []
     var exercises: [Exercise] = []
+    var totalWeight: String = "0"
     
     // error
     var onFailureWorkoutUpdate: Bool = false
@@ -36,14 +37,25 @@ class HomeViewModel {
     }
     
     // MARK: - workout
-    func save(_ workoutDay: WorkoutDay?) {
-        guard let workoutDay, let workoutRepository else {
+    func save() {
+        guard let workoutRepository else {
+            return
+        }
+        do {
+            try workoutRepository.save()
+        } catch {
+            onFailureWorkoutSave.toggle()
+        }
+    }
+    
+    func insert(_ workoutDay: WorkoutDay) {
+        guard let workoutRepository else {
             return
         }
         do {
             try workoutRepository.insert(workoutDay)
         } catch {
-            onFailureWorkoutSave.toggle()
+            
         }
     }
     
@@ -75,11 +87,22 @@ class HomeViewModel {
         }
     }
     
-    func addWorkout(_ workout: Workout, date: Date = Date()) {
-        let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: workout)
-        workout.workoutSetInfo.append(setInfo)
-        let workoutDay = WorkoutDay(createdAt: date, workouts: [workout])
-        save(workoutDay)
+    func addWorkout(_ workoutDays: [WorkoutDay], exercise: Exercise, date: Date = Date()) {
+        if let todayWorkoutDay = workoutDays.first(where: { workoutDay in
+            workoutDay.createdAt.zeroClock == Date().zeroClock
+        }) {
+            let newWorkout = Workout(exercise: exercise)
+            todayWorkoutDay.workouts.append(newWorkout)
+            let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: newWorkout)
+            newWorkout.workoutSetInfo.append(setInfo)
+            save()
+        } else {
+            let newWorkout = Workout(exercise: exercise)
+            let newWorkoutDay = WorkoutDay(createdAt: Date(), workouts: [newWorkout])
+            let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: newWorkout)
+            newWorkout.workoutSetInfo.append(setInfo)
+            insert(newWorkoutDay)
+        }
     }
     
     func removeWorkout(_ workoutDay: WorkoutDay, at index: Int) {
@@ -109,6 +132,16 @@ class HomeViewModel {
         } catch {
             
         }
+    }
+    
+    func calculateTotalWeight(workoutDay: WorkoutDay) {
+        let workoutSetInfo = workoutDay.workouts.flatMap { workout in
+            workout.workoutSetInfo
+        }
+        let totalWeight = workoutSetInfo.reduce(into: 0) { partialResult, workoutSetInfo in
+            partialResult += (Double(workoutSetInfo.rep) ?? 0) * (Double(workoutSetInfo.weight) ?? 0)
+        }
+        self.totalWeight = String(format: "%.1f", totalWeight)
     }
     
     // MARK: - exercise
