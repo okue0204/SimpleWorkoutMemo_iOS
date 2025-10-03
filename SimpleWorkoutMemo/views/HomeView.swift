@@ -54,7 +54,7 @@ struct HomeView: View {
                             .padding(.vertical, 6)
                         }
                     }
-                    Color.clear.padding(.bottom, 60)
+                    Color.clear.padding(.bottom, 80)
                 }
             }
             if isInitialized {
@@ -75,9 +75,6 @@ struct HomeView: View {
                 viewModel.calculateTotalWeight(workoutDay: todayWorkoutDay)
             }
         })
-        .onDisappear(perform: {
-//            viewModel.save(updateWorkoutDay)
-        })
         .onTapGesture {
             focusedField = nil
         }
@@ -95,30 +92,48 @@ extension HomeView {
         @State var viewModel: HomeViewModel
     
         var body: some View {
-            Menu {
-                ForEach(Parts.allCases.reversed(), id: \.self) { part in
-                    let exercises = exercises.filter { $0.parts == part }
-                    if !exercises.isEmpty {
-                        Menu(part.title) {
-                            ForEach(exercises, id: \.id) { exercise in
-                                Button(exercise.exerciseName) {
-                                    viewModel.addWorkout(workoutDays, exercise: exercise)
+            HStack(spacing: 20) {
+                Spacer()
+                Button(action: {
+                    
+                }) {
+                    ZStack {
+                        Circle()
+                            .fill(Color(.systemGray5))
+                            .frame(width: 60, height: 60)
+                        Image(.icWorkoutCalendar)
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(.blue)
+                    }
+                }
+                Menu {
+                    ForEach(Parts.allCases.reversed(), id: \.self) { part in
+                        let exercises = exercises.filter { $0.parts == part }
+                        if !exercises.isEmpty {
+                            Menu(part.title) {
+                                ForEach(exercises, id: \.id) { exercise in
+                                    Button(exercise.exerciseName) {
+                                        viewModel.addWorkout(workoutDays, exercise: exercise)
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            } label: {
-                ZStack {
-                    Circle()
-                        .fill(Color(.systemGray3))
-                        .frame(width: 80, height: 80)
-                    Image(.icWorkoutAdd)
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .foregroundStyle(.blue)
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(Color(.systemGray5))
+                            .frame(width: 60, height: 60)
+                        Image(.icWorkoutAdd)
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(.blue)
+                    }
                 }
             }
+            .padding(.trailing, 26)
+            .padding(.bottom, 20)
         }
     }
 }

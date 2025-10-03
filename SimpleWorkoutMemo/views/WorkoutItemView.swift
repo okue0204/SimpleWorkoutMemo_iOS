@@ -10,7 +10,7 @@ import SwiftUI
 struct WorkoutItemView: View {
     
     @FocusState.Binding var focusedField: FocusField?
-    @Bindable var workout: Workout
+    var workout: Workout
     
     private static let maxLength: Int = 5
     
@@ -207,18 +207,27 @@ extension WorkoutItemView {
 #Preview {
     @Previewable @FocusState var focusedField: FocusField?
     WorkoutItemView(focusedField: $focusedField,
-                    workout: .init(exercise: .init(parts: .chest,
+                    workout: .init(exercise: .init(parts: .triceps,
                                                    workoutType: .freeWeight,
                                                    exerciseName: "トライセプスエクステンション"),
                                    workoutSetInfo: [
-                                    
+                                    .init(weight: "25",
+                                          rep: "10",
+                                          workout: .init(exercise: .init(parts: .triceps,
+                                                                         workoutType: .freeWeight,
+                                                                         exerciseName: "トライセプスエクステンション"))),
+                                    .init(weight: "10",
+                                          rep: "12",
+                                          workout: .init(exercise: .init(parts: .triceps,
+                                                                         workoutType: .freeWeight,
+                                                                         exerciseName: "トライセプスエクステンション")))
                                    ])) {
                                        
                                    } onRemoveSetInfo: { _ in
                                        
                                    } onUpdateWorkoutSetInfo: { _ in
                                        
-                                   } onDeleteWorkout: { _ in 
+                                   } onDeleteWorkout: { _ in
                                        
                                    }
 }
