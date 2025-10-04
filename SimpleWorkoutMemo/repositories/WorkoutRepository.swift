@@ -158,7 +158,7 @@ class WorkoutRepositoryMock: WorkoutRepository {
                                                      workoutSetInfo: []))
                               ]),
                     ]),
-            .init(createdAt: Date().addDay(1), workouts: [
+            .init(createdAt: Date().addAndSubtractDay(1), workouts: [
                 .init(exercise: .init(parts: .shoulders,
                                       workoutType: .freeWeight,
                                       exerciseName: "ダンベルショルダープレス"),

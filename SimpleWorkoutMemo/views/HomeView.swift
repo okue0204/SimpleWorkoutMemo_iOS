@@ -90,12 +90,13 @@ extension HomeView {
         @Query private var workoutDays: [WorkoutDay]
         @Query private var exercises: [Exercise]
         @State var viewModel: HomeViewModel
+        @State var isShowCalendar: Bool = false
     
         var body: some View {
             HStack(spacing: 20) {
                 Spacer()
                 Button(action: {
-                    
+                    isShowCalendar.toggle()
                 }) {
                     ZStack {
                         Circle()
@@ -134,6 +135,9 @@ extension HomeView {
             }
             .padding(.trailing, 26)
             .padding(.bottom, 20)
+            .sheet(isPresented: $isShowCalendar) {
+                CalendarView(viewModel: CalendarViewModel(), workoutDays: workoutDays)
+            }
         }
     }
 }

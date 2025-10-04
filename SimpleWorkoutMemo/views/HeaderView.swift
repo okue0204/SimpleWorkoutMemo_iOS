@@ -30,7 +30,7 @@ struct HeaderView: View {
                             .frame(width: 40, height: 40)
                         Image(imageResource)
                             .resizable()
-                            .frame(width: 20, height: 20)
+                            .frame(width: 16, height: 16)
                     }
                 }
                 .padding(.trailing, 12)

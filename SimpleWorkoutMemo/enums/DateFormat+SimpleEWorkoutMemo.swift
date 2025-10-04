@@ -9,11 +9,14 @@ import Foundation
 
 enum DateFormat {
     case yearMonthDay
+    case yearMonth
     
     var formatString: String {
         switch self {
         case .yearMonthDay:
             "yyyy年MM月dd日"
+        case .yearMonth:
+            "yyyy年MM月"
         }
     }
 }
