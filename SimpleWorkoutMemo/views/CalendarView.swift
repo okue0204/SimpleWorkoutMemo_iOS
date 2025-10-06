@@ -10,9 +10,12 @@ import SwiftUI
 struct CalendarView: View {
     @Environment(\.dismiss) var dismiss
     @State var viewModel: CalendarViewModel
-    @State private var selectedDate: Date?
+    @Binding var selectedDate: Date?
+    @FocusState.Binding var focusedField: FocusField?
+    
     @State private var currentPositionDate: Date?
     @State private var scrollPosition: String?
+    @State private var isShowSheet: Bool = false
     
     let workoutDays: [WorkoutDay]
     
@@ -34,6 +37,7 @@ struct CalendarView: View {
                         LazyHStack {
                             ForEach(viewModel.calendars, id: \.id) { calendarMonth in
                                 MonthView(selectedDate: $selectedDate,
+                                          viewModel: viewModel,
                                           workoutDays: workoutDays,
                                           calendarMonth: calendarMonth)
                             }
@@ -43,16 +47,11 @@ struct CalendarView: View {
                     .scrollTargetBehavior(.viewAligned)
                     .scrollPosition(id: $scrollPosition)
                     .onChange(of: scrollPosition) { oldValue, newValue in
-                        if let currentPositionDate = viewModel.calendars.first(where: { calendarMonth in
-                            calendarMonth.id == newValue
-                        }) {
-                            self.currentPositionDate = currentPositionDate.date
-                        }
+                        currentPositionDate = viewModel.currentPositionDate(for: newValue)
                     }
                 }
                 .background(Color(.systemGray6))
                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                DailyWorkoutListView()
             }
             .padding(.horizontal, 12)
             Spacer()
@@ -62,6 +61,24 @@ struct CalendarView: View {
         .onAppear {
             viewModel.createCalendarMonth()
         }
+        .onChange(of: selectedDate, { oldValue, newValue in
+            if newValue != nil {
+                DispatchQueue.main.async {
+                    isShowSheet.toggle()
+                }
+            }
+        })
+        .sheet(isPresented: $isShowSheet, onDismiss: {
+            selectedDate = nil
+        }, content: {
+            if let selectedDate,
+               let workoutDay = viewModel.workoutDay(for: selectedDate, from: workoutDays) {
+                WorkoutHalfModelView(viewModel: WorkoutHalfModelViewModel(),
+                                     selectedDate: $selectedDate,
+                                     workoutDay: workoutDay)
+                    .presentationDetents([.medium, .large])
+            }
+        })
     }
 }
 
@@ -87,13 +104,10 @@ extension CalendarView {
                         } else {
                             Date().onlyYearAndMonth
                         }
-                        if let calendarMonth = viewModel.calendars.first(where: { calendarMonth in
-                            calendarMonth.date.onlyYearAndMonth == date
-                        }) {
-                            withAnimation {
-                                scrollPosition = calendarMonth.id
-                            }
-                            currentPositionDate = calendarMonth.date.zeroClock
+                        let calendarMonth = viewModel.lastMonthCalendarMonth(for: date)
+                        currentPositionDate = calendarMonth.date.zeroClock
+                        withAnimation {
+                            scrollPosition = calendarMonth.id
                         }
                     }) {
                         Image(.icWorkoutLeftArrow)
@@ -107,13 +121,10 @@ extension CalendarView {
                         } else {
                             Date().onlyYearAndMonth
                         }
-                        if let calendarMonth = viewModel.calendars.first(where: { calendarMonth in
-                            calendarMonth.date.onlyYearAndMonth == date.addMonth(1).onlyYearAndMonth
-                        }) {
-                            withAnimation {
-                                scrollPosition = calendarMonth.id
-                            }
-                            currentPositionDate = calendarMonth.date.zeroClock
+                        let calendarMonth = viewModel.nextMonthCalendarMonth(for: date)
+                        currentPositionDate = calendarMonth.date.zeroClock
+                        withAnimation {
+                            scrollPosition = calendarMonth.id
                         }
                     }) {
                         Image(.icWorkoutRightArrow)
@@ -160,15 +171,14 @@ extension CalendarView {
         
         @Binding var selectedDate: Date?
         
+        let viewModel: CalendarViewModel
         let workoutDays: [WorkoutDay]
         let calendarMonth: CalendarMonth
         
         var body: some View {
             LazyVGrid(columns: Array(repeating: .init(spacing: 4), count: 7), spacing: 1) {
                 ForEach(calendarMonth.date.displayLastMonthArray, id: \.self) { date in
-                    if let workoutDay = workoutDays.first(where: { workoutDay in
-                        workoutDay.createdAt.zeroClock == date.zeroClock
-                    }) {
+                    if let workoutDay = viewModel.workoutDay(for: date, from: workoutDays) {
                         CalendarItemView(selectedDate: $selectedDate,
                                          date: date,
                                          workoutDay: workoutDay,
@@ -183,9 +193,7 @@ extension CalendarView {
                     }
                 }
                 ForEach(calendarMonth.date.monthArray, id: \.self) { date in
-                    if let workoutDay = workoutDays.first(where: { workoutDay in
-                        workoutDay.createdAt.zeroClock == date.zeroClock
-                    }) {
+                    if let workoutDay = viewModel.workoutDay(for: date, from: workoutDays) {
                         CalendarItemView(selectedDate: $selectedDate,
                                          date: date,
                                          workoutDay: workoutDay,
@@ -198,9 +206,7 @@ extension CalendarView {
                     }
                 }
                 ForEach(calendarMonth.date.displayNextMonthArray, id: \.self) { date in
-                    if let workoutDay = workoutDays.first(where: { workoutDay in
-                        workoutDay.createdAt.zeroClock == date.zeroClock
-                    }) {
+                    if let workoutDay = viewModel.workoutDay(for: date, from: workoutDays) {
                         CalendarItemView(selectedDate: $selectedDate,
                                          date: date,
                                          workoutDay: workoutDay,
@@ -250,7 +256,7 @@ extension CalendarView {
                         spacing: 4
                     ) {
                         if let workoutDay {
-                            ForEach(workoutDay.workouts.prefix(2), id: \.id) { workout in
+                            ForEach(workoutDay.workouts.prefix(4), id: \.id) { workout in
                                 ZStack {
                                     Circle()
                                         .fill(workout.exercise.parts.color.opacity(0.5))
@@ -283,18 +289,13 @@ extension CalendarView {
     }
 }
 
-extension CalendarView {
-    struct DailyWorkoutListView: View {
-        var body: some View {
-            VStack(spacing: 0) {
-                EmptyView()
-            }
-        }
-    }
-}
-
 #Preview {
-    CalendarView(viewModel: CalendarViewModel(), workoutDays: [
+    @Previewable @State var selectedDate: Date? = Date()
+    @Previewable @FocusState var focusedField: FocusField?
+    CalendarView(viewModel: CalendarViewModel(),
+                 selectedDate: $selectedDate,
+                 focusedField: $focusedField,
+                 workoutDays: [
         .init(createdAt: DateComponents(calendar: .appCalendar,
                                         year: Date().year,
                                         month: Date().month,

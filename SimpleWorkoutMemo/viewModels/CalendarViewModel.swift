@@ -23,4 +23,34 @@ class CalendarViewModel {
             )
         }
     }
+    
+    func workoutDay(for date: Date, from workoutDays: [WorkoutDay]) -> WorkoutDay? {
+        if let workoutDay = workoutDays.first(where: { workoutDay in
+            workoutDay.createdAt.zeroClock == date.zeroClock
+        }) {
+            return workoutDay
+        } else {
+            return nil
+        }
+    }
+    
+    func lastMonthCalendarMonth(for date: Date) -> CalendarMonth {
+        let calendarMonth = calendars.first(where: { calendarMonth in
+            calendarMonth.date.onlyYearAndMonth == date
+        })
+        return calendarMonth!
+    }
+    
+    func nextMonthCalendarMonth(for date: Date) -> CalendarMonth {
+        let calendarMonth = calendars.first(where: { calendarMonth in
+            calendarMonth.date.onlyYearAndMonth == date.addMonth(1).onlyYearAndMonth
+        })
+        return calendarMonth!
+    }
+    
+    func currentPositionDate(for id: String?) -> Date {
+        return calendars.first { calendarMonth in
+            calendarMonth.id == id
+        }!.date
+    }
 }

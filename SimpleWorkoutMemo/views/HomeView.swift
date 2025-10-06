@@ -17,6 +17,7 @@ struct HomeView: View {
     @State private var isShowSetting: Bool = false
     @State private var updateWorkoutDay: WorkoutDay?
     @State private var isInitialized = false
+    @State private var selectedDate: Date?
     @FocusState private var focusedField: FocusField?
     
     @Query private var workoutDays: [WorkoutDay]
@@ -29,12 +30,7 @@ struct HomeView: View {
                     isShowSetting.toggle()
                 }
                 ScrollView {
-                    HStack {
-                        Text(DateFormatter.dateToString(Date()))
-                            .font(.regular(size: 18))
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 20)
+                    DateHeaderView(selectedDate: $selectedDate)
                     let workoutDays = workoutDays.filter { day in
                         day.createdAt.zeroClock == Date().zeroClock
                     }
@@ -58,7 +54,9 @@ struct HomeView: View {
                 }
             }
             if isInitialized {
-                MenuView(viewModel: viewModel)
+                MenuView(viewModel: viewModel,
+                         selectedDate: $selectedDate,
+                         focusedField: $focusedField)
                     .padding(.top, 12)
             }
         }
@@ -69,11 +67,6 @@ struct HomeView: View {
                 appStorageManager.isFirstTimeAppLaunch = false
             }
             isInitialized = true
-            if let todayWorkoutDay = workoutDays.first(where: { workoutDay in
-                workoutDay.createdAt.zeroClock == Date().zeroClock
-            }) {
-                viewModel.calculateTotalWeight(workoutDay: todayWorkoutDay)
-            }
         })
         .onTapGesture {
             focusedField = nil
@@ -91,6 +84,8 @@ extension HomeView {
         @Query private var exercises: [Exercise]
         @State var viewModel: HomeViewModel
         @State var isShowCalendar: Bool = false
+        @Binding var selectedDate: Date?
+        @FocusState.Binding var focusedField: FocusField?
     
         var body: some View {
             HStack(spacing: 20) {
@@ -136,7 +131,10 @@ extension HomeView {
             .padding(.trailing, 26)
             .padding(.bottom, 20)
             .sheet(isPresented: $isShowCalendar) {
-                CalendarView(viewModel: CalendarViewModel(), workoutDays: workoutDays)
+                CalendarView(viewModel: CalendarViewModel(),
+                             selectedDate: $selectedDate,
+                             focusedField: $focusedField,
+                             workoutDays: workoutDays)
             }
         }
     }

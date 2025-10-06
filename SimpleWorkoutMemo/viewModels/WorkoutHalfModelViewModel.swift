@@ -1,8 +1,8 @@
 //
-//  HomeViewModel.swift
+//  WorkoutHalfModelViewModel.swift
 //  SimpleWorkoutMemo
 //
-//  Created by 奥江英隆 on 2025/09/25.
+//  Created by 奥江英隆 on 2025/10/07.
 //
 
 import Foundation
@@ -11,15 +11,7 @@ import Observation
 import SwiftData
 
 @Observable
-class HomeViewModel {
-    
-    var workoutDays: [WorkoutDay] = []
-    var exercises: [Exercise] = []
-    
-    // error
-    var onFailureWorkoutUpdate: Bool = false
-    var onFailureExericesUpdate: Bool = false
-    var onFailureWorkoutSave: Bool = false
+class WorkoutHalfModelViewModel {
     
     private var workoutRepository: WorkoutRepository?
     private var exerciseRepository: ExerciseRepository?
@@ -35,12 +27,6 @@ class HomeViewModel {
         exerciseRepository = ExerciseRepositoryImpl(modelContext: modelContext!)
     }
     
-    func workoutDay(for date: Date) -> WorkoutDay? {
-        return workoutDays.first {
-            $0.createdAt.zeroClock == date.zeroClock
-        }
-    }
-    
     // MARK: - workout
     func save() {
         guard let workoutRepository else {
@@ -49,7 +35,7 @@ class HomeViewModel {
         do {
             try workoutRepository.save()
         } catch {
-            onFailureWorkoutSave.toggle()
+//            onFailureWorkoutSave.toggle()
         }
     }
     
@@ -76,11 +62,6 @@ class HomeViewModel {
         } catch {
             
         }
-    }
-    
-    func fetch(for date: Date? = nil) {
-        guard let workoutRepository else { return }
-        workoutDays = workoutRepository.fetch(for: date)
     }
     
     func delete(_ workoutDay: WorkoutDay) {
@@ -137,29 +118,5 @@ class HomeViewModel {
         } catch {
             
         }
-    }
-    
-    // MARK: - exercise
-    func saveDefaultExercise() {
-        guard let exerciseRepository else { return }
-        exerciseRepository.saveDefaultExercise()
-    }
-    
-    func save(_ exercise: Exercise) {
-        guard let exerciseRepository else { return }
-        exerciseRepository.save(exercise)
-    }
-    
-    func update(_ exercise: Exercise) throws {
-        guard let exerciseRepository else { return }
-        do {
-            try exerciseRepository.update(exercise)
-        } catch {
-            onFailureExericesUpdate.toggle()
-        }
-    }
-    
-    func delete(_ exercise: Exercise) {
-        
     }
 }
