@@ -10,10 +10,11 @@ import SwiftData
 import SwiftUI
 
 protocol ExerciseRepository {
-    func saveDefaultExercise()
-    func save(_ exercise: Exercise)
+    func saveDefaultExercise() throws
+    func save() throws
+    func insert(_ exercise: Exercise) throws
     func update(_ exercise: Exercise) throws
-    func delete(_ exercise: Exercise)
+    func delete(_ exercise: Exercise) throws
 }
 
 class ExerciseRepositoryImpl: ExerciseRepository {
@@ -26,22 +27,28 @@ class ExerciseRepositoryImpl: ExerciseRepository {
         self.modelContext = modelContext
     }
     
-    func saveDefaultExercise() {
-        Exercise.defaultExercises.forEach { exercise in
-            save(exercise)
+    func saveDefaultExercise() throws {
+        try Exercise.defaultExercises.forEach { exercise in
+            try insert(exercise)
         }
     }
     
-    func save(_ exercise: Exercise) {
+    func save() throws {
+        try modelContext.save()
+    }
+    
+    func insert(_ exercise: Exercise) throws {
         modelContext.insert(exercise)
+        try save()
     }
     
     func update(_ exercise: Exercise) throws {
         try modelContext.save()
     }
     
-    func delete(_ exercise: Exercise) {
+    func delete(_ exercise: Exercise) throws {
         modelContext.delete(exercise)
+        try save()
     }
 }
 
@@ -53,13 +60,17 @@ class ExerciseRepositoryMock: ExerciseRepository {
         self.modelContext = modelContext
     }
     
-    func saveDefaultExercise() {
-        Exercise.defaultExercises.forEach { exercise in
-            save(exercise)
+    func saveDefaultExercise() throws {
+        try Exercise.defaultExercises.forEach { exercise in
+            try insert(exercise)
         }
     }
     
-    func save(_ exercise: Exercise) {
+    func save() throws {
+        
+    }
+    
+    func insert(_ exercise: Exercise) throws {
         
     }
     

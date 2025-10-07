@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CalendarView: View {
     @Environment(\.dismiss) var dismiss
+    @Query private var workoutDays: [WorkoutDay]
     @State var viewModel: CalendarViewModel
     @Binding var selectedDate: Date?
     @FocusState.Binding var focusedField: FocusField?
@@ -17,12 +19,11 @@ struct CalendarView: View {
     @State private var scrollPosition: String?
     @State private var isShowSheet: Bool = false
     
-    let workoutDays: [WorkoutDay]
-    
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(title: "Calendar",
-                       imageResource: .icWorkoutClose) {
+                       imageResource: .icWorkoutClose,
+                       isFromHome: false) { _ in 
                 dismiss()
             }
                        .padding(.vertical, 12)
@@ -38,7 +39,6 @@ struct CalendarView: View {
                             ForEach(viewModel.calendars, id: \.id) { calendarMonth in
                                 MonthView(selectedDate: $selectedDate,
                                           viewModel: viewModel,
-                                          workoutDays: workoutDays,
                                           calendarMonth: calendarMonth)
                             }
                         }
@@ -170,9 +170,8 @@ extension CalendarView {
     struct MonthView: View {
         
         @Binding var selectedDate: Date?
-        
+        @Query private var workoutDays: [WorkoutDay]
         let viewModel: CalendarViewModel
-        let workoutDays: [WorkoutDay]
         let calendarMonth: CalendarMonth
         
         var body: some View {
@@ -232,7 +231,7 @@ extension CalendarView {
     struct CalendarItemView: View {
         @Binding var selectedDate: Date?
         
-        private static let maxWorkoutCount: Int = 2
+        private static let maxWorkoutCount: Int = 4
         
         let date: Date
         let workoutDay: WorkoutDay?
@@ -257,13 +256,15 @@ extension CalendarView {
                     ) {
                         if let workoutDay {
                             ForEach(workoutDay.workouts.prefix(4), id: \.id) { workout in
-                                ZStack {
-                                    Circle()
-                                        .fill(workout.exercise.parts.color.opacity(0.5))
-                                        .frame(width: 24, height: 24)
-                                    Text(workout.exercise.parts.title)
-                                        .foregroundStyle(.white)
-                                        .font(.semiBold(size: 10))
+                                if let exercise = workout.exercise {
+                                    ZStack {
+                                        Circle()
+                                            .fill(exercise.parts.color.opacity(0.5))
+                                            .frame(width: 24, height: 24)
+                                        Text(exercise.parts.title)
+                                            .foregroundStyle(.white)
+                                            .font(.semiBold(size: 10))
+                                    }
                                 }
                             }
                         } else {
@@ -294,75 +295,7 @@ extension CalendarView {
     @Previewable @FocusState var focusedField: FocusField?
     CalendarView(viewModel: CalendarViewModel(),
                  selectedDate: $selectedDate,
-                 focusedField: $focusedField,
-                 workoutDays: [
-        .init(createdAt: DateComponents(calendar: .appCalendar,
-                                        year: Date().year,
-                                        month: Date().month,
-                                        day: Date().day).date!.addAndSubtractDay(-4),
-              workouts: [
-                .init(exercise: .init(parts: .legs,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "スクワット")),
-                .init(exercise: .init(parts: .legs,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "レッグプレス")),
-                .init(exercise: .init(parts: .legs,
-                                      workoutType: .machine,
-                                      exerciseName: "ルーマニアンデッドリフト"))
-              ]),
-        .init(createdAt: DateComponents(calendar: .appCalendar,
-                                        year: Date().year,
-                                        month: Date().month,
-                                        day: Date().day).date!.addAndSubtractDay(28),
-              workouts: [
-                .init(exercise: .init(parts: .biceps,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ダンベルカール")),
-                .init(exercise: .init(parts: .biceps,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ハンマーカール"))
-              ]),
-        .init(createdAt: Date(),
-              workouts: [
-                .init(exercise: .init(parts: .chest,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ダンベルプレス")),
-                .init(exercise: .init(parts: .chest,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ダンベルフライ"))
-              ]),
-        .init(createdAt: Date().addMonth(2),
-              workouts: [
-                .init(exercise: .init(parts: .chest,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ダンベルプレス")),
-                .init(exercise: .init(parts: .chest,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ダンベルフライ"))
-              ]),
-        .init(createdAt: Date().addAndSubtractDay(1),
-              workouts: [
-                .init(exercise: .init(parts: .back,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "デッドリフト")),
-                .init(exercise: .init(parts: .back,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "チンニング")),
-                .init(exercise: .init(parts: .back,
-                                      workoutType: .machine,
-                                      exerciseName: "ラットプルダウン")),
-                .init(exercise: .init(parts: .back,
-                                      workoutType: .machine,
-                                      exerciseName: "ラットプルダウン")),
-                .init(exercise: .init(parts: .back,
-                                      workoutType: .machine,
-                                      exerciseName: "ラットプルダウン")),
-                .init(exercise: .init(parts: .back,
-                                      workoutType: .machine,
-                                      exerciseName: "ラットプルダウン"))
-              ])
-    ])
+                 focusedField: $focusedField)
 }
 
 #Preview("itemView", body: {

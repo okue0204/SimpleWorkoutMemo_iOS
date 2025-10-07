@@ -15,6 +15,9 @@ class Exercise: Identifiable {
     var workoutType: WorkoutType
     var exerciseName: String
     
+    @Relationship(deleteRule: .cascade, inverse: \Workout.exercise)
+    var workouts: [Workout] = []
+    
     init(id: String = UUID().uuidString, parts: Parts, workoutType: WorkoutType, exerciseName: String) {
         self.id = id
         self.parts = parts

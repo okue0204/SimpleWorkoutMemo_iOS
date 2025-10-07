@@ -23,29 +23,31 @@ struct WorkoutItemView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    ZStack {
-                        Circle().fill(workout.exercise.parts.color.opacity(0.6))
-                            .frame(width: 50, height: 50)
-                        Text(workout.exercise.parts.title)
-                            .font(.medium(size: 16))
-                    }
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(workout.exercise.exerciseName)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(workout.exercise.parts.color.opacity(0.2))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .font(.medium(size: 12))
-                            .foregroundStyle(workout.exercise.parts.color)
-                        HStack(spacing: 12) {
-                            Text("\(workout.workoutSetInfo.count)セット : \(workout.totalRep)回")
-                                .font(.regular(size: 12))
-                            Text("重量 : \(workout.totalWeight)kg")
-                                .font(.regular(size: 12))
+                    if let exercise = workout.exercise {
+                        ZStack {
+                            Circle().fill(exercise.parts.color.opacity(0.6))
+                                .frame(width: 50, height: 50)
+                            Text(exercise.parts.title)
+                                .font(.medium(size: 16))
                         }
-                        .padding(.leading, 8)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(exercise.exerciseName)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(exercise.parts.color.opacity(0.2))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .font(.medium(size: 12))
+                                .foregroundStyle(exercise.parts.color)
+                            HStack(spacing: 12) {
+                                Text("\(workout.workoutSetInfo.count)セット : \(workout.totalRep)回")
+                                    .font(.regular(size: 12))
+                                Text("重量 : \(workout.totalWeight)kg")
+                                    .font(.regular(size: 12))
+                            }
+                            .padding(.leading, 8)
+                        }
+                        .padding(.leading, 12)
                     }
-                    .padding(.leading, 12)
                 }
                 .padding(.vertical, 12)
                 .padding(.leading, 12)

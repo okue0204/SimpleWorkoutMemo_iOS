@@ -12,7 +12,6 @@ import SwiftUI
 protocol WorkoutRepository {
     func save() throws
     func insert(_ workouts: WorkoutDay) throws
-    func fetch(for date: Date?) -> [WorkoutDay]
     func delete(_ workouts: WorkoutDay) throws
     func delete(_ workout: Workout) throws
     func delete(_ workoutSetInfo: WorkoutSetInfo) throws
@@ -35,10 +34,6 @@ class WorkoutRepositoryImpl: WorkoutRepository {
     func insert(_ workoutDay: WorkoutDay) throws {
         modelContext.insert(workoutDay)
         try save()
-    }
-    
-    func fetch(for date: Date?) -> [WorkoutDay] {
-        workoutDays
     }
     
     func delete(_ workoutDay: WorkoutDay) throws {
@@ -71,156 +66,6 @@ class WorkoutRepositoryMock: WorkoutRepository {
     
     func insert(_ workouts: WorkoutDay) throws {
         
-    }
-    
-    func fetch(for date: Date?) -> [WorkoutDay] {
-        [
-            .init(createdAt: Date().zeroClock, workouts:
-                    [
-                        .init(exercise: .init(parts: .chest,
-                                              workoutType: .freeWeight,
-                                              exerciseName: "ダンベルプレス"),
-                              workoutSetInfo: [
-                                .init(weight: "30", rep: "10",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルプレス"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "8",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルプレス"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "6",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルプレス"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルプレス"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルプレス"),
-                                                     workoutSetInfo: []))
-                              ]),
-                        .init(exercise: .init(parts: .chest,
-                                              workoutType: .freeWeight,
-                                              exerciseName: "ダンベルフライ"),
-                              workoutSetInfo: [
-                                .init(weight: "30", rep: "10",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルフライ"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "8",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルフライ"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "6",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルフライ"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルフライ"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルフライ"),
-                                                     workoutSetInfo: []))
-                              ]),
-                        .init(exercise: .init(parts: .chest,
-                                              workoutType: .machine,
-                                              exerciseName: "ペックフライ"),
-                              workoutSetInfo: [
-                                .init(weight: "30", rep: "10",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ペックフライ"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "8",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ペックフライ"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "6",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルプレス"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ペックフライ"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ペックフライ"),
-                                                     workoutSetInfo: []))
-                              ]),
-                        .init(exercise: .init(parts: .back,
-                                              workoutType: .freeWeight,
-                                              exerciseName: "チンニング"),
-                              workoutSetInfo: [
-                                .init(weight: "30", rep: "10",
-                                      workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "8",
-                                      workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "6",
-                                      workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                                     workoutSetInfo: [])),
-                                .init(weight: "30", rep: "4",
-                                      workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                                     workoutSetInfo: []))
-                              ]),
-                    ]),
-            .init(createdAt: Date().addAndSubtractDay(1), workouts: [
-                .init(exercise: .init(parts: .shoulders,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ダンベルショルダープレス"),
-                      workoutSetInfo: [
-                        .init(weight: "30", rep: "10",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "8",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "6",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "4",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "4",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: []))
-                      ]),
-                .init(exercise: .init(parts: .shoulders,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ラテラルレイズ"),
-                      workoutSetInfo: [
-                        .init(weight: "30", rep: "10",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "8",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "6",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "4",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "4",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: []))
-                      ]),
-                .init(exercise: .init(parts: .shoulders,
-                                      workoutType: .freeWeight,
-                                      exerciseName: "ライイングリアレイズ"),
-                      workoutSetInfo: [
-                        .init(weight: "30", rep: "10",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "8",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "6",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "4",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: [])),
-                        .init(weight: "30", rep: "4",
-                              workout: .init(exercise: .init(parts: .back, workoutType: .freeWeight, exerciseName: "チンニング"),
-                                             workoutSetInfo: []))
-                      ]),
-            ])
-        ]
     }
     
     func delete(_ workouts: WorkoutDay) throws {

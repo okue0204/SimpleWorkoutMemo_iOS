@@ -11,7 +11,7 @@ import SwiftData
 @Model
 class Workout: Identifiable, ObservableObject {
     @Attribute(.unique) var id: String = UUID().uuidString
-    var exercise: Exercise
+    @Relationship var exercise: Exercise?
     @Relationship(deleteRule: .cascade, inverse: \WorkoutSetInfo.workout)
     var workoutSetInfo: [WorkoutSetInfo] = []
     

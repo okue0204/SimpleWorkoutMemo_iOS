@@ -13,8 +13,8 @@ import SwiftData
 @Observable
 class HomeViewModel {
     
-    var workoutDays: [WorkoutDay] = []
-    var exercises: [Exercise] = []
+    var todayWorkoutDay: WorkoutDay?
+    var filteredExercises: [Exercise] = []
     
     // error
     var onFailureWorkoutUpdate: Bool = false
@@ -33,12 +33,6 @@ class HomeViewModel {
     func setup() {
         workoutRepository = WorkoutRepositoryImpl(modelContext: modelContext!)
         exerciseRepository = ExerciseRepositoryImpl(modelContext: modelContext!)
-    }
-    
-    func workoutDay(for date: Date) -> WorkoutDay? {
-        return workoutDays.first {
-            $0.createdAt.zeroClock == date.zeroClock
-        }
     }
     
     // MARK: - workout
@@ -78,12 +72,14 @@ class HomeViewModel {
         }
     }
     
-    func fetch(for date: Date? = nil) {
-        guard let workoutRepository else { return }
-        workoutDays = workoutRepository.fetch(for: date)
+    func setTodayWorkout(workoutDays: [WorkoutDay]) {
+        let workoutDay = workoutDays.first { workoutDay in
+            workoutDay.createdAt.zeroClock == Date().zeroClock
+        }
+        todayWorkoutDay = workoutDay
     }
     
-    func delete(_ workoutDay: WorkoutDay) {
+    func delete(for workoutDay: WorkoutDay) {
         guard let workoutRepository else { return }
         do {
             try workoutRepository.delete(workoutDay)
@@ -92,7 +88,7 @@ class HomeViewModel {
         }
     }
     
-    func addWorkout(_ workoutDays: [WorkoutDay], exercise: Exercise, date: Date = Date()) {
+    func addWorkout(_ workoutDays: [WorkoutDay], exercise: Exercise) {
         if let todayWorkoutDay = workoutDays.first(where: { workoutDay in
             workoutDay.createdAt.zeroClock == Date().zeroClock
         }) {
@@ -101,19 +97,23 @@ class HomeViewModel {
             let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: newWorkout)
             newWorkout.workoutSetInfo.append(setInfo)
             save()
+            setTodayWorkout(workoutDays: workoutDays)
         } else {
             let newWorkout = Workout(exercise: exercise)
             let newWorkoutDay = WorkoutDay(createdAt: Date(), workouts: [newWorkout])
             let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: newWorkout)
             newWorkout.workoutSetInfo.append(setInfo)
             insert(newWorkoutDay)
+            todayWorkoutDay = newWorkoutDay
         }
     }
     
     func removeWorkout(_ workoutDay: WorkoutDay, at index: Int) {
+        guard let workoutRepository else { return }
         do {
             let removeWorkout = workoutDay.workouts[index]
-            try workoutRepository?.delete(removeWorkout)
+            workoutDay.workouts.remove(at: index)
+            try workoutRepository.delete(removeWorkout)
         } catch {
             
         }
@@ -142,12 +142,20 @@ class HomeViewModel {
     // MARK: - exercise
     func saveDefaultExercise() {
         guard let exerciseRepository else { return }
-        exerciseRepository.saveDefaultExercise()
+        do {
+            try exerciseRepository.saveDefaultExercise()
+        } catch {
+            
+        }
     }
     
     func save(_ exercise: Exercise) {
         guard let exerciseRepository else { return }
-        exerciseRepository.save(exercise)
+        do {
+            try exerciseRepository.save()
+        } catch {
+            
+        }
     }
     
     func update(_ exercise: Exercise) throws {
@@ -159,7 +167,16 @@ class HomeViewModel {
         }
     }
     
-    func delete(_ exercise: Exercise) {
-        
+    func filter(for exercises: [Exercise]) {
+        if let todayWorkoutDay {
+            let exercises = exercises.filter { exercise in
+                !todayWorkoutDay.workouts.contains { workout in
+                    workout.exercise?.id == exercise.id
+                }
+            }
+            filteredExercises = exercises
+        } else {
+            filteredExercises = exercises
+        }
     }
 }

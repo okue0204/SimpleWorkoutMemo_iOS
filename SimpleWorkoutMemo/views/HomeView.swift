@@ -12,6 +12,7 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var appStorageManager: AppStorageManager
     @State var viewModel: HomeViewModel
+    @State var headerAction: HeaderAction?
     @State private var isShowSelectedWorkoutMenu: Bool = false
     @State private var isShowAddWorkoutMenu: Bool = false
     @State private var isShowSetting: Bool = false
@@ -21,13 +22,15 @@ struct HomeView: View {
     @FocusState private var focusedField: FocusField?
     
     @Query private var workoutDays: [WorkoutDay]
+    @Query private var exercise: [Exercise]
     
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
                 HeaderView(title: "Today's Workout Memory",
-                           imageResource: .icWorkoutSetting) {
-                    isShowSetting.toggle()
+                           imageResource: .icWorkoutMore,
+                           isFromHome: true) { type in
+                    headerAction = type
                 }
                 ScrollView {
                     DateHeaderView(selectedDate: $selectedDate)
@@ -46,6 +49,8 @@ struct HomeView: View {
                             } onDeleteWorkout: { workout in
                                 let index = workoutDay.workouts.firstIndex(of: workout)!
                                 viewModel.removeWorkout(workoutDay, at: index)
+                                viewModel.setTodayWorkout(workoutDays: workoutDays)
+                                viewModel.filter(for: exercise)
                             }
                             .padding(.vertical, 6)
                         }
@@ -54,9 +59,9 @@ struct HomeView: View {
                 }
             }
             if isInitialized {
-                MenuView(viewModel: viewModel,
-                         selectedDate: $selectedDate,
-                         focusedField: $focusedField)
+                WorkoutAddMenuView(viewModel: viewModel,
+                                   selectedDate: $selectedDate,
+                                   focusedField: $focusedField)
                     .padding(.top, 12)
             }
         }
@@ -71,70 +76,14 @@ struct HomeView: View {
         .onTapGesture {
             focusedField = nil
         }
-        .sheet(isPresented: $isShowSelectedWorkoutMenu) {
-            SelectWorkoutMenuView()
-        }
-    }
-}
-
-// MARK: - Extension HomeView
-extension HomeView {
-    struct MenuView: View {
-        @Query private var workoutDays: [WorkoutDay]
-        @Query private var exercises: [Exercise]
-        @State var viewModel: HomeViewModel
-        @State var isShowCalendar: Bool = false
-        @Binding var selectedDate: Date?
-        @FocusState.Binding var focusedField: FocusField?
-    
-        var body: some View {
-            HStack(spacing: 20) {
-                Spacer()
-                Button(action: {
-                    isShowCalendar.toggle()
-                }) {
-                    ZStack {
-                        Circle()
-                            .fill(Color(.systemGray5))
-                            .frame(width: 60, height: 60)
-                        Image(.icWorkoutCalendar)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.blue)
-                    }
+        .sheet(item: $headerAction) { item in
+            switch item {
+            case HeaderAction.app:
+                SettingView()
+            case HeaderAction.workout:
+                WorkoutListView(viewModel: WorkoutListViewModel()) {
+                    viewModel.filter(for: exercise)
                 }
-                Menu {
-                    ForEach(Parts.allCases.reversed(), id: \.self) { part in
-                        let exercises = exercises.filter { $0.parts == part }
-                        if !exercises.isEmpty {
-                            Menu(part.title) {
-                                ForEach(exercises, id: \.id) { exercise in
-                                    Button(exercise.exerciseName) {
-                                        viewModel.addWorkout(workoutDays, exercise: exercise)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } label: {
-                    ZStack {
-                        Circle()
-                            .fill(Color(.systemGray5))
-                            .frame(width: 60, height: 60)
-                        Image(.icWorkoutAdd)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.blue)
-                    }
-                }
-            }
-            .padding(.trailing, 26)
-            .padding(.bottom, 20)
-            .sheet(isPresented: $isShowCalendar) {
-                CalendarView(viewModel: CalendarViewModel(),
-                             selectedDate: $selectedDate,
-                             focusedField: $focusedField,
-                             workoutDays: workoutDays)
             }
         }
     }
@@ -142,6 +91,6 @@ extension HomeView {
 
 // MARK: - Preview
 #Preview {
-    HomeView(viewModel: HomeViewModel())
+    HomeView(viewModel: HomeViewModel(), headerAction: .app)
         .environmentObject(AppStorageManager.shared)
 }
