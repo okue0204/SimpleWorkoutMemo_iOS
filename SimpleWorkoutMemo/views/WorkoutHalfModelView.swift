@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WorkoutHalfModelView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) var dismiss
     @State var viewModel: WorkoutHalfModelViewModel
     @Binding var selectedDate: Date?
     @FocusState private var focusedField: FocusField?
@@ -18,15 +19,19 @@ struct WorkoutHalfModelView: View {
     var body: some View {
         VStack(spacing: 0) {
             DateHeaderView(selectedDate: $selectedDate)
+                .frame(maxWidth: .infinity)
             ScrollView {
                 ForEach(workoutDay.workouts, id: \.id) { workout in
                     WorkoutItemView(focusedField: $focusedField,
                                     workout: workout) {
-                        viewModel.addSetInfo(workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
+                        viewModel.addSetInfo(workoutDay,
+                                             at: workoutDay.workouts.firstIndex(of: workout)!)
                     } onRemoveSetInfo: { _ in
-                        viewModel.removeSetInfo(workoutDay: workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
+                        viewModel.removeSetInfo(workoutDay: workoutDay,
+                                                at: workoutDay.workouts.firstIndex(of: workout)!)
                     } onUpdateWorkoutSetInfo: { workoutSetInfo in
-                        viewModel.update(workout: workout, with: workoutSetInfo, at: workoutDay.workouts.firstIndex(of: workout)!)
+                        viewModel.update(workout: workout, with: workoutSetInfo,
+                                         at: workoutDay.workouts.firstIndex(of: workout)!)
                     } onDeleteWorkout: { workout in
                         let index = workoutDay.workouts.firstIndex(of: workout)!
                         viewModel.removeWorkout(workoutDay, at: index)

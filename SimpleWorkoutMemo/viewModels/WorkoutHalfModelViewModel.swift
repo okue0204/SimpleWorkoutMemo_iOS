@@ -92,9 +92,11 @@ class WorkoutHalfModelViewModel {
     }
     
     func removeWorkout(_ workoutDay: WorkoutDay, at index: Int) {
+        guard let workoutRepository else { return }
         do {
             let removeWorkout = workoutDay.workouts[index]
-            try workoutRepository?.delete(removeWorkout)
+            workoutDay.workouts.remove(at: index)
+            try workoutRepository.delete(removeWorkout)
         } catch {
             
         }

@@ -80,7 +80,9 @@ struct WorkoutAddMenuView: View {
             viewModel.setTodayWorkout(workoutDays: workoutDays)
             viewModel.filter(for: exercises)
         })
-        .sheet(isPresented: $isShowCalendar) {
+        .sheet(isPresented: $isShowCalendar, onDismiss: {
+            viewModel.filter(for: exercises)
+        }) {
             CalendarView(viewModel: CalendarViewModel(),
                          selectedDate: $selectedDate,
                          focusedField: $focusedField)
