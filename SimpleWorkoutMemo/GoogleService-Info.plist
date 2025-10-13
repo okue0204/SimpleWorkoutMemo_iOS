@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBGzZmM108qRcz6860_5XlWOQSuv_D5SHg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>966332568907</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>okue.SimpleWorkoutMemo</string>
+	<key>PROJECT_ID</key>
+	<string>simpleworkoutmemo-ios</string>
+	<key>STORAGE_BUCKET</key>
+	<string>simpleworkoutmemo-ios.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:966332568907:ios:3af8c30c5a8daf3cc9c4ce</string>
+</dict>
+</plist>
