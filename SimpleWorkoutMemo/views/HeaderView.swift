@@ -41,9 +41,10 @@ struct HeaderView: View {
                         }) {
                             HStack {
                                 Text(HeaderAction.workout.title)
-                                Image(.icWorkoutAdd)
+                                Image(.icWorkoutWorkout)
                                     .resizable()
                                     .frame(width: 12, height: 12)
+                                    .foregroundStyle(.white)
                             }
                         }
                     } label: {

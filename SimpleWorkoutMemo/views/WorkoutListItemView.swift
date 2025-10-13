@@ -17,35 +17,29 @@ struct WorkoutListItemView: View {
     
     var body: some View {
         HStack {
-            Button(action: {
-                
-            }) {
-                HStack {
-                    Text(exercise.exerciseName)
-                        .font(.regular(size: 16))
-                        .foregroundStyle(.white)
-                    Spacer()
-                    Menu {
-                        Button(action: {
-                            // ハーフモーダル出して編集画面に遷移
-                            selectedExerciseId = .init(id: exercise.id)
-                        }) {
-                            Label("編集", systemImage: "edit")
-                        }
-                        Button(role: .destructive) {
-                            isShowDeleteExerciseAlert.toggle()
-                        } label: {
-                            Label("種目の削除", systemImage: "trash")
-                        }
-                    } label: {
-                        Image(.icWorkoutMore)
-                            .resizable()
-                            .frame(width: 16, height: 16)
-                            .foregroundStyle(.gray)
-                    }
-
+            Text(exercise.exerciseName)
+                .font(.regular(size: 16))
+                .foregroundStyle(.white)
+            Spacer()
+            Menu {
+                Button(action: {
+                    // ハーフモーダル出して編集画面に遷移
+                    selectedExerciseId = .init(id: exercise.id)
+                }) {
+                    Label("編集", systemImage: "edit")
                 }
+                Button(role: .destructive) {
+                    isShowDeleteExerciseAlert.toggle()
+                } label: {
+                    Label("種目の削除", systemImage: "trash")
+                }
+            } label: {
+                Image(.icWorkoutMore)
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                    .foregroundStyle(.gray)
             }
+
         }
         .padding(.horizontal, 20)
         .alert("本当に削除しますか？", isPresented: $isShowDeleteExerciseAlert) {

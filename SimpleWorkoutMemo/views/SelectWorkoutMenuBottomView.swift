@@ -55,6 +55,7 @@ struct SelectWorkoutMenuBottomView: View {
             }
             .padding(.trailing, 20)
         }
+        .padding(.bottom, 6)
         .alert("種目名を入力して下さい。",  isPresented: $isShowAddExerciseAlert) {}
     }
 }
