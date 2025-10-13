@@ -42,6 +42,7 @@ struct WorkoutSettingHalfModelView: View {
                                                      name: text,
                                                      workoutType: selectedWorkoutType ?? exercise.workoutType)
                             dismiss()
+                            AnalyticsManager.logEvent(.editWorkout)
                         }
                     }) {
                         Text("完了")

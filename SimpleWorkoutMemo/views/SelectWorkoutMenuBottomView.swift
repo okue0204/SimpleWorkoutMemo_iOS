@@ -35,6 +35,7 @@ struct SelectWorkoutMenuBottomView: View {
                                                             exerciseName: _text.wrappedValue))
                                 text = ""
                                 onUpdateExercise?()
+                                AnalyticsManager.logEvent(.addWorkout)
                             } else {
                                 isShowAddExerciseAlert.toggle()
                             }

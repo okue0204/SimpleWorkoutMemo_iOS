@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3C79A4632E9D9DED00E3C058 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3C79A4622E9D9DED00E3C058 /* FirebaseCore */; };
+		3C79A4692E9D9FF800E3C058 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3C79A4682E9D9FF800E3C058 /* FirebaseAnalytics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C79A4692E9D9FF800E3C058 /* FirebaseAnalytics in Frameworks */,
 				3C79A4632E9D9DED00E3C058 /* FirebaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +94,7 @@
 			name = SimpleWorkoutMemo;
 			packageProductDependencies = (
 				3C79A4622E9D9DED00E3C058 /* FirebaseCore */,
+				3C79A4682E9D9FF800E3C058 /* FirebaseAnalytics */,
 			);
 			productName = SimpleWorkoutMemo;
 			productReference = 3C6A83CB2E7E534000488359 /* SimpleWorkoutMemo.app */;
@@ -395,6 +398,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3C79A4602E9D9DC000E3C058 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		3C79A4682E9D9FF800E3C058 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3C79A4602E9D9DC000E3C058 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

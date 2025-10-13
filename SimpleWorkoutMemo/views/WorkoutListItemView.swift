@@ -47,6 +47,7 @@ struct WorkoutListItemView: View {
             Button("削除する", role: .destructive) {
                 viewModel.delete(exercise)
                 onUpdateExercise?()
+                AnalyticsManager.logEvent(.removeWorkout)
             }
         } message: {
             Text("登録されているトレーニングも削除されます。")

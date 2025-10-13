@@ -88,6 +88,7 @@ struct WorkoutAddMenuView: View {
         .padding(.trailing, 26)
         .padding(.bottom, 20)
         .onAppear(perform: {
+            AnalyticsManager.logEvent(.addWorkout)
             viewModel.setTodayWorkout(workoutDays: workoutDays)
             viewModel.filter(for: exercises)
         })

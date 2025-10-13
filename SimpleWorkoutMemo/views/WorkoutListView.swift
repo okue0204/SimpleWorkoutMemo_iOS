@@ -89,6 +89,7 @@ struct WorkoutListView: View {
         }
         .background(Color(.systemGray6))
         .onAppear {
+            AnalyticsManager.logEvent(.showWorkoutList)
             selectedParts = .chest
             viewModel.setContext(context: modelContext)
         }

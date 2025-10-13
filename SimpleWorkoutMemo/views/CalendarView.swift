@@ -59,6 +59,7 @@ struct CalendarView: View {
         .background(.black)
         .ignoresSafeArea()
         .onAppear {
+            AnalyticsManager.logEvent(.showCalendar)
             viewModel.createCalendarMonth()
         }
         .onChange(of: selectedDate, { oldValue, newValue in
