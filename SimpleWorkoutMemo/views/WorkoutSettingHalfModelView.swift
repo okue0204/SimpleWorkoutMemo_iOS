@@ -82,7 +82,7 @@ struct WorkoutSettingHalfModelView: View {
                         }
                     }
                 }
-            HStack(spacing: 20) {
+            HStack(spacing: 0) {
                 Spacer()
                 Button(action: {
                     selectedWorkoutType = .freeWeight
@@ -95,7 +95,7 @@ struct WorkoutSettingHalfModelView: View {
                             .foregroundStyle(.white)
                         Text("フリーウェイト")
                             .foregroundStyle(.white)
-                            .font(.regular(size: 16))
+                            .font(.regular(size: 12))
                     }
                 }
                 .padding(.vertical, 12)
@@ -119,7 +119,7 @@ struct WorkoutSettingHalfModelView: View {
                             .foregroundStyle(.white)
                         Text("マシン")
                             .foregroundStyle(.white)
-                            .font(.regular(size: 16))
+                            .font(.regular(size: 12))
                     }
                 }
                 .padding(.vertical, 12)
@@ -130,6 +130,30 @@ struct WorkoutSettingHalfModelView: View {
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(lineWidth: 2)
                         .fill(selectedWorkoutType == .machine ? Color.yellow : Color.clear)
+                }
+                Spacer()
+                Button(action: {
+                    selectedWorkoutType = .bodyweight
+                }) {
+                    HStack {
+                        Image(selectedWorkoutType == .bodyweight ?
+                            .icWorkoutCheckCircle : .icWorkoutCircle)
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(.white)
+                        Text("自重")
+                            .foregroundStyle(.white)
+                            .font(.regular(size: 12))
+                    }
+                }
+                .padding(.vertical, 12)
+                .padding(.horizontal, 12)
+                .background(Color(.systemGray5))
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(lineWidth: 2)
+                        .fill(selectedWorkoutType == .bodyweight ? Color.yellow : Color.clear)
                 }
                 Spacer()
             }

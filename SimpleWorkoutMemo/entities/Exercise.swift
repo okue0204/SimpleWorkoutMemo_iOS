@@ -35,6 +35,7 @@ extension Exercise {
             .init(parts: .chest, workoutType: .freeWeight, exerciseName: "ダンベルフライ"),
             .init(parts: .chest, workoutType: .freeWeight, exerciseName: "インクラインダンベルフライ"),
             .init(parts: .chest, workoutType: .machine, exerciseName: "ペックフライ"),
+            .init(parts: .chest, workoutType: .bodyweight, exerciseName: "プッシュアップ"),
             .init(parts: .biceps, workoutType: .freeWeight, exerciseName: "ダンベルカール"),
             .init(parts: .biceps, workoutType: .freeWeight, exerciseName: "ハンマーカール"),
             .init(parts: .triceps, workoutType: .freeWeight, exerciseName: "ナローベンチプレス"),

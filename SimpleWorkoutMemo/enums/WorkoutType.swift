@@ -10,6 +10,7 @@ import Foundation
 enum WorkoutType: Int, Codable {
     case freeWeight = 0
     case machine
+    case bodyweight
     
     var title: String {
         switch self {
@@ -17,6 +18,8 @@ enum WorkoutType: Int, Codable {
             "free weight"
         case .machine:
             "machine"
+        case .bodyweight:
+            "bodyweight"
         }
     }
 }

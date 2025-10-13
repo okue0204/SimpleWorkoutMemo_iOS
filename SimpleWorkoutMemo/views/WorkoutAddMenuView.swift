@@ -37,11 +37,11 @@ struct WorkoutAddMenuView: View {
                     let exercises = viewModel.filteredExercises.filter { $0.parts == part }
                     if !exercises.isEmpty {
                         Menu(part.title) {
-                            Menu("フリーウェイト") {
-                                let freeWeightExercises = exercises.filter {
-                                    $0.workoutType == .freeWeight
+                            Menu("自重") {
+                                let machineWeightExercises = exercises.filter {
+                                    $0.workoutType == .bodyweight
                                 }
-                                ForEach(freeWeightExercises, id: \.id) { exercise in
+                                ForEach(machineWeightExercises, id: \.id) { exercise in
                                     Button(exercise.exerciseName) {
                                         viewModel.addWorkout(workoutDays, exercise: exercise)
                                         viewModel.filter(for: self.exercises)
@@ -53,6 +53,17 @@ struct WorkoutAddMenuView: View {
                                     $0.workoutType == .machine
                                 }
                                 ForEach(machineWeightExercises, id: \.id) { exercise in
+                                    Button(exercise.exerciseName) {
+                                        viewModel.addWorkout(workoutDays, exercise: exercise)
+                                        viewModel.filter(for: self.exercises)
+                                    }
+                                }
+                            }
+                            Menu("フリーウェイト") {
+                                let freeWeightExercises = exercises.filter {
+                                    $0.workoutType == .freeWeight
+                                }
+                                ForEach(freeWeightExercises, id: \.id) { exercise in
                                     Button(exercise.exerciseName) {
                                         viewModel.addWorkout(workoutDays, exercise: exercise)
                                         viewModel.filter(for: self.exercises)

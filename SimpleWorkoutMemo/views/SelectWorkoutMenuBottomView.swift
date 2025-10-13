@@ -31,7 +31,7 @@ struct SelectWorkoutMenuBottomView: View {
                         ToolbarKeyboardHiddenView(isFocused: $isFocused) {
                             if let selectedParts, !text.isEmpty {
                                 viewModel.addExercise(.init(parts: selectedParts,
-                                                            workoutType: .freeWeight,
+                                                            workoutType: selectedWorkoutType,
                                                             exerciseName: _text.wrappedValue))
                                 text = ""
                                 onUpdateExercise?()

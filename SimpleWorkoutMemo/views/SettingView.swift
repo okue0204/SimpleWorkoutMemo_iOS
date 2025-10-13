@@ -23,12 +23,17 @@ struct SettingView: View {
                    .padding(.vertical, 12)
         List {
             Section {
-                HStack {
-                    Text("バージョン")
+                Button {
+                    
+                } label: {
+                    Text("利用規約")
                         .foregroundStyle(.white)
                         .font(.regular(size: 16))
-                    Spacer()
-                    Text(EnvironmentConstant.appVersion)
+                }
+                Button {
+                    
+                } label: {
+                    Text("プライバシーポリシー")
                         .foregroundStyle(.white)
                         .font(.regular(size: 16))
                 }
@@ -36,7 +41,6 @@ struct SettingView: View {
                 Text("インフォメーション")
                     .font(.regular(size: 14))
             }
-
             Section {
                 Button {
                     isShowMail.toggle()
@@ -54,6 +58,20 @@ struct SettingView: View {
                 }
             } header: {
                 Text("フィードバック")
+                    .font(.regular(size: 14))
+            }
+            Section {
+                HStack {
+                    Text("バージョン")
+                        .foregroundStyle(.white)
+                        .font(.regular(size: 16))
+                    Spacer()
+                    Text(EnvironmentConstant.appVersion)
+                        .foregroundStyle(.white)
+                        .font(.regular(size: 16))
+                }
+            } header: {
+                Text("その他")
                     .font(.regular(size: 14))
             }
         }

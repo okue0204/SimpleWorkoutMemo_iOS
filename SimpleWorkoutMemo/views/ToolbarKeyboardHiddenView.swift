@@ -15,7 +15,7 @@ struct ToolbarKeyboardHiddenView: View {
     var body: some View {
         HStack {
             Spacer()
-            HStack {
+            HStack(spacing: 12) {
                 Button(action: {
                     isFocused = false
                     exerciseInsertHandler()
