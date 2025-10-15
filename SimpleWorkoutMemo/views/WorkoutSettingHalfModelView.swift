@@ -16,12 +16,16 @@ struct WorkoutSettingHalfModelView: View {
     @State var viewModel: WorkoutSettingHalfModelViewModel
     @State var text: String = ""
     @State var selectedWorkoutType: WorkoutType?
+    @State var selectedParts: Parts?
+    @State var isShowAddExerciseAlert: Bool = false
     let exerciseId: String?
+    let isEditWorkout: Bool?
+    var onUpdateExercise: (() -> Void)?
     
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 0) {
             ZStack {
-                HStack(alignment: .center, spacing: 0) {
+                HStack(spacing: 0) {
                     Button(action: {
                         dismiss()
                     }) {
@@ -34,18 +38,32 @@ struct WorkoutSettingHalfModelView: View {
                     .padding(.vertical, 6)
                     .background(Color(.systemGray5))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .padding(.leading, 12)
+                    .padding(.leading, 6)
                     Spacer()
                     Button(action: {
-                        if let exercise = viewModel.selectedExercise(exercises: exercises, for: exerciseId) {
-                            viewModel.updateExercise(exercise,
-                                                     name: text,
-                                                     workoutType: selectedWorkoutType ?? exercise.workoutType)
-                            dismiss()
-                            AnalyticsManager.logEvent(.editWorkout)
+                        if isEditWorkout == nil {
+                            if let selectedParts, let selectedWorkoutType, !text.isEmpty {
+                                viewModel.addExercise(.init(parts: selectedParts,
+                                                            workoutType: selectedWorkoutType,
+                                                            exerciseName: _text.wrappedValue))
+                                text = ""
+                                onUpdateExercise?()
+                                dismiss()
+                                AnalyticsManager.logEvent(.addWorkout)
+                            } else {
+                                isShowAddExerciseAlert.toggle()
+                            }
+                        } else {
+                            if let exercise = viewModel.selectedExercise(exercises: exercises, for: exerciseId) {
+                                viewModel.updateExercise(exercise,
+                                                         name: text,
+                                                         workoutType: selectedWorkoutType ?? exercise.workoutType)
+                                dismiss()
+                                AnalyticsManager.logEvent(.editWorkout)
+                            }
                         }
                     }) {
-                        Text("完了")
+                        Text(isEditWorkout != nil ? "完了" : "追加")
                             .foregroundStyle(.white)
                             .font(.semiBold(size: 14))
                     }
@@ -54,13 +72,40 @@ struct WorkoutSettingHalfModelView: View {
                     .padding(.vertical, 6)
                     .background(Color(.systemGray5))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .padding(.trailing, 12)
+                    .padding(.trailing, 6)
                 }
-                .padding(.bottom, 20)
-                Text("トレーニング編集")
+                Text(isEditWorkout != nil ? "トレーニング編集" : "トレーニング追加")
                     .foregroundStyle(.white)
                     .font(.semiBold(size: 16))
-                    .padding(.bottom, 20)
+            }
+            .padding(.bottom, 20)
+            .padding(.horizontal, 12)
+            if isEditWorkout == nil {
+                LazyVGrid(columns: Array(repeating: .init(), count: 7)) {
+                    ForEach(Parts.allCases) { parts in
+                        Button {
+                            selectedParts = parts
+                        } label: {
+                            ZStack {
+                                Circle()
+                                    .fill(parts.color)
+                                    .opacity(0.6)
+                                    .frame(width: 40, height: 40)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 25)
+                                            .stroke(style: .init(lineWidth: 1.5))
+                                            .fill(selectedParts == parts ?
+                                                  Color.white : Color.clear)
+                                    }
+                                Text(parts.title)
+                                    .font(.semiBold(size: 14))
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                    }
+                }
+                .padding(.bottom, 20)
+                .padding(.horizontal, 12)
             }
             TextField("新しい種目を入力", text: $text)
                 .focused($isFocused)
@@ -83,82 +128,8 @@ struct WorkoutSettingHalfModelView: View {
                         }
                     }
                 }
-            HStack(spacing: 0) {
-                Spacer()
-                Button(action: {
-                    selectedWorkoutType = .freeWeight
-                }) {
-                    HStack {
-                        Image(selectedWorkoutType == .freeWeight ?
-                            .icWorkoutCheckCircle : .icWorkoutCircle)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.white)
-                        Text("フリーウェイト")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 12))
-                    }
-                }
-                .padding(.vertical, 12)
-                .padding(.horizontal, 12)
-                .background(Color(.systemGray5))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(lineWidth: 2)
-                        .fill(selectedWorkoutType == .freeWeight ? Color.yellow : Color.clear)
-                }
-                Spacer()
-                Button(action: {
-                    selectedWorkoutType = .machine
-                }) {
-                    HStack {
-                        Image(selectedWorkoutType == .machine ?
-                            .icWorkoutCheckCircle : .icWorkoutCircle)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.white)
-                        Text("マシン")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 12))
-                    }
-                }
-                .padding(.vertical, 12)
-                .padding(.horizontal, 12)
-                .background(Color(.systemGray5))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(lineWidth: 2)
-                        .fill(selectedWorkoutType == .machine ? Color.yellow : Color.clear)
-                }
-                Spacer()
-                Button(action: {
-                    selectedWorkoutType = .bodyweight
-                }) {
-                    HStack {
-                        Image(selectedWorkoutType == .bodyweight ?
-                            .icWorkoutCheckCircle : .icWorkoutCircle)
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(.white)
-                        Text("自重")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 12))
-                    }
-                }
-                .padding(.vertical, 12)
-                .padding(.horizontal, 12)
-                .background(Color(.systemGray5))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(lineWidth: 2)
-                        .fill(selectedWorkoutType == .bodyweight ? Color.yellow : Color.clear)
-                }
-                Spacer()
-            }
-            .padding(.vertical, 20)
+            SelectWorkoutTypeView(selectedWorkoutType: $selectedWorkoutType)
+                .padding(.top, 20)
         }
         .onAppear {
             viewModel.setContext(context: modelContext)
@@ -167,10 +138,11 @@ struct WorkoutSettingHalfModelView: View {
                 text = exercise.exerciseName
             }
         }
+        .alert("種目名を入力して下さい。",  isPresented: $isShowAddExerciseAlert) {}
     }
 }
 
 #Preview {
     WorkoutSettingHalfModelView(viewModel: WorkoutSettingHalfModelViewModel(),
-                                exerciseId: "7F1648AA-1FB9-4D0F-A632-1903FED25811")
+                                exerciseId: "7F1648AA-1FB9-4D0F-A632-1903FED25811", isEditWorkout: nil)
 }

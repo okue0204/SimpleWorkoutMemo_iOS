@@ -9,10 +9,32 @@ import SwiftUI
 import StoreKit
 
 struct SettingView: View {
+    
+    enum SettingSheetType: String, View, Identifiable {
+        case term
+        case privacy
+        case inquiry
+        
+        var id: String {
+            rawValue
+        }
+        
+        var body: some View {
+            switch self {
+            case .term:
+                AnyView(WebView(url: EnvironmentConstant.termOfServiceURL))
+            case .privacy:
+                AnyView(WebView(url: EnvironmentConstant.privacyPolicyURL))
+            case .inquiry:
+                MailView()
+            }
+        }
+    }
+    
     @Environment(\.requestReview) var requestReview
     @Environment(\.dismiss) var dismiss
     
-    @State private var isShowMail: Bool = false
+    @State var settingSheetType: SettingSheetType?
     
     var body: some View {
         HeaderView(title: "設定",
@@ -24,14 +46,14 @@ struct SettingView: View {
         List {
             Section {
                 Button {
-                    
+                    settingSheetType = .term
                 } label: {
                     Text("利用規約")
                         .foregroundStyle(.white)
                         .font(.regular(size: 16))
                 }
                 Button {
-                    
+                    settingSheetType = .privacy
                 } label: {
                     Text("プライバシーポリシー")
                         .foregroundStyle(.white)
@@ -43,7 +65,7 @@ struct SettingView: View {
             }
             Section {
                 Button {
-                    isShowMail.toggle()
+                    settingSheetType = .inquiry
                 } label: {
                     Text("お問い合わせ")
                         .foregroundStyle(.white)
@@ -89,9 +111,7 @@ struct SettingView: View {
                     .font(.regular(size: 14))
             }
         }
-        .sheet(isPresented: $isShowMail) {
-            MailView()
-        }
+        .sheet(item: $settingSheetType) { $0 }
     }
 }
 

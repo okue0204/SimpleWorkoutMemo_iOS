@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct SelectWorkoutTypeView: View {
-    @Binding var selectedWorkoutType: WorkoutType
+    @Binding var selectedWorkoutType: WorkoutType?
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 0) {
+            Spacer()
             Button {
                 selectedWorkoutType = .freeWeight
             } label: {
                 HStack(spacing: 8) {
-                    Image(selectedWorkoutType == .freeWeight ? .icWorkoutCheckCircle : .icWorkoutCircle)
+                    let image: ImageResource = if let selectedWorkoutType {
+                        selectedWorkoutType == .freeWeight ? .icWorkoutCheckCircle : .icWorkoutCircle
+                    } else {
+                        .icWorkoutCircle
+                    }
+                    Image(image)
                         .resizable()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(.white)
@@ -24,19 +30,30 @@ struct SelectWorkoutTypeView: View {
                         .foregroundStyle(.white)
                 }
             }
-            .padding(.vertical, 6)
+            .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .background(Color(.systemGray5))
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay {
+                let color: Color = if let selectedWorkoutType {
+                    selectedWorkoutType == .freeWeight ? .yellow : .clear
+                } else {
+                    .clear
+                }
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(selectedWorkoutType == .freeWeight ? .yellow : .clear, lineWidth: 2)
+                    .stroke(color, lineWidth: 2)
             }
+            Spacer()
             Button {
                 selectedWorkoutType = .machine
             } label: {
                 HStack(spacing: 8) {
-                    Image(selectedWorkoutType == .machine ? .icWorkoutCheckCircle : .icWorkoutCircle)
+                    let image: ImageResource = if let selectedWorkoutType {
+                        selectedWorkoutType == .machine ? .icWorkoutCheckCircle : .icWorkoutCircle
+                    } else {
+                        .icWorkoutCircle
+                    }
+                    Image(image)
                         .resizable()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(.white)
@@ -45,19 +62,30 @@ struct SelectWorkoutTypeView: View {
                         .foregroundStyle(.white)
                 }
             }
-            .padding(.vertical, 6)
+            .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .background(Color(.systemGray5))
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay {
+                let color: Color = if let selectedWorkoutType {
+                    selectedWorkoutType == .machine ? .yellow : .clear
+                } else {
+                    .clear
+                }
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(selectedWorkoutType == .machine ? .yellow : .clear, lineWidth: 2)
+                    .stroke(color, lineWidth: 2)
             }
+            Spacer()
             Button {
                 selectedWorkoutType = .bodyweight
             } label: {
                 HStack(spacing: 8) {
-                    Image(selectedWorkoutType == .bodyweight ? .icWorkoutCheckCircle : .icWorkoutCircle)
+                    let image: ImageResource = if let selectedWorkoutType {
+                        selectedWorkoutType == .bodyweight ? .icWorkoutCheckCircle : .icWorkoutCircle
+                    } else {
+                        .icWorkoutCircle
+                    }
+                    Image(image)
                         .resizable()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(.white)
@@ -66,26 +94,105 @@ struct SelectWorkoutTypeView: View {
                         .foregroundStyle(.white)
                 }
             }
-            .padding(.vertical, 6)
+            .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .background(Color(.systemGray5))
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay {
+                let color: Color = if let selectedWorkoutType {
+                    selectedWorkoutType == .bodyweight ? .yellow : .clear
+                } else {
+                    .clear
+                }
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(selectedWorkoutType == .bodyweight ? .yellow : .clear, lineWidth: 2)
+                    .stroke(color, lineWidth: 2)
             }
             Spacer()
         }
         .frame(height: 40)
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 6)
         .padding(.bottom, 12)
-        .onAppear {
-            selectedWorkoutType = .freeWeight
-        }
     }
 }
 
 #Preview {
-    @Previewable @State var selectedWorkoutType: WorkoutType = .freeWeight
+    @Previewable @State var selectedWorkoutType: WorkoutType?
     SelectWorkoutTypeView(selectedWorkoutType: $selectedWorkoutType)
 }
+
+//            HStack(spacing: 0) {
+//                Spacer()
+//                Button(action: {
+//                    selectedWorkoutType = .freeWeight
+//                }) {
+//                    HStack {
+//                        Image(selectedWorkoutType == .freeWeight ?
+//                            .icWorkoutCheckCircle : .icWorkoutCircle)
+//                            .resizable()
+//                            .frame(width: 20, height: 20)
+//                            .foregroundStyle(.white)
+//                        Text("フリーウェイト")
+//                            .foregroundStyle(.white)
+//                            .font(.regular(size: 12))
+//                    }
+//                }
+//                .padding(.vertical, 12)
+//                .padding(.horizontal, 12)
+//                .background(Color(.systemGray5))
+//                .clipShape(RoundedRectangle(cornerRadius: 20))
+//                .overlay {
+//                    RoundedRectangle(cornerRadius: 20)
+//                        .stroke(lineWidth: 2)
+//                        .fill(selectedWorkoutType == .freeWeight ? Color.yellow : Color.clear)
+//                }
+//                Spacer()
+//                Button(action: {
+//                    selectedWorkoutType = .machine
+//                }) {
+//                    HStack {
+//                        Image(selectedWorkoutType == .machine ?
+//                            .icWorkoutCheckCircle : .icWorkoutCircle)
+//                            .resizable()
+//                            .frame(width: 20, height: 20)
+//                            .foregroundStyle(.white)
+//                        Text("マシン")
+//                            .foregroundStyle(.white)
+//                            .font(.regular(size: 12))
+//                    }
+//                }
+//                .padding(.vertical, 12)
+//                .padding(.horizontal, 12)
+//                .background(Color(.systemGray5))
+//                .clipShape(RoundedRectangle(cornerRadius: 20))
+//                .overlay {
+//                    RoundedRectangle(cornerRadius: 20)
+//                        .stroke(lineWidth: 2)
+//                        .fill(selectedWorkoutType == .machine ? Color.yellow : Color.clear)
+//                }
+//                Spacer()
+//                Button(action: {
+//                    selectedWorkoutType = .bodyweight
+//                }) {
+//                    HStack {
+//                        Image(selectedWorkoutType == .bodyweight ?
+//                            .icWorkoutCheckCircle : .icWorkoutCircle)
+//                            .resizable()
+//                            .frame(width: 20, height: 20)
+//                            .foregroundStyle(.white)
+//                        Text("自重")
+//                            .foregroundStyle(.white)
+//                            .font(.regular(size: 12))
+//                    }
+//                }
+//                .padding(.vertical, 12)
+//                .padding(.horizontal, 12)
+//                .background(Color(.systemGray5))
+//                .clipShape(RoundedRectangle(cornerRadius: 20))
+//                .overlay {
+//                    RoundedRectangle(cornerRadius: 20)
+//                        .stroke(lineWidth: 2)
+//                        .fill(selectedWorkoutType == .bodyweight ? Color.yellow : Color.clear)
+//                }
+//                Spacer()
+//            }
+//            .padding(.vertical, 20)

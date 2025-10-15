@@ -39,7 +39,6 @@ struct WorkoutListItemView: View {
                     .frame(width: 16, height: 16)
                     .foregroundStyle(.gray)
             }
-
         }
         .padding(.horizontal, 20)
         .alert("本当に削除しますか？", isPresented: $isShowDeleteExerciseAlert) {

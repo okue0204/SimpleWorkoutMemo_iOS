@@ -10,6 +10,7 @@ import SwiftUI
 struct WorkoutItemView: View {
     
     @FocusState.Binding var focusedField: FocusField?
+    @State private var isShowDeleteWorkoutAlert: Bool = false
     var workout: Workout
     
     private static let maxLength: Int = 5
@@ -41,7 +42,7 @@ struct WorkoutItemView: View {
                             HStack(spacing: 12) {
                                 Text("\(workout.workoutSetInfo.count)セット : \(workout.totalRep)回")
                                     .font(.regular(size: 12))
-                                Text("重量 : \(workout.totalWeight)kg")
+                                Text("総重量 : \(workout.totalWeight)kg")
                                     .font(.regular(size: 12))
                             }
                             .padding(.leading, 8)
@@ -135,7 +136,7 @@ struct WorkoutItemView: View {
                 Spacer()
                 Menu {
                     Button(role: .destructive) {
-                        onDeleteWorkout(workout)
+                        isShowDeleteWorkoutAlert.toggle()
                     } label: {
                         Label("トレーニングの削除", systemImage: "trash")
                     }
@@ -153,6 +154,17 @@ struct WorkoutItemView: View {
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .padding(.horizontal, 20)
+        .alert("本当に削除しますか？", isPresented: $isShowDeleteWorkoutAlert) {
+            Button("キャンセル", role: .cancel) {}
+            Button("削除する", role: .destructive) {
+                onDeleteWorkout(workout)
+                AnalyticsManager.logEvent(.removeWorkout)
+            }
+        } message: {
+            Text("削除すると復元できません。")
+                .foregroundStyle(.white)
+                .font(.regular(size: 14))
+        }
     }
 }
 

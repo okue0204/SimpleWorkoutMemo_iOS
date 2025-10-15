@@ -10,69 +10,49 @@ import SwiftUI
 struct SelectWorkoutMenuBottomView: View {
     @Environment(\.dismiss) var dismiss
     @FocusState.Binding var isFocused: Bool
-    @Binding var text: String
-    @Binding var selectedParts: Parts?
-    @Binding var selectedWorkoutType: WorkoutType
-    @State var isShowAddExerciseAlert: Bool = false
+    @State var isShowWorkoutSetting: Bool = false
     let viewModel: WorkoutListViewModel
-    var onUpdateExercise: (() -> Void)?
     
     var body: some View {
-        HStack(spacing: 0) {
-            TextField("新しい種目を入力", text: $text)
-                .focused($isFocused)
-                .frame(height: 50)
-                .padding(.leading, 20)
-                .background(Color(.systemGray5))
-                .clipShape(RoundedRectangle(cornerRadius: 25))
-                .padding(.horizontal, 12)
-                .toolbar {
-                    ToolbarItem(placement: .keyboard) {
-                        ToolbarKeyboardHiddenView(isFocused: $isFocused) {
-                            if let selectedParts, !text.isEmpty {
-                                viewModel.addExercise(.init(parts: selectedParts,
-                                                            workoutType: selectedWorkoutType,
-                                                            exerciseName: _text.wrappedValue))
-                                text = ""
-                                onUpdateExercise?()
-                                AnalyticsManager.logEvent(.addWorkout)
-                            } else {
-                                isShowAddExerciseAlert.toggle()
-                            }
-                        }
-                    }
-                }
+        HStack {
+            Button(action: {
+                isShowWorkoutSetting.toggle()
+            }) {
+                Text("種目を追加")
+                    .font(.medium(size: 16))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, maxHeight: 50)
+            }
+            .background(Color(.systemGray5))
+            .clipShape(RoundedRectangle(cornerRadius: 25))
+            .padding(.horizontal, 12)
             Button(action: {
                 dismiss()
             }) {
                 ZStack {
                     Circle()
-                        .fill(Color(.systemGray5))
+                        .fill(.blue.opacity(0.2))
                         .frame(width: 50, height: 50)
                     Image(.icWorkoutClose)
                         .resizable()
-                        .frame(width: 14, height: 14)
+                        .frame(width: 16, height: 16)
                 }
             }
             .padding(.trailing, 20)
         }
-        .padding(.bottom, 6)
-        .alert("種目名を入力して下さい。",  isPresented: $isShowAddExerciseAlert) {}
+        .sheet(isPresented: $isShowWorkoutSetting) {
+            WorkoutSettingHalfModelView(viewModel: WorkoutSettingHalfModelViewModel(),
+                                        exerciseId: nil,
+                                        isEditWorkout: nil)
+            .presentationDetents([.fraction(1/3)])
+        }
     }
 }
 
 #Preview {
     @Previewable @FocusState var isFocused: Bool
-    @Previewable @State var text: String = ""
-    @Previewable @State var selectedParts: Parts?
-    @Previewable @State var selectedWorkoutType: WorkoutType = .freeWeight
-    @Previewable @State var isShowAddExerciseAlert: Bool = false
+    @Previewable @State var isShowWorkoutSetting: Bool = false
     SelectWorkoutMenuBottomView(isFocused: $isFocused,
-                                text: $text,
-                                selectedParts: $selectedParts,
-                                selectedWorkoutType: $selectedWorkoutType,
-                                isShowAddExerciseAlert: isShowAddExerciseAlert,
-                                viewModel: WorkoutListViewModel()) {
-        
-    }
+                                isShowWorkoutSetting: isShowWorkoutSetting,
+                                viewModel: WorkoutListViewModel())
 }

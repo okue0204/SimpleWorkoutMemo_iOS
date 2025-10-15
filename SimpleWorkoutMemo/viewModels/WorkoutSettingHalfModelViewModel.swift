@@ -31,6 +31,15 @@ class WorkoutSettingHalfModelViewModel {
         }
     }
     
+    func addExercise(_ exercise: Exercise) {
+        guard let exerciseRepository else { return }
+        do {
+            try exerciseRepository.insert(exercise)
+        } catch {
+            
+        }
+    }
+    
     func updateExercise(_ exercise: Exercise, name: String, workoutType: WorkoutType) {
         exercise.exerciseName = name
         exercise.workoutType = workoutType

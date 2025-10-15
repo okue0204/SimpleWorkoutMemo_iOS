@@ -14,6 +14,7 @@ struct ExerciseId: Identifiable {
 
 struct WorkoutListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) var dismiss
     @Query private var exercises: [Exercise]
     @State var viewModel: WorkoutListViewModel
     @State private var selectedParts: Parts?
@@ -77,14 +78,7 @@ struct WorkoutListView: View {
                     }
                 }
             }
-            SelectWorkoutTypeView(selectedWorkoutType: $selectedWorkoutType)
-            SelectWorkoutMenuBottomView(isFocused: $isFocused,
-                                        text: $text,
-                                        selectedParts: $selectedParts,
-                                        selectedWorkoutType: $selectedWorkoutType,
-                                        viewModel: viewModel) {
-                onUpdateExercise?()
-            }
+            SelectWorkoutMenuBottomView(isFocused: $isFocused, viewModel: viewModel)
             Spacer()
         }
         .background(Color(.systemGray6))
@@ -95,7 +89,8 @@ struct WorkoutListView: View {
         }
         .sheet(item: $selectedExerciseId, content: { exerciseId in
             WorkoutSettingHalfModelView(viewModel: WorkoutSettingHalfModelViewModel(),
-                                        exerciseId: exerciseId.id)
+                                        exerciseId: exerciseId.id,
+                                        isEditWorkout: true)
             .presentationDetents([.fraction(1/3)])
         })
     }

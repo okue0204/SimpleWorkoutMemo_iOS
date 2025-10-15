@@ -1,0 +1,23 @@
+{
+    "hosting": [
+        {
+            "site": "simple-workout-privacy",
+            "public": "public-policy",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ]
+        },
+        {
+            "site": "simple-workout-terms",
+            "public": "public-terms",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ]
+        }
+    ]
+}
+
