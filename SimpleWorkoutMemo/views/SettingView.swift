@@ -83,19 +83,18 @@ struct SettingView: View {
                 Text("フィードバック")
                     .font(.regular(size: 14))
             }
-            Section {
-                Button {
-                    AnalyticsManager.logEvent(.showShare)
-                } label: {
-                    Text("共有")
-                        .foregroundStyle(.white)
-                        .font(.regular(size: 16))
-                }
-            } header: {
-                Text("シェア")
-                    .font(.regular(size: 14))
-            }
-
+//            Section {
+//                Button {
+//                    AnalyticsManager.logEvent(.showShare)
+//                } label: {
+//                    Text("共有")
+//                        .foregroundStyle(.white)
+//                        .font(.regular(size: 16))
+//                }
+//            } header: {
+//                Text("シェア")
+//                    .font(.regular(size: 14))
+//            }
             Section {
                 HStack {
                     Text("バージョン")
