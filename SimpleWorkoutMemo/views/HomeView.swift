@@ -39,8 +39,10 @@ struct HomeView: View {
                     }
                     ForEach(workoutDays, id: \.id) { workoutDay in
                         ForEach(workoutDay.workouts, id: \.id) { workout in
-                            WorkoutItemView(focusedField: $focusedField,
-                                            workout: workout) {
+                            let previousWorkout = viewModel.fetchPreviousWorkout(workoutDays: self.workoutDays, todayWorkout: workout)
+                            return WorkoutItemView(focusedField: $focusedField,
+                                                   workout: workout,
+                                                   previousWorkout: previousWorkout) {
                                 viewModel.addSetInfo(workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)
                             } onRemoveSetInfo: { _ in
                                 viewModel.removeSetInfo(workoutDay: workoutDay, at: workoutDay.workouts.firstIndex(of: workout)!)

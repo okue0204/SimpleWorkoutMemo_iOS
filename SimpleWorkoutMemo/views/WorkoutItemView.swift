@@ -12,6 +12,7 @@ struct WorkoutItemView: View {
     @FocusState.Binding var focusedField: FocusField?
     @State private var isShowDeleteWorkoutAlert: Bool = false
     var workout: Workout
+    var previousWorkout: Workout?
     
     private static let maxLength: Int = 5
     
@@ -22,7 +23,7 @@ struct WorkoutItemView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 0) {
+            HStack(alignment: .top, spacing: 0) {
                 HStack(spacing: 0) {
                     if let exercise = workout.exercise {
                         ZStack {
@@ -32,32 +33,59 @@ struct WorkoutItemView: View {
                                 .font(.medium(size: 16))
                         }
                         VStack(alignment: .leading, spacing: 6) {
-                            Text(exercise.exerciseName)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(exercise.parts.color.opacity(0.2))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .font(.medium(size: 12))
-                                .foregroundStyle(exercise.parts.color)
-                            HStack(spacing: 12) {
-                                Text("\(workout.workoutSetInfo.count)セット : \(workout.totalRep)回")
-                                    .font(.regular(size: 12))
-                                Text("総重量 : \(workout.totalWeight)kg")
-                                    .font(.regular(size: 12))
+                            HStack {
+                                Text(exercise.exerciseName)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(exercise.parts.color.opacity(0.2))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    .font(.medium(size: 12))
+                                    .foregroundStyle(exercise.parts.color)
+                                Spacer()
+                                WorkoutSetControlView(workout: workout,
+                                                      onAddSetInfo: onAddSetInfo,
+                                                      onRemoveSetInfo: onRemoveSetInfo)
+                                .padding(.trailing, 12)
                             }
-                            .padding(.leading, 8)
+                            HStack(spacing: 12) {
+                                if previousWorkout != nil {
+                                    VStack(alignment: .center, spacing: 12) {
+                                        Text("今回")
+                                            .font(.regular(size: 12))
+                                        Text("前回")
+                                            .font(.regular(size: 12))
+                                        Text("結果")
+                                            .font(.regular(size: 12))
+                                    }
+                                }
+                                VStack(alignment: .center, spacing: 12) {
+                                    Text("\(workout.workoutSetInfo.count)セット : \(workout.totalRepString)回")
+                                        .font(.regular(size: 12))
+                                    if let previousWorkout {
+                                        Text("\(previousWorkout.workoutSetInfo.count)セット : \(previousWorkout.totalRepString)回")
+                                            .font(.regular(size: 12))
+                                        Text(workout.differenceRep(previousWorkout: previousWorkout))
+                                            .font(.regular(size: 12))
+                                    }
+                                }
+                                VStack(alignment: .center, spacing: 12) {
+                                    Text("総重量 : \(workout.totalWeightString)kg")
+                                        .font(.regular(size: 12))
+                                    if let previousWorkout {
+                                        Text("総重量 : \(previousWorkout.totalWeightString)kg")
+                                            .font(.regular(size: 12))
+                                        Text("\(workout.differenceWeight(previousWorkout: previousWorkout))kg")
+                                            .font(.regular(size: 12))
+                                    }
+                                }
+                            }
+                            .padding(.leading, 4)
                         }
                         .padding(.leading, 12)
                     }
                 }
                 .padding(.vertical, 12)
                 .padding(.leading, 12)
-                Spacer()
-                WorkoutSetControlView(workout: workout,
-                                      onAddSetInfo: onAddSetInfo,
-                                      onRemoveSetInfo: onRemoveSetInfo)
-                .offset(y: -12)
-                .padding(.trailing, 12)
             }
             Divider()
             VStack(spacing: 0) {
@@ -221,27 +249,68 @@ extension WorkoutItemView {
 #Preview {
     @Previewable @FocusState var focusedField: FocusField?
     WorkoutItemView(focusedField: $focusedField,
-                    workout: .init(exercise: .init(parts: .triceps,
-                                                   workoutType: .freeWeight,
-                                                   exerciseName: "トライセプスエクステンション"),
-                                   workoutSetInfo: [
-                                    .init(weight: "25",
-                                          rep: "10",
-                                          workout: .init(exercise: .init(parts: .triceps,
-                                                                         workoutType: .freeWeight,
-                                                                         exerciseName: "トライセプスエクステンション"))),
-                                    .init(weight: "10",
-                                          rep: "12",
-                                          workout: .init(exercise: .init(parts: .triceps,
-                                                                         workoutType: .freeWeight,
-                                                                         exerciseName: "トライセプスエクステンション")))
-                                   ])) {
-                                       
-                                   } onRemoveSetInfo: { _ in
-                                       
-                                   } onUpdateWorkoutSetInfo: { _ in
-                                       
-                                   } onDeleteWorkout: { _ in
-                                       
-                                   }
+                    workout: .init(
+                        exercise: .init(parts: .chest,
+                                        workoutType: .freeWeight,
+                                        exerciseName: "ダンベルプレス"),
+                        workoutSetInfo: [
+                            .init(weight: "25",
+                                  rep: "10",
+                                  workout: .init(exercise: .init(parts: .triceps,
+                                                                 workoutType: .freeWeight,
+                                                                 exerciseName: "ダンベルプレス"))),
+                            .init(weight: "10",
+                                  rep: "12",
+                                  workout: .init(exercise: .init(parts: .triceps,
+                                                                 workoutType: .freeWeight,
+                                                                 exerciseName: "ダンベルプレス")))
+                        ])) {
+                            
+                        } onRemoveSetInfo: { _ in
+                            
+                        } onUpdateWorkoutSetInfo: { _ in
+                            
+                        } onDeleteWorkout: { _ in
+                            
+                        }
+}
+
+#Preview("previousWorkout") {
+    @Previewable @FocusState var focusedField: FocusField?
+    WorkoutItemView(focusedField: $focusedField,
+                    workout: .init(
+                        exercise: .init(parts: .chest,
+                                        workoutType: .freeWeight,
+                                        exerciseName: "ダンベルプレス"),
+                        workoutSetInfo: [
+                            .init(weight: "25",
+                                  rep: "10",
+                                  workout: .init(exercise: .init(parts: .triceps,
+                                                                 workoutType: .freeWeight,
+                                                                 exerciseName: "ダンベルプレス"))),
+                            .init(weight: "10",
+                                  rep: "12",
+                                  workout: .init(exercise: .init(parts: .triceps,
+                                                                 workoutType: .freeWeight,
+                                                                 exerciseName: "ダンベルプレス")))
+                        ]),
+                    previousWorkout: .init(exercise: .init(parts: .chest,
+                                                           workoutType: .freeWeight,
+                                                           exerciseName: "ダンベルプレス"),
+                                           workoutSetInfo: [
+                                            .init(weight: "36",
+                                                  rep: "10",
+                                                  workout: .init(
+                                                    exercise: .init(parts: .chest,
+                                                                    workoutType: .freeWeight,
+                                                                    exerciseName: "ダンベルプレス")))
+                                           ])) {
+                            
+                        } onRemoveSetInfo: { _ in
+                            
+                        } onUpdateWorkoutSetInfo: { _ in
+                            
+                        } onDeleteWorkout: { _ in
+                            
+                        }
 }

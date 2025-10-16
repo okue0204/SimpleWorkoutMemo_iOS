@@ -24,17 +24,47 @@ class Workout: Identifiable, ObservableObject {
         workoutSetInfo.sorted { $0.createdAt < $1.createdAt }
     }
     
-    var totalWeight: String {
+    var totalWeightString: String {
         let totalWeight = workoutSetInfo.reduce(into: 0) { partialResult, workoutSetInfo in
             partialResult += (Double(workoutSetInfo.rep) ?? 0) * (Double(workoutSetInfo.weight) ?? 0)
         }
         return String(Int(totalWeight))
     }
     
-    var totalRep: String {
+    var totalRepString: String {
         let totalRep = workoutSetInfo.reduce(into: 0) { partialResult, setInfo in
             partialResult += Int(setInfo.rep) ?? 0
         }
         return String(totalRep)
+    }
+    
+    var totalWeight: Int {
+        let totalWeight = workoutSetInfo.reduce(into: 0) { partialResult, workoutSetInfo in
+            partialResult += (Double(workoutSetInfo.rep) ?? 0) * (Double(workoutSetInfo.weight) ?? 0)
+        }
+        return Int(totalWeight)
+    }
+    
+    var totalRep: Int {
+        let totalRep = workoutSetInfo.reduce(into: 0) { partialResult, setInfo in
+            partialResult += Int(setInfo.rep) ?? 0
+        }
+        return totalRep
+    }
+    
+    func differenceWeight(previousWorkout: Workout) -> String {
+        return if totalWeight > previousWorkout.totalWeight {
+            "重量 : + \(abs(totalWeight - previousWorkout.totalWeight))"
+        } else {
+            "重量 : - \(abs(totalWeight - previousWorkout.totalWeight))"
+        }
+    }
+    
+    func differenceRep(previousWorkout: Workout) -> String {
+        return if totalRep > previousWorkout.totalRep {
+            "回数 : + \(abs(totalRep - previousWorkout.totalRep))回"
+        } else {
+            "回数 : - \(abs(totalRep - previousWorkout.totalRep))回"
+        }
     }
 }

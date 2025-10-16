@@ -35,6 +35,20 @@ class HomeViewModel {
         exerciseRepository = ExerciseRepositoryImpl(modelContext: modelContext!)
     }
     
+    func fetchPreviousWorkout(workoutDays: [WorkoutDay], todayWorkout: Workout) -> Workout? {
+        let filterWorkoutDays = workoutDays.filter { workoutDay in
+            workoutDay.createdAt.zeroClock != Date().zeroClock
+        }
+        let previousWorkoutDay = filterWorkoutDays.first { workoutDay in
+            workoutDay.workouts.contains { workout in
+                workout.exercise?.exerciseName == todayWorkout.exercise?.exerciseName
+            }
+        }
+        return previousWorkoutDay?.workouts.first { workout in
+            workout.exercise?.id == todayWorkout.exercise?.id
+        }
+    }
+    
     // MARK: - workout
     func save() {
         guard let workoutRepository else {

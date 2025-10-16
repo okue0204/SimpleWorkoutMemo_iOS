@@ -34,11 +34,11 @@ class CalendarViewModel {
         }
     }
     
-    func lastMonthCalendarMonth(for date: Date) -> CalendarMonth {
+    func lastMonthCalendarMonth(for date: Date) -> CalendarMonth? {
         let calendarMonth = calendars.first(where: { calendarMonth in
             calendarMonth.date.onlyYearAndMonth == date
         })
-        return calendarMonth!
+        return calendarMonth
     }
     
     func nextMonthCalendarMonth(for date: Date) -> CalendarMonth {
@@ -48,9 +48,9 @@ class CalendarViewModel {
         return calendarMonth!
     }
     
-    func currentPositionDate(for id: String?) -> Date {
-        return calendars.first { calendarMonth in
+    func currentPositionDate(for id: String?) -> Date? {
+        calendars.first { calendarMonth in
             calendarMonth.id == id
-        }!.date
+        }?.date
     }
 }
