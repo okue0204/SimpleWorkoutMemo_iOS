@@ -144,5 +144,6 @@ struct WorkoutSettingHalfModelView: View {
 
 #Preview {
     WorkoutSettingHalfModelView(viewModel: WorkoutSettingHalfModelViewModel(),
-                                exerciseId: "7F1648AA-1FB9-4D0F-A632-1903FED25811", isEditWorkout: nil)
+                                exerciseId: "7F1648AA-1FB9-4D0F-A632-1903FED25811",
+                                isEditWorkout: nil)
 }

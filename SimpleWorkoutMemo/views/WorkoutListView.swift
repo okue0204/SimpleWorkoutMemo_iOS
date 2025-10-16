@@ -78,7 +78,9 @@ struct WorkoutListView: View {
                     }
                 }
             }
-            SelectWorkoutMenuBottomView(isFocused: $isFocused, viewModel: viewModel)
+            SelectWorkoutMenuBottomView(isFocused: $isFocused, viewModel: viewModel) {
+                onUpdateExercise?()
+            }
             Spacer()
         }
         .background(Color(.systemGray6))

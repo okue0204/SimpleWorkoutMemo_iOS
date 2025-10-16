@@ -12,6 +12,7 @@ struct SelectWorkoutMenuBottomView: View {
     @FocusState.Binding var isFocused: Bool
     @State var isShowWorkoutSetting: Bool = false
     let viewModel: WorkoutListViewModel
+    var onUpdateExercise: (() -> Void)?
     
     var body: some View {
         HStack {
@@ -43,7 +44,9 @@ struct SelectWorkoutMenuBottomView: View {
         .sheet(isPresented: $isShowWorkoutSetting) {
             WorkoutSettingHalfModelView(viewModel: WorkoutSettingHalfModelViewModel(),
                                         exerciseId: nil,
-                                        isEditWorkout: nil)
+                                        isEditWorkout: nil) {
+                onUpdateExercise?()
+            }
             .presentationDetents([.fraction(1/3)])
         }
     }
