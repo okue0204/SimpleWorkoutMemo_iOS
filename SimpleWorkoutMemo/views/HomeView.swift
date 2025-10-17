@@ -11,6 +11,7 @@ import SwiftData
 struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var appStorageManager: AppStorageManager
+    @StateObject var appOpen = AppOpenAdManager()
     @State var viewModel: HomeViewModel
     @State var headerAction: HeaderAction?
     @State private var isShowSelectedWorkoutMenu: Bool = false
@@ -23,6 +24,10 @@ struct HomeView: View {
     
     @Query private var workoutDays: [WorkoutDay]
     @Query private var exercise: [Exercise]
+    
+    private var displayWidth: CGFloat {
+        UIScreen.main.bounds.width
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -37,6 +42,8 @@ struct HomeView: View {
                     let workoutDays = workoutDays.filter { day in
                         day.createdAt.zeroClock == Date().zeroClock
                     }
+                    BannerViewContainer {}
+                    .frame(width: displayWidth, height: 50)
                     ForEach(workoutDays, id: \.id) { workoutDay in
                         ForEach(workoutDay.workouts, id: \.id) { workout in
                             let previousWorkout = viewModel.fetchPreviousWorkout(workoutDays: self.workoutDays, todayWorkout: workout)
@@ -74,6 +81,7 @@ struct HomeView: View {
                 appStorageManager.isFirstTimeAppLaunch = false
             }
             isInitialized = true
+            viewModel.incrementLaunchCount()
         })
         .onTapGesture {
             focusedField = nil
@@ -87,6 +95,15 @@ struct HomeView: View {
                     viewModel.filter(for: exercise)
                 }
             }
+        }
+        .task {
+            await appOpen.loadAd()
+        }
+        .onChange(of: appOpen.appOpenAdLoaded) { oldValue, newValue in
+            if viewModel.appLaunchCount > EnvironmentConstant.showAdOpenLimitCount, appStorageManager.isShowLastTimeAppLaunch {
+                appOpen.presentAppOpenAd()
+            }
+            viewModel.resetLastAppLaunch()
         }
     }
 }

@@ -25,6 +25,10 @@ struct WorkoutListView: View {
     @FocusState private var isFocused: Bool
     var onUpdateExercise: (() -> Void)?
     
+    private var displayWidth: CGFloat {
+        UIScreen.main.bounds.width
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             ScrollView(.horizontal, showsIndicators: false) {
@@ -58,6 +62,8 @@ struct WorkoutListView: View {
                     selectedParts = Parts.allCases.first(where: { $0.rawValue == newValue }) ?? .chest
                 }
             }
+            BannerViewContainer {}
+            .frame(width: displayWidth, height: 50)
             ScrollViewReader { proxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {

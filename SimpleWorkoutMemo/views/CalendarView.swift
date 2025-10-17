@@ -19,6 +19,10 @@ struct CalendarView: View {
     @State private var scrollPosition: String?
     @State private var isShowSheet: Bool = false
     
+    private var displayWidth: CGFloat {
+        UIScreen.main.bounds.width
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(title: "Calendar",
@@ -28,6 +32,8 @@ struct CalendarView: View {
             }
                        .padding(.vertical, 12)
                        .background(.black)
+            BannerViewContainer {}
+            .frame(width: displayWidth, height: 50)
             CurrentCalendarSelectTextView(currentPositionDate: $currentPositionDate,
                                           scrollPosition: $scrollPosition,
                                           viewModel: viewModel)

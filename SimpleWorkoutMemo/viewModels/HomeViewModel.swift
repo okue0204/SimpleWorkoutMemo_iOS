@@ -21,6 +21,7 @@ class HomeViewModel {
     var onFailureExericesUpdate: Bool = false
     var onFailureWorkoutSave: Bool = false
     
+    private let appStorageManager = AppStorageManager.shared
     private var workoutRepository: WorkoutRepository?
     private var exerciseRepository: ExerciseRepository?
     private var modelContext: ModelContext?
@@ -46,6 +47,21 @@ class HomeViewModel {
         }
         return previousWorkoutDay?.workouts.first { workout in
             workout.exercise?.id == todayWorkout.exercise?.id
+        }
+    }
+    
+    // MARK: - AppStorage
+    func incrementLaunchCount() {
+        appStorageManager.appLaunchCount += 1
+    }
+    
+    func resetLastAppLaunch() {
+        appStorageManager.isShowLastTimeAppLaunch.toggle()
+    }
+    
+    var appLaunchCount: Int {
+        get {
+            appStorageManager.appLaunchCount
         }
     }
     

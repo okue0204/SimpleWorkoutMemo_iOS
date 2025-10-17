@@ -14,4 +14,6 @@ class AppStorageManager: ObservableObject {
     static let shared = AppStorageManager()
     
     @AppStorage("isFirstTimeAppLaunch") var isFirstTimeAppLaunch: Bool = true
+    @AppStorage("isShowLastTimeAppLaunch") var isShowLastTimeAppLaunch = true
+    @AppStorage("appLaunchCount") var appLaunchCount: Int = 0
 }

@@ -8,6 +8,10 @@
 import SwiftUI
 import SwiftData
 import FirebaseCore
+import SwiftyBeaver
+import GoogleMobileAds
+
+let log = SwiftyBeaver.self
 
 @main
 struct SimpleWorkoutMemoApp: App {
@@ -42,7 +46,16 @@ struct SimpleWorkoutMemoApp: App {
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        // Admob
+        MobileAds.shared.start()
+        
+        // Firebase
         FirebaseApp.configure()
+        
+        // SwiftBeaver
+        let console = ConsoleDestination()
+        log.addDestination(console)
+        
         return true
     }
 }

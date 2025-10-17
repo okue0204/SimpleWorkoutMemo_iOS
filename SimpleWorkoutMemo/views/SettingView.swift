@@ -36,6 +36,10 @@ struct SettingView: View {
     
     @State var settingSheetType: SettingSheetType?
     
+    private var displayWidth: CGFloat {
+        UIScreen.main.bounds.width
+    }
+    
     var body: some View {
         HeaderView(title: "設定",
                    imageResource: .icWorkoutClose,
@@ -43,74 +47,81 @@ struct SettingView: View {
             dismiss()
         }
                    .padding(.vertical, 12)
-        List {
-            Section {
-                Button {
-                    settingSheetType = .term
-                } label: {
-                    Text("利用規約")
-                        .foregroundStyle(.white)
-                        .font(.regular(size: 16))
+        BannerViewContainer {}
+        .frame(width: displayWidth, height: 50)
+        VStack(spacing: 0) {
+            List {
+                Section {
+                    Button {
+                        settingSheetType = .term
+                    } label: {
+                        Text("利用規約")
+                            .foregroundStyle(.white)
+                            .font(.regular(size: 16))
+                    }
+                    Button {
+                        settingSheetType = .privacy
+                    } label: {
+                        Text("プライバシーポリシー")
+                            .foregroundStyle(.white)
+                            .font(.regular(size: 16))
+                    }
+                } header: {
+                    Text("インフォメーション")
+                        .font(.regular(size: 14))
                 }
-                Button {
-                    settingSheetType = .privacy
-                } label: {
-                    Text("プライバシーポリシー")
-                        .foregroundStyle(.white)
-                        .font(.regular(size: 16))
+                Section {
+                    Button {
+                        settingSheetType = .inquiry
+                    } label: {
+                        Text("お問い合わせ")
+                            .foregroundStyle(.white)
+                            .font(.regular(size: 16))
+                    }
+                    Button {
+                        requestReview()
+                        AnalyticsManager.logEvent(.showReview)
+                    } label: {
+                        Text("レビュー")
+                            .foregroundStyle(.white)
+                            .font(.regular(size: 16))
+                    }
+                } header: {
+                    Text("フィードバック")
+                        .font(.regular(size: 14))
                 }
-            } header: {
-                Text("インフォメーション")
-                    .font(.regular(size: 14))
+    //            Section {
+    //                Button {
+    //                    AnalyticsManager.logEvent(.showShare)
+    //                } label: {
+    //                    Text("共有")
+    //                        .foregroundStyle(.white)
+    //                        .font(.regular(size: 16))
+    //                }
+    //            } header: {
+    //                Text("シェア")
+    //                    .font(.regular(size: 14))
+    //            }
+                Section {
+                    HStack {
+                        Text("バージョン")
+                            .foregroundStyle(.white)
+                            .font(.regular(size: 16))
+                        Spacer()
+                        Text(EnvironmentConstant.appVersion)
+                            .foregroundStyle(.white)
+                            .font(.regular(size: 16))
+                    }
+                } header: {
+                    Text("その他")
+                        .font(.regular(size: 14))
+                }
             }
-            Section {
-                Button {
-                    settingSheetType = .inquiry
-                } label: {
-                    Text("お問い合わせ")
-                        .foregroundStyle(.white)
-                        .font(.regular(size: 16))
-                }
-                Button {
-                    requestReview()
-                    AnalyticsManager.logEvent(.showReview)
-                } label: {
-                    Text("レビュー")
-                        .foregroundStyle(.white)
-                        .font(.regular(size: 16))
-                }
-            } header: {
-                Text("フィードバック")
-                    .font(.regular(size: 14))
-            }
-//            Section {
-//                Button {
-//                    AnalyticsManager.logEvent(.showShare)
-//                } label: {
-//                    Text("共有")
-//                        .foregroundStyle(.white)
-//                        .font(.regular(size: 16))
-//                }
-//            } header: {
-//                Text("シェア")
-//                    .font(.regular(size: 14))
-//            }
-            Section {
-                HStack {
-                    Text("バージョン")
-                        .foregroundStyle(.white)
-                        .font(.regular(size: 16))
-                    Spacer()
-                    Text(EnvironmentConstant.appVersion)
-                        .foregroundStyle(.white)
-                        .font(.regular(size: 16))
-                }
-            } header: {
-                Text("その他")
-                    .font(.regular(size: 14))
-            }
+            .sheet(item: $settingSheetType) { $0 }
+            BannerViewContainer {}
+            .frame(width: displayWidth, height: 100)
         }
-        .sheet(item: $settingSheetType) { $0 }
+        .ignoresSafeArea(.container)
     }
 }
 
