@@ -15,6 +15,7 @@ class HomeViewModel {
     
     var todayWorkoutDay: WorkoutDay?
     var filteredExercises: [Exercise] = []
+    var isShowUpdateAlert: Bool = false
     
     // error
     var onFailureWorkoutUpdate: Bool = false
@@ -59,9 +60,30 @@ class HomeViewModel {
         appStorageManager.isShowLastTimeAppLaunch.toggle()
     }
     
+    @MainActor
+    func isShowUpdateAlert() async {
+        if await ForceUpdate.shared.shouldUpdate(), let lastUpdateDate, lastUpdateDate.zeroClock < Date().zeroClock {
+            isShowUpdateAlert.toggle()
+        } else if lastUpdateDate == nil {
+            lastUpdateDate = Date().zeroClock
+        } else {
+            // nothing to do
+        }
+    }
+    
     var appLaunchCount: Int {
         get {
             appStorageManager.appLaunchCount
+        }
+    }
+    
+    @MainActor
+    var lastUpdateDate: Date? {
+        get {
+            appStorageManager.lastUpdateDate
+        }
+        set {
+            appStorageManager.lastUpdateDate = newValue
         }
     }
     
@@ -130,7 +152,7 @@ class HomeViewModel {
             setTodayWorkout(workoutDays: workoutDays)
         } else {
             let newWorkout = Workout(exercise: exercise)
-            let newWorkoutDay = WorkoutDay(createdAt: Date(), workouts: [newWorkout])
+            let newWorkoutDay = WorkoutDay(createdAt: Date().zeroClock, workouts: [newWorkout])
             let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: newWorkout)
             newWorkout.workoutSetInfo.append(setInfo)
             insert(newWorkoutDay)

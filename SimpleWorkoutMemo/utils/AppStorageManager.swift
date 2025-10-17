@@ -16,4 +16,5 @@ class AppStorageManager: ObservableObject {
     @AppStorage("isFirstTimeAppLaunch") var isFirstTimeAppLaunch: Bool = true
     @AppStorage("isShowLastTimeAppLaunch") var isShowLastTimeAppLaunch = true
     @AppStorage("appLaunchCount") var appLaunchCount: Int = 0
+    @AppStorage("lastUpdateDate") var lastUpdateDate: Date?
 }

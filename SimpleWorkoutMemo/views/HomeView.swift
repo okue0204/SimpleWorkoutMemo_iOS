@@ -98,6 +98,7 @@ struct HomeView: View {
         }
         .task {
             await appOpen.loadAd()
+            await viewModel.isShowUpdateAlert()
         }
         .onChange(of: appOpen.appOpenAdLoaded) { oldValue, newValue in
             if viewModel.appLaunchCount > EnvironmentConstant.showAdOpenLimitCount, appStorageManager.isShowLastTimeAppLaunch {
