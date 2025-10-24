@@ -12,26 +12,10 @@ struct WorkoutAddMenuView: View {
     @Query private var workoutDays: [WorkoutDay]
     @Query private var exercises: [Exercise]
     @State var viewModel: HomeViewModel
-    @State var isShowCalendar: Bool = false
-    @Binding var selectedDate: Date?
-    @FocusState.Binding var focusedField: FocusField?
 
     var body: some View {
         HStack(spacing: 20) {
             Spacer()
-            Button(action: {
-                isShowCalendar.toggle()
-            }) {
-                ZStack {
-                    Circle()
-                        .fill(Color(.systemGray5))
-                        .frame(width: 60, height: 60)
-                    Image(.icWorkoutCalendar)
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .foregroundStyle(.blue)
-                }
-            }
             Menu {
                 ForEach(Parts.allCases.reversed(), id: \.id) { part in
                     let exercises = viewModel.filteredExercises.filter { $0.parts == part }
@@ -92,20 +76,11 @@ struct WorkoutAddMenuView: View {
             viewModel.setTodayWorkout(workoutDays: workoutDays)
             viewModel.filter(for: exercises)
         })
-        .sheet(isPresented: $isShowCalendar, onDismiss: {
-            viewModel.filter(for: exercises)
-        }) {
-            CalendarView(viewModel: CalendarViewModel(),
-                         selectedDate: $selectedDate,
-                         focusedField: $focusedField)
-        }
     }
 }
 
 #Preview {
     @Previewable @State var selectedDate: Date? = Date()
-    @Previewable @FocusState var focusedField: FocusField?
-    WorkoutAddMenuView(viewModel: HomeViewModel(),
-                       selectedDate: $selectedDate,
-                       focusedField: $focusedField)
+    
+    WorkoutAddMenuView(viewModel: HomeViewModel())
 }

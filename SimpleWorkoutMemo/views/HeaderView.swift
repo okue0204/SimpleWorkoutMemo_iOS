@@ -10,7 +10,7 @@ import SwiftUI
 struct HeaderView: View {
     
     let title: String
-    let imageResource: ImageResource
+    let imageResource: ImageResource?
     let isFromHome: Bool
     let handler: ((HeaderAction?) -> Void)?
     
@@ -48,13 +48,15 @@ struct HeaderView: View {
                             }
                         }
                     } label: {
-                        ZStack {
-                            Circle()
-                                .fill(.blue.opacity(0.2))
-                                .frame(width: 40, height: 40)
-                            Image(imageResource)
-                                .resizable()
-                                .frame(width: 16, height: 16)
+                        if let imageResource {
+                            ZStack {
+                                Circle()
+                                    .fill(.blue.opacity(0.2))
+                                    .frame(width: 40, height: 40)
+                                Image(imageResource)
+                                    .resizable()
+                                    .frame(width: 16, height: 16)
+                            }
                         }
                     }
                     .padding(.trailing, 12)
@@ -71,13 +73,15 @@ struct HeaderView: View {
                     Button(action: {
                         handler?(.none)
                     }) {
-                        ZStack {
-                            Circle()
-                                .fill(.blue.opacity(0.2))
-                                .frame(width: 40, height: 40)
-                            Image(imageResource)
-                                .resizable()
-                                .frame(width: 16, height: 16)
+                        if let imageResource {
+                            ZStack {
+                                Circle()
+                                    .fill(.blue.opacity(0.2))
+                                    .frame(width: 40, height: 40)
+                                Image(imageResource)
+                                    .resizable()
+                                    .frame(width: 16, height: 16)
+                            }
                         }
                     }
                     .padding(.trailing, 12)

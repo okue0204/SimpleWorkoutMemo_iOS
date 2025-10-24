@@ -34,6 +34,13 @@ class CalendarViewModel {
         }
     }
     
+    func todayCalendarMonth() -> CalendarMonth {
+        let calendarMonth = calendars.first { calendarMonth in
+            calendarMonth.date.onlyYearAndMonth == Date().onlyYearAndMonth
+        }!
+        return calendarMonth
+    }
+    
     func lastMonthCalendarMonth(for date: Date) -> CalendarMonth? {
         let calendarMonth = calendars.first(where: { calendarMonth in
             calendarMonth.date.onlyYearAndMonth == date

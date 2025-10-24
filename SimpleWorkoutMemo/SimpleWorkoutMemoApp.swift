@@ -36,9 +36,8 @@ struct SimpleWorkoutMemoApp: App {
     var body: some Scene {
         @State var viewModel = HomeViewModel()
         WindowGroup {
-            HomeView(viewModel: viewModel)
+            ContainerView()
                 .preferredColorScheme(.dark)
-                .environmentObject(AppStorageManager.shared)
         }
         .modelContainer(sharedModelContainer)
     }

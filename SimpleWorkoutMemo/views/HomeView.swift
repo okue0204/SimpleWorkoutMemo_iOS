@@ -68,9 +68,7 @@ struct HomeView: View {
                 }
             }
             if isInitialized {
-                WorkoutAddMenuView(viewModel: viewModel,
-                                   selectedDate: $selectedDate,
-                                   focusedField: $focusedField)
+                WorkoutAddMenuView(viewModel: viewModel)
                     .padding(.top, 12)
             }
         }
