@@ -46,6 +46,18 @@ extension Date {
         Calendar.appCalendar.component(.weekday, from: lastDateOfMonth)
     }
     
+    // 週の初日
+    var firstDayOfWeek: Date {
+        let weekNumber = Calendar.appCalendar.component(.weekday, from: Date())
+        return Calendar.appCalendar.date(byAdding: .day, value: -weekNumber, to: Date()) ?? Date()
+    }
+    
+    //　週の最終日
+    var lastDayOfWeek: Date {
+        let weekNumber = Calendar.appCalendar.component(.weekday, from: Date())
+        return Calendar.appCalendar.date(byAdding: .day, value: 7 - weekNumber, to: Date()) ?? Date()
+    }
+    
     // その月最初の日付
     var firstDayOfMonth: Date {
         Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: month))!
@@ -85,6 +97,21 @@ extension Date {
         let displayLastDatesCount = Self.maxCalendarCount - (monthArray.count + displayLastMonthArray.count)
         return (1...displayLastDatesCount).map { count in
             Calendar.appCalendar.date(byAdding: .day, value: count, to: lastDateOfMonth)!
+        }
+    }
+    
+    // 今週のDateの配列
+    var currentWeekDates: [Date] {
+        (1...7).compactMap { num in
+            Calendar.appCalendar.date(byAdding: .day, value: num, to: firstDayOfWeek)
+        }
+    }
+    
+    // 先週のDateの配列
+    var lastWeekDates: [Date] {
+        let lastWeekFirstDayOfWeek = Calendar.appCalendar.date(byAdding: .day, value: -7, to: firstDayOfWeek)!
+        return (1...7).compactMap { num in
+            Calendar.appCalendar.date(byAdding: .day, value: num, to: lastWeekFirstDayOfWeek)
         }
     }
     

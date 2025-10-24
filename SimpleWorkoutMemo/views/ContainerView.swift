@@ -35,7 +35,7 @@ struct ContainerView: View {
                             .foregroundStyle(selectedTab == .report ? .blue : .gray)
                     }
                 }
-            ReportView()
+            ReportView(viewModel: ReportViewModel())
                 .tabItem {
                     VStack {
                         Image(systemName: Tab.report.imageName)
