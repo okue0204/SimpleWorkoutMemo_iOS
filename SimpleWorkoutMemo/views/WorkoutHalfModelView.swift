@@ -33,6 +33,9 @@ struct WorkoutHalfModelView: View {
                         viewModel.update(workout: workout, with: workoutSetInfo,
                                          at: workoutDay.workouts.firstIndex(of: workout)!)
                     } onDeleteWorkout: { workout in
+                        if workoutDay.workouts.count == 1 {
+                            dismiss()
+                        }
                         let index = workoutDay.workouts.firstIndex(of: workout)!
                         viewModel.removeWorkout(workoutDay, at: index)
                     }

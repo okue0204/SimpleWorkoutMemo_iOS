@@ -87,6 +87,7 @@ class HomeViewModel {
     }
     
     // MARK: - workout
+    @MainActor
     func save() {
         guard let workoutRepository else {
             return
@@ -98,6 +99,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func insert(_ workoutDay: WorkoutDay) {
         guard let workoutRepository else {
             return
@@ -109,6 +111,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func update(workout: Workout, with setInfo: WorkoutSetInfo, at index: Int) {
         guard let workoutRepository else { return }
         do {
@@ -123,6 +126,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func setTodayWorkout(workoutDays: [WorkoutDay]) {
         let workoutDay = workoutDays.first { workoutDay in
             workoutDay.createdAt.zeroClock == Date().zeroClock
@@ -130,6 +134,7 @@ class HomeViewModel {
         todayWorkoutDay = workoutDay
     }
     
+    @MainActor
     func delete(for workoutDay: WorkoutDay) {
         guard let workoutRepository else { return }
         do {
@@ -139,6 +144,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func addWorkout(_ workoutDays: [WorkoutDay], exercise: Exercise) {
         if let todayWorkoutDay = workoutDays.first(where: { workoutDay in
             workoutDay.createdAt.zeroClock == Date().zeroClock
@@ -159,10 +165,14 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func removeWorkout(_ workoutDay: WorkoutDay, at index: Int) {
         guard let workoutRepository else { return }
         do {
             if workoutDay.workouts.count == 1 {
+                let removeWorkout = workoutDay.workouts[index]
+                workoutDay.workouts.remove(at: index)
+                try workoutRepository.delete(removeWorkout)
                 delete(for: workoutDay)
             } else {
                 let removeWorkout = workoutDay.workouts[index]
@@ -174,6 +184,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func addSetInfo(_ workoutDay: WorkoutDay, at workoutIndex: Int) {
         guard let workoutRepository else { return }
         let workoutSetInfo = WorkoutSetInfo(weight: "", rep: "", workout: workoutDay.workouts[workoutIndex])
@@ -185,6 +196,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func removeSetInfo(workoutDay: WorkoutDay, at workoutIndex: Int) {
         guard let workoutRepository, let removeSetInfo = workoutDay.workouts[workoutIndex].sortedWorkoutSetInfo.last else { return }
         do {
@@ -195,6 +207,7 @@ class HomeViewModel {
     }
     
     // MARK: - exercise
+    @MainActor
     func saveDefaultExercise() {
         guard let exerciseRepository else { return }
         do {
@@ -204,6 +217,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func save(_ exercise: Exercise) {
         guard let exerciseRepository else { return }
         do {
@@ -213,6 +227,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func update(_ exercise: Exercise) throws {
         guard let exerciseRepository else { return }
         do {
@@ -222,6 +237,7 @@ class HomeViewModel {
         }
     }
     
+    @MainActor
     func filter(for exercises: [Exercise]) {
         if let todayWorkoutDay {
             let exercises = exercises.filter { exercise in
