@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct BodyPartsThisWeekReportView: View {
+    
+    let viewModel: ReportViewModel
+    
     var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            VStack(spacing: 20) {
                 ForEach(Parts.allCases, id: \.id) { parts in
-                    BodyPartsThisWeekReportItemView(parts: parts)
+                    BodyPartsThisWeekReportItemView(viewModel: viewModel, parts: parts)
                 }
             }
         }
@@ -22,5 +25,5 @@ struct BodyPartsThisWeekReportView: View {
 }
 
 #Preview {
-    BodyPartsThisWeekReportView()
+    BodyPartsThisWeekReportView(viewModel: ReportViewModel())
 }

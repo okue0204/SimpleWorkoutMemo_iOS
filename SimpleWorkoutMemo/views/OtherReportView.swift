@@ -15,7 +15,7 @@ struct OtherReportView: View {
     var body: some View {
         NavigationLink {
             if isThisWeek {
-                BodyPartsThisWeekReportView()
+                BodyPartsThisWeekReportView(viewModel: viewModel)
             }
         } label: {
             VStack(spacing: 12) {

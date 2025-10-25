@@ -143,7 +143,7 @@ class ReportViewModel {
         }
     }
     
-    // 今週と先週の比較用
+    // 今週と先週の比較用(トータル)
     func fetchComparisonReport(type: Reportable, workoutDays: [WorkoutDay]) -> String {
         guard let type = type as? ThisWeekReportType else {
             fatalError("Invalid Report Type")
@@ -182,6 +182,113 @@ class ReportViewModel {
             } else {
                 return "\(symbol) \(result)kg"
             }
+        }
+    }
+    
+    // 棒グラフ用のデータ
+    func barMarkData(parts: Parts, workoutDays: [WorkoutDay]) -> [BarMarkReport] {
+        let thisWeekDates = Date().currentWeekDates
+        let lastWeekDates = Date().lastWeekDates
+        
+        // 今週の部位(仮: 胸)のセット・レップ・総負荷量のデータを取得
+        let filteredThisWeekWorkouts = workoutDays.filter { workoutDay in
+            thisWeekDates.contains { date in
+                date.zeroClock == workoutDay.createdAt.zeroClock
+            }
+        }.flatMap { workoutDay in
+            workoutDay.workouts.filter { workout in
+                workout.exercise?.parts == parts
+            }
+        }
+        let thisWeekTotalSet = filteredThisWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.workoutSetInfo.count
+        }
+        let thisWeekTotalRep = filteredThisWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.totalRep
+        }
+        let thisWeekTotalLoad = filteredThisWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.totalWeight
+        }
+        
+        let thisWeekBarMarkReports: [BarMarkReport] = [
+            .init(period: WeekPeriod.thisWeek, value: thisWeekTotalSet, category: BarMarkReportCategory.set),
+            .init(period: WeekPeriod.thisWeek, value: thisWeekTotalRep, category: BarMarkReportCategory.rep),
+            .init(period: WeekPeriod.thisWeek, value: thisWeekTotalLoad, category: BarMarkReportCategory.totalLoad),
+        ]
+        
+        // 先週の部位(仮: 胸)のセット・レップ・総負荷量のデータを取得
+        let filteredLastWeekWorkouts = workoutDays.filter { workoutDay in
+            lastWeekDates.contains { date in
+                date.zeroClock == workoutDay.createdAt.zeroClock
+            }
+        }.flatMap { workoutDay in
+            workoutDay.workouts.filter { workout in
+                workout.exercise?.parts == parts
+            }
+        }
+        let lastWeekTotalSet = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.workoutSetInfo.count
+        }
+        let lastWeekTotalRep = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.totalRep
+        }
+        let lastWeekTotalLoad = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.totalWeight
+        }
+        
+        let lastWeekBarMarkReports: [BarMarkReport] = [
+            .init(period: WeekPeriod.lastWeek, value: lastWeekTotalSet, category: BarMarkReportCategory.set),
+            .init(period: WeekPeriod.lastWeek, value: lastWeekTotalRep, category: BarMarkReportCategory.rep),
+            .init(period: WeekPeriod.lastWeek, value: lastWeekTotalLoad, category: BarMarkReportCategory.totalLoad),
+        ]
+        
+        return lastWeekBarMarkReports + thisWeekBarMarkReports
+    }
+    
+    // 今週と先週の比較用(部位ごと)
+    func getWeekCompareData(value: Int, category: BarMarkReportCategory, workoutDays: [WorkoutDay], parts: Parts) -> String {
+        let lastWeekDates = Date().lastWeekDates
+        let filteredLastWeekWorkouts = workoutDays.filter { workoutDay in
+            lastWeekDates.contains { date in
+                date.zeroClock == workoutDay.createdAt.zeroClock
+            }
+        }.flatMap { workoutDay in
+            workoutDay.workouts.filter { workout in
+                workout.exercise?.parts == parts
+            }
+        }
+        let lastWeekTotalSet = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.workoutSetInfo.count
+        }
+        let lastWeekTotalRep = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.totalRep
+        }
+        let lastWeekTotalLoad = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+            partialResult += workout.totalWeight
+        }
+        
+        switch category {
+        case .set:
+            let symbol = if value > lastWeekTotalSet {
+                "+"
+            } else {
+                lastWeekTotalSet == 0 ? "" : "-"
+            }
+            return symbol + String(abs(value) - abs(lastWeekTotalSet))
+        case .rep:
+            let symbol = if value > lastWeekTotalRep {
+                "+"
+            } else {
+                lastWeekTotalRep == 0 ? "" : "-"
+            }
+            return symbol + String(abs(value) - abs(lastWeekTotalRep))
+        case .totalLoad:
+            let symbol = if value > lastWeekTotalLoad {
+                "+"
+            } else {
+                lastWeekTotalLoad == 0 ? "" : "-"
+            }
+            return symbol + String(abs(value) - abs(lastWeekTotalLoad))
         }
     }
 }
