@@ -16,7 +16,6 @@ class HomeViewModel {
     var todayWorkoutDay: WorkoutDay?
     var filteredExercises: [Exercise] = []
     var isShowUpdateAlert: Bool = false
-    var isShowSettingTargetDays: Bool = false
     
     // error
     var onFailureWorkoutUpdate: Bool = false
@@ -63,7 +62,7 @@ class HomeViewModel {
     
     @MainActor
     func isShowUpdateAlert() async {
-        if await ForceUpdate.shared.shouldUpdate(), !appStorageManager.isShowLastTimeAppLaunch {
+        if await ForceUpdate.shared.shouldUpdate() {
             isShowUpdateAlert.toggle()
         } else {
             // nothing to do

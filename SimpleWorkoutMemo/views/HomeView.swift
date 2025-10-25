@@ -96,10 +96,14 @@ struct HomeView: View {
             await viewModel.isShowUpdateAlert()
         }
         .onChange(of: appOpen.appOpenAdLoaded) { oldValue, newValue in
-            if viewModel.appLaunchCount > EnvironmentConstant.showAdOpenLimitCount, appStorageManager.isShowLastTimeAppLaunch {
-                appOpen.presentAppOpenAd()
+            Task {
+                if viewModel.appLaunchCount > EnvironmentConstant.showAdOpenLimitCount, appStorageManager.isShowLastTimeAppLaunch,
+                   await !ForceUpdate.shared.shouldUpdate()
+                {
+                    appOpen.presentAppOpenAd()
+                }
+                viewModel.resetLastAppLaunch()
             }
-            viewModel.resetLastAppLaunch()
         }
         .alert("最新バージョンにアップデートして下さい。", isPresented: $viewModel.isShowUpdateAlert, actions: {
             Button("OK") {

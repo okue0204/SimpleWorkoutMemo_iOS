@@ -14,11 +14,13 @@ import SwiftyBeaver
 class AppOpenAdManager: NSObject, ObservableObject {
     
     @Published var appOpenAdLoaded: Bool = false
+    @Published var adDismissed: Bool = false
     var appOpenAd: AppOpenAd?
     
     func loadAd() async {
         do {
             appOpenAd = try await AppOpenAd.load(with: EnvironmentConstant.adOpenId, request: Request())
+            appOpenAd?.fullScreenContentDelegate = self
             appOpenAdLoaded = true
         } catch {
             log.error("failed to load app open ad: \(error.localizedDescription)")
@@ -46,6 +48,7 @@ extension AppOpenAdManager: FullScreenContentDelegate {
         Task {
             await loadAd()
         }
+        adDismissed.toggle()
         print("🍅: 閉じました")
     }
 }
