@@ -19,6 +19,7 @@ class AnalyticsManager {
         case showWorkoutList
         case showReview
         case showShare
+        case showThisWeekReport
     }
     
     static func logEvent(_ event: AnalyticsManager.Event) {

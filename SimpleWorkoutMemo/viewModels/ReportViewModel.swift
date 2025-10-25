@@ -12,6 +12,28 @@ import Observation
 @Observable
 class ReportViewModel {
     
+    private let appStorageManager = AppStorageManager.shared
+    
+    var isShowSettingTargetDays: Bool = false
+    
+    var settingTargetDays: Int {
+        get {
+            appStorageManager.settingTargetDays
+        }
+        set {
+            appStorageManager.settingTargetDays = newValue
+        }
+    }
+    
+    var didShowSettingTargetDays: Bool {
+        get {
+            appStorageManager.didShowSettingTargetDays
+        }
+        set {
+            appStorageManager.didShowSettingTargetDays = newValue
+        }
+    }
+    
     private func weekTotalSets(workoutDays: [WorkoutDay], isThisWeek: Bool = true) -> Int {
         let weekDates = isThisWeek ? Date().currentWeekDates : Date().lastWeekDates
         let weekWorkoutDays = workoutDays.filter { workoutDay in
@@ -309,5 +331,12 @@ class ReportViewModel {
                 date.zeroClock == workoutDay.createdAt.zeroClock
             }
         }.count
+    }
+    
+    func showSettingTargetDaysAlertIfNeeded() {
+        if !appStorageManager.didShowSettingTargetDays, !appStorageManager.isShowLastTimeAppLaunch {
+            didShowSettingTargetDays = true
+            isShowSettingTargetDays.toggle()
+        }
     }
 }

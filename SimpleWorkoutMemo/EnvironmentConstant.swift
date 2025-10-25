@@ -9,11 +9,10 @@ import Foundation
 
 class EnvironmentConstant {
     static let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-    
     static let privacyPolicyURL = URL(string: "https://simple-workout-privacy.web.app")!
     static let termOfServiceURL =  URL(string: "https://simple-workout-terms.web.app")!
-    
     static let showAdOpenLimitCount = 5
+    static let appStoreURL = URL(string: "itms-apps://itunes.apple.com/app/id6754129501")!
     
     #if DEBUG
     static let bannerId = "ca-app-pub-3940256099942544/2435281174"

@@ -21,6 +21,9 @@ struct BodyPartsThisWeekReportView: View {
         }
         .navigationTitle("今週の部位別レポート")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            AnalyticsManager.logEvent(.showThisWeekReport)
+        }
     }
 }
 

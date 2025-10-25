@@ -10,6 +10,8 @@ import SwiftUI
 struct ReportView: View {
     @EnvironmentObject var appStorageManager: AppStorageManager
     @State var viewModel: ReportViewModel
+    @State private var settingTargetText: String = ""
+    
     
     var body: some View {
         NavigationStack {
@@ -36,6 +38,20 @@ struct ReportView: View {
                 }
                 .ignoresSafeArea()
             }
+        }
+        .onAppear(perform: {
+            viewModel.showSettingTargetDaysAlertIfNeeded()
+        })
+        .alert("ワークアウト設定", isPresented: $viewModel.isShowSettingTargetDays) {
+            TextField("日数を指定", text: $settingTargetText)
+                .keyboardType(.numberPad)
+            Button("OK") {
+                viewModel.settingTargetDays = Int(settingTargetText) ?? 0
+            }
+        } message: {
+            Text("週に何日トレーニングを行いますか？")
+                .font(.regular(size: 14))
+                .foregroundStyle(.white)
         }
     }
 }

@@ -63,19 +63,10 @@ class HomeViewModel {
     
     @MainActor
     func isShowUpdateAlert() async {
-        if await ForceUpdate.shared.shouldUpdate(), let lastUpdateDate, lastUpdateDate.zeroClock < Date().zeroClock {
+        if await ForceUpdate.shared.shouldUpdate(), !appStorageManager.isShowLastTimeAppLaunch {
             isShowUpdateAlert.toggle()
-        } else if lastUpdateDate == nil {
-            lastUpdateDate = Date().zeroClock
         } else {
             // nothing to do
-        }
-    }
-    
-    func showSettingTargetDaysAlertIfNeeded() {
-        if !appStorageManager.isSettingTargetDays, !appStorageManager.isShowLastTimeAppLaunch {
-            isSettingTargetDays = true
-            isShowSettingTargetDays.toggle()
         }
     }
     
@@ -92,24 +83,6 @@ class HomeViewModel {
         }
         set {
             appStorageManager.lastUpdateDate = newValue
-        }
-    }
-    
-    var isSettingTargetDays: Bool {
-        get {
-            appStorageManager.isSettingTargetDays
-        }
-        set {
-            appStorageManager.isSettingTargetDays = newValue
-        }
-    }
-    
-    var settingTargetDays: Int {
-        get {
-            appStorageManager.settingTargetDays
-        }
-        set {
-            appStorageManager.settingTargetDays = newValue
         }
     }
     

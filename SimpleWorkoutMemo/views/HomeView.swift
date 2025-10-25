@@ -9,19 +9,14 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
+        
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var appStorageManager: AppStorageManager
     @StateObject var appOpen = AppOpenAdManager()
     @State var viewModel: HomeViewModel
     @State var headerAction: HeaderAction?
-    @State private var isShowSelectedWorkoutMenu: Bool = false
-    @State private var isShowAddWorkoutMenu: Bool = false
-    @State private var isShowSetting: Bool = false
-    @State private var updateWorkoutDay: WorkoutDay?
     @State private var isInitialized = false
     @State private var selectedDate: Date?
-    @State private var isSettingTargetDays: Bool = false
-    @State private var settingTargetText: String = ""
     @FocusState private var focusedField: FocusField?
     
     @Query private var workoutDays: [WorkoutDay]
@@ -82,7 +77,6 @@ struct HomeView: View {
             }
             isInitialized = true
             viewModel.incrementLaunchCount()
-            viewModel.showSettingTargetDaysAlertIfNeeded()
         })
         .onTapGesture {
             focusedField = nil
@@ -107,17 +101,13 @@ struct HomeView: View {
             }
             viewModel.resetLastAppLaunch()
         }
-        .alert("ワークアウト設定", isPresented: $viewModel.isShowSettingTargetDays) {
-            TextField("日数を指定", text: $settingTargetText)
-                .keyboardType(.numberPad)
+        .alert("最新バージョンにアップデートして下さい。", isPresented: $viewModel.isShowUpdateAlert, actions: {
             Button("OK") {
-                viewModel.settingTargetDays = Int(settingTargetText) ?? 0
+                UIApplication.shared.open(EnvironmentConstant.appStoreURL)
             }
-        } message: {
-            Text("週に何日トレーニングを行いますか？")
-                .font(.regular(size: 14))
-                .foregroundStyle(.white)
-        }
+        }, message: {
+            Text("引き続きワークアウトメモを使用するには、アップデートが必要です。")
+        })
     }
 }
 

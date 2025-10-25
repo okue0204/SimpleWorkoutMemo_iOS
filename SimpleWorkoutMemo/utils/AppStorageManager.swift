@@ -17,6 +17,6 @@ class AppStorageManager: ObservableObject {
     @AppStorage("isShowLastTimeAppLaunch") var isShowLastTimeAppLaunch = true
     @AppStorage("appLaunchCount") var appLaunchCount: Int = 0
     @AppStorage("lastUpdateDate") var lastUpdateDate: Date?
-    @AppStorage("isSettingTargetDays") var isSettingTargetDays: Bool = false
+    @AppStorage("didShowSettingTargetDays") var didShowSettingTargetDays: Bool = false
     @AppStorage("settingTargetDays") var settingTargetDays: Int = 0
 }
