@@ -32,10 +32,20 @@ struct ContinuousRecordView: View {
                 Text("日間")
                     .foregroundStyle(.white)
                     .font(.medium(size: 20))
-                Text("今週残り\(appStorageManager.settingTargetDays - viewModel.thisWeekWorkoutCount(workoutDays: workoutDays))日で目標達成です！")
-                    .foregroundStyle(.white)
-                    .font(.regular(size: 16))
-                    .padding(.top, 20)
+                if appStorageManager.settingTargetDays == viewModel.thisWeekWorkoutCount(workoutDays: workoutDays) ||
+                    appStorageManager.settingTargetDays < viewModel.thisWeekWorkoutCount(workoutDays: workoutDays) {
+                    Text("目標達成しました！🔥\nこのまま継続していきましょう！")
+                        .foregroundStyle(.white)
+                        .font(.regular(size: 16))
+                        .padding(.top, 20)
+                        .multilineTextAlignment(.center)
+                } else {
+                    Text("今週残り\(appStorageManager.settingTargetDays - viewModel.thisWeekWorkoutCount(workoutDays: workoutDays))日で目標達成です！")
+                        .foregroundStyle(.white)
+                        .font(.regular(size: 16))
+                        .padding(.top, 20)
+                        .multilineTextAlignment(.center)
+                }
             }
             .padding(.vertical, 20)
             .frame(maxWidth: .infinity)

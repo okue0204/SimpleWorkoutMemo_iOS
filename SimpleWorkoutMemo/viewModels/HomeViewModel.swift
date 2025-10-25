@@ -16,6 +16,7 @@ class HomeViewModel {
     var todayWorkoutDay: WorkoutDay?
     var filteredExercises: [Exercise] = []
     var isShowUpdateAlert: Bool = false
+    var didAddWorkout: Bool = false
     
     // error
     var onFailureWorkoutUpdate: Bool = false
@@ -72,6 +73,15 @@ class HomeViewModel {
     var appLaunchCount: Int {
         get {
             appStorageManager.appLaunchCount
+        }
+    }
+    
+    var didShowRequestReview: Bool {
+        get {
+            appStorageManager.didShowRequestReview
+        }
+        set {
+            appStorageManager.didShowRequestReview = newValue
         }
     }
     
@@ -162,6 +172,7 @@ class HomeViewModel {
             insert(newWorkoutDay)
             todayWorkoutDay = newWorkoutDay
         }
+        didAddWorkout.toggle()
     }
     
     @MainActor

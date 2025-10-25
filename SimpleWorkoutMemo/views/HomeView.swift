@@ -11,6 +11,7 @@ import SwiftData
 struct HomeView: View {
         
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) var requestReview
     @EnvironmentObject var appStorageManager: AppStorageManager
     @StateObject var appOpen = AppOpenAdManager()
     @State var viewModel: HomeViewModel
@@ -105,6 +106,13 @@ struct HomeView: View {
                 viewModel.resetLastAppLaunch()
             }
         }
+        .onChange(of: viewModel.didAddWorkout, { oldValue, newValue in
+            if workoutDays.count >= 10, newValue, !viewModel.didShowRequestReview {
+                requestReview()
+                AnalyticsManager.logEvent(.showReview)
+                viewModel.didShowRequestReview = true
+            }
+        })
         .alert("最新バージョンにアップデートして下さい。", isPresented: $viewModel.isShowUpdateAlert, actions: {
             Button("OK") {
                 UIApplication.shared.open(EnvironmentConstant.appStoreURL)

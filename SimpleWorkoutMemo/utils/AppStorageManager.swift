@@ -13,10 +13,11 @@ class AppStorageManager: ObservableObject {
     private init() {}
     static let shared = AppStorageManager()
     
-    @AppStorage("isFirstTimeAppLaunch") var isFirstTimeAppLaunch: Bool = true
+    @AppStorage("isFirstTimeAppLaunch") var isFirstTimeAppLaunch = true
     @AppStorage("isShowLastTimeAppLaunch") var isShowLastTimeAppLaunch = true
     @AppStorage("appLaunchCount") var appLaunchCount: Int = 0
     @AppStorage("lastUpdateDate") var lastUpdateDate: Date?
-    @AppStorage("didShowSettingTargetDays") var didShowSettingTargetDays: Bool = false
+    @AppStorage("didShowSettingTargetDays") var didShowSettingTargetDays = false
     @AppStorage("settingTargetDays") var settingTargetDays: Int = 0
+    @AppStorage("didShowRequestReview") var didShowRequestReview = false
 }
