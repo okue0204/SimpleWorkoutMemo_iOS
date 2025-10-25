@@ -20,6 +20,8 @@ struct HomeView: View {
     @State private var updateWorkoutDay: WorkoutDay?
     @State private var isInitialized = false
     @State private var selectedDate: Date?
+    @State private var isSettingTargetDays: Bool = false
+    @State private var settingTargetText: String = ""
     @FocusState private var focusedField: FocusField?
     
     @Query private var workoutDays: [WorkoutDay]
@@ -80,6 +82,7 @@ struct HomeView: View {
             }
             isInitialized = true
             viewModel.incrementLaunchCount()
+            viewModel.showSettingTargetDaysAlertIfNeeded()
         })
         .onTapGesture {
             focusedField = nil
@@ -103,6 +106,17 @@ struct HomeView: View {
                 appOpen.presentAppOpenAd()
             }
             viewModel.resetLastAppLaunch()
+        }
+        .alert("ワークアウト設定", isPresented: $viewModel.isShowSettingTargetDays) {
+            TextField("日数を指定", text: $settingTargetText)
+                .keyboardType(.numberPad)
+            Button("OK") {
+                viewModel.settingTargetDays = Int(settingTargetText) ?? 0
+            }
+        } message: {
+            Text("週に何日トレーニングを行いますか？")
+                .font(.regular(size: 14))
+                .foregroundStyle(.white)
         }
     }
 }

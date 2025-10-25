@@ -291,4 +291,23 @@ class ReportViewModel {
             return symbol + String(abs(value) - abs(lastWeekTotalLoad))
         }
     }
+    
+    // 今週のトレーニング回数
+    func thisWeekWorkoutCount(workoutDays: [WorkoutDay]) -> Int {
+        let thisWeekDates = Date().currentWeekDates
+        let hoge = workoutDays.map { workoutDay in
+            DateFormatter.dateToString(workoutDay.createdAt)
+        }
+        print("+++++ hoge \(hoge)")
+        
+        let fuga = thisWeekDates.map { date in
+            DateFormatter.dateToString(date)
+        }
+        print("+++++ fuga \(fuga)")
+        return workoutDays.filter { workoutDay in
+            thisWeekDates.contains { date in
+                date.zeroClock == workoutDay.createdAt.zeroClock
+            }
+        }.count
+    }
 }

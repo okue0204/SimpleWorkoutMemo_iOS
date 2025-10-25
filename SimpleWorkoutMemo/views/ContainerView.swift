@@ -36,6 +36,7 @@ struct ContainerView: View {
                     }
                 }
             ReportView(viewModel: ReportViewModel())
+                .environmentObject(AppStorageManager.shared)
                 .tabItem {
                     VStack {
                         Image(systemName: Tab.report.imageName)

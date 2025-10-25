@@ -27,6 +27,24 @@ struct BodyPartsThisWeekReportItemView: View {
                         .font(.semiBold(size: 16))
                         .foregroundStyle(.white)
                 }
+                VStack(spacing: 6) {
+                    HStack {
+                        Text("今週")
+                        Text(DateFormatter.dateToString(Date().firstDayOfWeek, format: .monthDay))
+                        Text("〜")
+                        Text(DateFormatter.dateToString(Date().lastDayOfWeek, format: .monthDay))
+                    }
+                    .foregroundStyle(.gray)
+                    .font(.regular(size: 12))
+                    HStack {
+                        Text("先週")
+                        Text(DateFormatter.dateToString(Date().lastWeekDates.first!, format: .monthDay))
+                        Text("〜")
+                        Text(DateFormatter.dateToString(Date().addAndSubtractDay(-7).lastDayOfWeek, format: .monthDay))
+                    }
+                    .foregroundStyle(.gray)
+                    .font(.regular(size: 12))
+                }
                 Spacer()
             }
             .padding(.horizontal, 12)

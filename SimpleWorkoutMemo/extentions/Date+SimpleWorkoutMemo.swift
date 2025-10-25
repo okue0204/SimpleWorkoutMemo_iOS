@@ -48,14 +48,14 @@ extension Date {
     
     // 週の初日
     var firstDayOfWeek: Date {
-        let weekNumber = Calendar.appCalendar.component(.weekday, from: Date())
-        return Calendar.appCalendar.date(byAdding: .day, value: -weekNumber, to: Date()) ?? Date()
+        let weekNumber = Calendar.appCalendar.component(.weekday, from: self)
+        return Calendar.appCalendar.date(byAdding: .day, value: -weekNumber, to: self) ?? Date()
     }
     
     //　週の最終日
     var lastDayOfWeek: Date {
-        let weekNumber = Calendar.appCalendar.component(.weekday, from: Date())
-        return Calendar.appCalendar.date(byAdding: .day, value: 7 - weekNumber, to: Date()) ?? Date()
+        let weekNumber = Calendar.appCalendar.component(.weekday, from: self)
+        return Calendar.appCalendar.date(byAdding: .day, value: 7 - weekNumber, to: self) ?? Date()
     }
     
     // その月最初の日付

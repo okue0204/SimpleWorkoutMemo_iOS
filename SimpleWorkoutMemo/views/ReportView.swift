@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ReportView: View {
-    
+    @EnvironmentObject var appStorageManager: AppStorageManager
     @State var viewModel: ReportViewModel
     
     var body: some View {
@@ -22,7 +22,8 @@ struct ReportView: View {
                         .padding(.bottom, 12)
                     ScrollView {
                         VStack(spacing: 20) {
-                            ContinuousRecordView()
+                            ContinuousRecordView(viewModel: viewModel)
+                                .environmentObject(appStorageManager)
                             OtherReportView(viewModel: viewModel,
                                             isThisWeek: true)
                             OtherReportView(viewModel: viewModel,
@@ -41,4 +42,5 @@ struct ReportView: View {
 
 #Preview {
     ReportView(viewModel: ReportViewModel())
+        .environmentObject(AppStorageManager.shared)
 }

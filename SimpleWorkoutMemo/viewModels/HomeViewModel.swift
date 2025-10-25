@@ -16,6 +16,7 @@ class HomeViewModel {
     var todayWorkoutDay: WorkoutDay?
     var filteredExercises: [Exercise] = []
     var isShowUpdateAlert: Bool = false
+    var isShowSettingTargetDays: Bool = false
     
     // error
     var onFailureWorkoutUpdate: Bool = false
@@ -71,6 +72,13 @@ class HomeViewModel {
         }
     }
     
+    func showSettingTargetDaysAlertIfNeeded() {
+        if !appStorageManager.isSettingTargetDays, !appStorageManager.isShowLastTimeAppLaunch {
+            isSettingTargetDays = true
+            isShowSettingTargetDays.toggle()
+        }
+    }
+    
     var appLaunchCount: Int {
         get {
             appStorageManager.appLaunchCount
@@ -84,6 +92,24 @@ class HomeViewModel {
         }
         set {
             appStorageManager.lastUpdateDate = newValue
+        }
+    }
+    
+    var isSettingTargetDays: Bool {
+        get {
+            appStorageManager.isSettingTargetDays
+        }
+        set {
+            appStorageManager.isSettingTargetDays = newValue
+        }
+    }
+    
+    var settingTargetDays: Int {
+        get {
+            appStorageManager.settingTargetDays
+        }
+        set {
+            appStorageManager.settingTargetDays = newValue
         }
     }
     
@@ -163,9 +189,13 @@ class HomeViewModel {
     func removeWorkout(_ workoutDay: WorkoutDay, at index: Int) {
         guard let workoutRepository else { return }
         do {
-            let removeWorkout = workoutDay.workouts[index]
-            workoutDay.workouts.remove(at: index)
-            try workoutRepository.delete(removeWorkout)
+            if workoutDay.workouts.count == 1 {
+                delete(for: workoutDay)
+            } else {
+                let removeWorkout = workoutDay.workouts[index]
+                workoutDay.workouts.remove(at: index)
+                try workoutRepository.delete(removeWorkout)
+            }
         } catch {
             
         }

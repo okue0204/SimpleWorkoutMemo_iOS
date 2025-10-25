@@ -6,8 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContinuousRecordView: View {
+    @EnvironmentObject var appStorageManager: AppStorageManager
+    @Query var workoutDays: [WorkoutDay]
+    
+    let viewModel: ReportViewModel
     
     var body: some View {
         VStack(spacing: 12) {
@@ -21,13 +26,13 @@ struct ContinuousRecordView: View {
                 Text("現在の記録")
                     .foregroundStyle(.white)
                     .font(.regular(size: 16))
-                Text("３")
+                Text(String(viewModel.thisWeekWorkoutCount(workoutDays: workoutDays)))
                     .foregroundStyle(.white)
                     .font(.bold(size: 80))
                 Text("日間")
                     .foregroundStyle(.white)
                     .font(.medium(size: 20))
-                Text("今週残り2日で目標達成です！")
+                Text("今週残り\(appStorageManager.settingTargetDays - viewModel.thisWeekWorkoutCount(workoutDays: workoutDays))日で目標達成です！")
                     .foregroundStyle(.white)
                     .font(.regular(size: 16))
                     .padding(.top, 20)
@@ -44,5 +49,6 @@ struct ContinuousRecordView: View {
 }
 
 #Preview {
-    ContinuousRecordView()
+    ContinuousRecordView(viewModel: ReportViewModel())
+        .environmentObject(AppStorageManager.shared)
 }
