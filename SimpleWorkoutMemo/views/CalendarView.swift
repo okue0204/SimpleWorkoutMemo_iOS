@@ -17,6 +17,7 @@ struct CalendarView: View {
     @State private var currentPositionDate: Date?
     @State private var scrollPosition: String?
     @State private var isShowSheet: Bool = false
+    @State private var isHideBanner: Bool = false
     
     private var displayWidth: CGFloat {
         UIScreen.main.bounds.width
@@ -35,8 +36,10 @@ struct CalendarView: View {
                 }
                            .padding(.bottom, 12)
                            .background(.black)
-                BannerViewContainer {}
-                .frame(width: displayWidth, height: 50)
+                BannerViewContainer {
+                    isHideBanner = true
+                }
+                .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
                 CurrentCalendarSelectTextView(currentPositionDate: $currentPositionDate,
                                               scrollPosition: $scrollPosition,
                                               viewModel: viewModel)

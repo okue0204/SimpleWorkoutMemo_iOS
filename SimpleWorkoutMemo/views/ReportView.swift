@@ -11,7 +11,7 @@ struct ReportView: View {
     @EnvironmentObject var appStorageManager: AppStorageManager
     @State var viewModel: ReportViewModel
     @State private var settingTargetText: String = ""
-    
+    @State private var isHideBanner: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -24,6 +24,11 @@ struct ReportView: View {
                         .padding(.bottom, 12)
                     ScrollView {
                         VStack(spacing: 20) {
+                            BannerViewContainer {
+                                isHideBanner = true
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: isHideBanner ? 0 : 50)
                             ContinuousRecordView(viewModel: viewModel)
                                 .environmentObject(appStorageManager)
                             OtherReportView(viewModel: viewModel,

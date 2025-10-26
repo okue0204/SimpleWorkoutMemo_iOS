@@ -22,6 +22,7 @@ struct WorkoutListView: View {
     @State private var text: String = ""
     @State private var selectedWorkoutType: WorkoutType = .freeWeight
     @State private var selectedExerciseId: ExerciseId?
+    @State private var isHideBanner: Bool = false
     @FocusState private var isFocused: Bool
     var onUpdateExercise: (() -> Void)?
     
@@ -62,8 +63,10 @@ struct WorkoutListView: View {
                     selectedParts = Parts.allCases.first(where: { $0.rawValue == newValue }) ?? .chest
                 }
             }
-            BannerViewContainer {}
-            .frame(width: displayWidth, height: 50)
+            BannerViewContainer {
+                isHideBanner = true
+            }
+            .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
             ScrollViewReader { proxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {

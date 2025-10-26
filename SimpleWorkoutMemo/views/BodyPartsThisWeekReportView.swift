@@ -9,11 +9,18 @@ import SwiftUI
 
 struct BodyPartsThisWeekReportView: View {
     
+    @State private var isHideBanner: Bool = false
+    
     let viewModel: ReportViewModel
     
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
+                BannerViewContainer {
+                    isHideBanner = true
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: isHideBanner ? 0 : 50)
                 ForEach(Parts.allCases, id: \.id) { parts in
                     BodyPartsThisWeekReportItemView(viewModel: viewModel, parts: parts)
                 }

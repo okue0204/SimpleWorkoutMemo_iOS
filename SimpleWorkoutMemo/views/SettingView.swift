@@ -35,6 +35,7 @@ struct SettingView: View {
     @Environment(\.dismiss) var dismiss
     
     @State var settingSheetType: SettingSheetType?
+    @State private var isHideBanner: Bool = false
     
     private var displayWidth: CGFloat {
         UIScreen.main.bounds.width
@@ -47,8 +48,10 @@ struct SettingView: View {
             dismiss()
         }
                    .padding(.vertical, 12)
-        BannerViewContainer {}
-        .frame(width: displayWidth, height: 50)
+        BannerViewContainer {
+            isHideBanner = true
+        }
+        .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
         VStack(spacing: 0) {
             List {
                 Section {
@@ -118,8 +121,10 @@ struct SettingView: View {
                 }
             }
             .sheet(item: $settingSheetType) { $0 }
-            BannerViewContainer {}
-            .frame(width: displayWidth, height: 100)
+            BannerViewContainer {
+                isHideBanner = true
+            }
+            .frame(width: displayWidth, height: isHideBanner ? 0 : 100)
         }
         .ignoresSafeArea(.container)
     }

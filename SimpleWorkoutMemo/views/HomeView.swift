@@ -18,6 +18,7 @@ struct HomeView: View {
     @State var headerAction: HeaderAction?
     @State private var isInitialized = false
     @State private var selectedDate: Date?
+    @State private var isHideBanner: Bool = false
     @FocusState private var focusedField: FocusField?
     
     @Query private var workoutDays: [WorkoutDay]
@@ -40,8 +41,10 @@ struct HomeView: View {
                     let workoutDays = workoutDays.filter { day in
                         day.createdAt.zeroClock == Date().zeroClock
                     }
-                    BannerViewContainer {}
-                    .frame(width: displayWidth, height: 50)
+                    BannerViewContainer {
+                        isHideBanner = true
+                    }
+                    .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
                     ForEach(workoutDays, id: \.id) { workoutDay in
                         ForEach(workoutDay.workouts, id: \.id) { workout in
                             let previousWorkout = viewModel.fetchPreviousWorkout(workoutDays: self.workoutDays, todayWorkout: workout)
