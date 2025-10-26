@@ -13,7 +13,7 @@ struct OtherReportItemView: View {
     
     let viewModel: ReportViewModel
     let reportType: Reportable
-    let isThisWeek: Bool
+    let timePeriod: TimePeriod
     
     var body: some View {
         VStack(alignment: .center, spacing: 12) {
@@ -22,20 +22,20 @@ struct OtherReportItemView: View {
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
-            Text(reportType.title)
+            Text(reportType.title(for: timePeriod))
                 .font(.medium(size: 12))
                 .foregroundStyle(.white)
-            if isThisWeek {
-                VStack(spacing: 0) {
-                    Text("先週対比")
-                        .font(.regular(size: 12))
-                        .foregroundStyle(.gray)
-                    Text(viewModel.fetchComparisonReport(type: reportType,
-                                                         workoutDays: workoutDays))
-                        .font(.regular(size: 12))
-                        .foregroundStyle(.gray)
-                }
-            }
+//            if isThisWeek {
+//                VStack(spacing: 0) {
+//                    Text("先週対比")
+//                        .font(.regular(size: 12))
+//                        .foregroundStyle(.gray)
+//                    Text(viewModel.fetchComparisonReport(type: reportType,
+//                                                         workoutDays: workoutDays))
+//                        .font(.regular(size: 12))
+//                        .foregroundStyle(.gray)
+//                }
+//            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)
@@ -48,5 +48,7 @@ struct OtherReportItemView: View {
 }
 
 #Preview {
-    OtherReportItemView(viewModel: ReportViewModel(), reportType: ThisWeekReportType.thisWeekTotalLoad, isThisWeek: true)
+    OtherReportItemView(viewModel: ReportViewModel(),
+                        reportType: ReportType.totalLoad,
+                        timePeriod: .today)
 }

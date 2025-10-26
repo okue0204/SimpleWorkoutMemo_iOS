@@ -9,7 +9,7 @@ import Foundation
 
 struct BarMarkReport: Identifiable {
     var id: String = UUID().uuidString
-    let period: WeekPeriod
+    let period: Periodable
     let value: Int
     let category: BarMarkReportCategory
 }

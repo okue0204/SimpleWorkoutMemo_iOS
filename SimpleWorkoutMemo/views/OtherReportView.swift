@@ -10,44 +10,47 @@ import SwiftUI
 struct OtherReportView: View {
     
     let viewModel: ReportViewModel
-    let isThisWeek: Bool
+    let timePeriod: TimePeriod
     
     var body: some View {
-        if isThisWeek {
+        switch timePeriod {
+        case .all:
+            reportContent
+        default:
             NavigationLink {
-                if isThisWeek {
-                    BodyPartsThisWeekReportView(viewModel: viewModel)
-                }
+                BodyPartsReportView(viewModel: viewModel)
             } label: {
                 reportContent
             }
-        } else {
-            reportContent
         }
     }
     
     private var reportContent: some View {
         VStack(spacing: 12) {
             HStack {
-                Text(isThisWeek ? "今週の記録" : "トータルの記録")
+                Text(timePeriod == .all ? "トータルの記録" : "記録")
                     .foregroundStyle(.white)
                     .font(.regular(size: 16))
                 Spacer()
-                if isThisWeek {
+                switch timePeriod {
+                case .all:
+                    EmptyView()
+                default:
                     Image(.icWorkoutRightArrow)
                         .resizable()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(.white)
                 }
             }
-            LazyVGrid(columns: Array(repeating: .init(), count: isThisWeek ? 3 : 2)) {
-                if isThisWeek {
-                    ForEach(ThisWeekReportType.allCases, id: \.id) { type in
-                        OtherReportItemView(viewModel: viewModel, reportType: type, isThisWeek: true)
+            LazyVGrid(columns: Array(repeating: .init(), count: timePeriod == .all ? 2 : 3)) {
+                switch timePeriod {
+                case .all:
+                    ForEach(AllReportType.allCases, id: \.id) { type in
+                        OtherReportItemView(viewModel: viewModel, reportType: type, timePeriod: .all)
                     }
-                } else {
+                default:
                     ForEach(ReportType.allCases, id: \.id) { type in
-                        OtherReportItemView(viewModel: viewModel, reportType: type, isThisWeek: false)
+                        OtherReportItemView(viewModel: viewModel, reportType: type, timePeriod: timePeriod)
                     }
                 }
             }
@@ -57,6 +60,5 @@ struct OtherReportView: View {
 }
 
 #Preview {
-    @Previewable @State var isShowThisWeekReport: Bool = false
-    OtherReportView(viewModel: ReportViewModel(), isThisWeek: true)
+    OtherReportView(viewModel: ReportViewModel(), timePeriod: .today)
 }

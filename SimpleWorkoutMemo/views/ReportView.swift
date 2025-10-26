@@ -32,9 +32,9 @@ struct ReportView: View {
                             ContinuousRecordView(viewModel: viewModel)
                                 .environmentObject(appStorageManager)
                             OtherReportView(viewModel: viewModel,
-                                            isThisWeek: true)
+                                            timePeriod: .today)
                             OtherReportView(viewModel: viewModel,
-                                            isThisWeek: false)
+                                            timePeriod: .all)
                         }
                     }
                     Spacer()

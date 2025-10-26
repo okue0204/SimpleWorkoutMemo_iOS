@@ -10,50 +10,90 @@ import SwiftUI
 
 protocol Reportable {
     var id: String { get }
-    var title: String { get }
+    func title(for period: TimePeriod) -> String
 }
 
-enum ReportType: String, CaseIterable, Identifiable, Reportable {
-    case totalDays
-    case totalSets
-    case totalReps
-    case totalLoad
+enum AllReportType: String, CaseIterable, Identifiable, Reportable {
+    case allTotalDays
+    case allTotalSets
+    case allTotalReps
+    case allTotalLoad
     
     var id: String {
         rawValue
     }
     
-    var title: String {
-        switch self {
-        case .totalDays:
-            "総日数"
-        case .totalSets:
-            "総セット数"
-        case .totalReps:
-            "総レップ数"
-        case .totalLoad:
-            "総負荷量"
+    func title(for period: TimePeriod) -> String {
+        if case .all  = period {
+            switch self {
+            case .allTotalDays:
+                "総日数"
+            case .allTotalSets:
+                "総セット数"
+            case .allTotalReps:
+                "総レップ数"
+            case .allTotalLoad:
+                "総負荷量"
+            }
+        } else {
+            ""
         }
     }
 }
 
-enum ThisWeekReportType: String, CaseIterable, Identifiable, Reportable {
-    case thisWeekTotalSets
-    case thisWeekTotalReps
-    case thisWeekTotalLoad
+enum ReportType: String, CaseIterable, Identifiable, Reportable {
+    case totalSets
+    case totalReps
+    case totalLoad
+    
+    var timePeriod: TimePeriod {
+        .today
+    }
     
     var id: String {
         rawValue
     }
     
-    var title: String {
-        switch self {
-        case .thisWeekTotalSets:
-            "今週の総セット数"
-        case .thisWeekTotalReps:
-            "今週の総レップ数"
-        case .thisWeekTotalLoad:
-            "今週の総負荷量"
+    func title(for period: TimePeriod) -> String {
+        switch period {
+        case .today:
+            switch self {
+            case .totalSets:
+                "今日の総セット数"
+            case .totalReps:
+                "今日の総レップ数"
+            case .totalLoad:
+                "今日の総負荷量"
+            }
+        case .thisWeek:
+            switch self {
+            case .totalSets:
+                "今週の総セット数"
+            case .totalReps:
+                "今週の総レップ数"
+            case .totalLoad:
+                "今週の総負荷量"
+            }
+        case .thisMonth:
+            switch self {
+            case .totalSets:
+                "今月の総セット数"
+            case .totalReps:
+                "今月の総レップ数"
+            case .totalLoad:
+                "今月の総負荷量"
+            }
+        case .thisYear:
+            switch self {
+            case .totalSets:
+                "今年の総セット数"
+            case .totalReps:
+                "今年の総レップ数"
+            case .totalLoad:
+                "今年の総負荷量"
+            }
+        case .all:
+            ""
         }
     }
 }

@@ -49,7 +49,11 @@ extension Date {
     // 週の初日
     var firstDayOfWeek: Date {
         let weekNumber = Calendar.appCalendar.component(.weekday, from: self)
-        return Calendar.appCalendar.date(byAdding: .day, value: -weekNumber, to: self) ?? Date()
+        if weekNumber == WeekDay.sunday.rawValue {
+            return Calendar.appCalendar.date(byAdding: .day, value: 0, to: self) ?? Date()
+        } else {
+            return Calendar.appCalendar.date(byAdding: .day, value: -weekNumber, to: self) ?? Date()
+        }
     }
     
     //　週の最終日
@@ -68,11 +72,20 @@ extension Date {
         Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: month + 1, day: 0))!
     }
     
-    // 月のdateの配列
+    // その月のdateの配列
     var monthArray: Array<Date> {
         (1...daysInMonth(self)).compactMap { day in
             Calendar.appCalendar.date(from: .init(calendar: Calendar.appCalendar, year: year, month: month, day: day))
         }
+    }
+    
+    // その年の最初の日付
+    var firstDayOfYear: Date {
+        Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: 1))!
+    }
+    // その年の最後の日付
+    var lastDayOfYear: Date {
+        Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: 12 + 1, day: 0))!
     }
     
     // 当月で幾つかの先月の最終日を表示する配列
@@ -102,7 +115,7 @@ extension Date {
     
     // 今週のDateの配列
     var currentWeekDates: [Date] {
-        (1...7).compactMap { num in
+        (0...6).compactMap { num in
             Calendar.appCalendar.date(byAdding: .day, value: num, to: firstDayOfWeek)
         }
     }
@@ -110,8 +123,56 @@ extension Date {
     // 先週のDateの配列
     var lastWeekDates: [Date] {
         let lastWeekFirstDayOfWeek = Calendar.appCalendar.date(byAdding: .day, value: -7, to: firstDayOfWeek)!
-        return (1...7).compactMap { num in
+        return (0...6).compactMap { num in
             Calendar.appCalendar.date(byAdding: .day, value: num, to: lastWeekFirstDayOfWeek)
+        }
+    }
+    
+    // 今月のDateの配列
+    var currentMonthDates: [Date] {
+        (1...lastDateOfMonth.day).compactMap { num in
+            Calendar.appCalendar.date(byAdding: .day, value: num, to: firstDayOfMonth)
+        }
+    }
+    
+    // 先月のDateの配列
+    var lastMonthDates: [Date] {
+        let lastMonth = firstDayOfMonth.addMonth(-1)
+        let lastMonthCount = Date().daysInMonth(lastMonth)
+        return (0...lastMonthCount - 1).compactMap { num in
+            Calendar.appCalendar.date(byAdding: .day, value: num, to: lastMonth)
+        }
+    }
+    
+    // 今年の1月~12月までのDateの配列
+    var currentYearDates: [Date] {
+        let result = (1...12).flatMap { month in
+            guard let startOfMonth = Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: month, day: 1)),
+                  let range = Calendar.appCalendar.range(of: .day, in: .month, for: startOfMonth) else {
+                return []
+            }
+            return range.compactMap { day in
+                Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: month, day: day))
+            }
+        }
+        return result.compactMap {
+            $0 as? Date
+        }
+    }
+    
+    // 去年の1月~12月までのDateの配列
+    var lastYearDates: [Date] {
+        let result = (1...12).flatMap { month in
+            guard let startOfMonth = Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year - 1, month: month, day: 1)),
+                  let range = Calendar.appCalendar.range(of: .day, in: .month, for: startOfMonth) else {
+                return []
+            }
+            return range.compactMap { day in
+                Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year - 1, month: month, day: day))
+            }
+        }
+        return result.compactMap {
+            $0 as? Date
         }
     }
     
@@ -122,6 +183,39 @@ extension Date {
     
     func addMonth(_ value: Int) -> Date {
         Calendar.appCalendar.date(byAdding: .month, value: value, to: self) ?? Date()
+    }
+    
+    func firstDayOfPeriod(for timePeriod: TimePeriod) -> Date {
+        switch timePeriod {
+        case .today, .thisWeek:
+            firstDayOfWeek
+        case .thisMonth:
+            firstDayOfMonth
+        case .thisYear, .all:
+            fatalError()
+        }
+    }
+    
+    func lastDayOfPeriod(for timePeriod: TimePeriod) -> Date {
+        switch timePeriod {
+        case .today, .thisWeek:
+            lastDayOfWeek
+        case .thisMonth:
+            lastDateOfMonth
+        case .thisYear, .all:
+            fatalError()
+        }
+    }
+    
+    func previousPeriodArray(for timePeriod: TimePeriod) -> [Date] {
+        switch timePeriod {
+        case .today, .thisYear, .all:
+            fatalError()
+        case .thisWeek:
+            lastWeekDates
+        case .thisMonth:
+            lastMonthDates
+        }
     }
     
     // その月の日数を返す

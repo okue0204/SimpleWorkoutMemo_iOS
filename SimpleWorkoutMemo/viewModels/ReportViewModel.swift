@@ -83,11 +83,11 @@ class ReportViewModel {
     }
     
     func fetchReport(type: Reportable, workoutDays: [WorkoutDay]) -> String {
-        if let reportType = type as? ReportType {
+        if let reportType = type as? AllReportType {
             switch reportType {
-            case .totalDays:
+            case .allTotalDays:
                 return String(workoutDays.count)
-            case .totalSets:
+            case .allTotalSets:
                 let totalSetCount = workoutDays.reduce(into: 0) { partialResult, workoutDay in
                     let sets = workoutDay.workouts.map { workout in
                         workout.workoutSetInfo.count
@@ -101,7 +101,7 @@ class ReportViewModel {
                 } else {
                     return String(totalSetCount)
                 }
-            case .totalReps:
+            case .allTotalReps:
                 let totalReps = workoutDays.reduce(into: 0) { partialResult, workoutDay in
                     let reps = workoutDay.workouts.map { workout in
                         workout.totalRep
@@ -115,7 +115,7 @@ class ReportViewModel {
                 } else {
                     return String(totalReps)
                 }
-            case .totalLoad:
+            case .allTotalLoad:
                 let totalWeight = workoutDays.reduce(into: 0) { partialResult, workoutDay in
                     let weight = workoutDay.workouts.map { workout in
                         workout.totalWeight
@@ -130,9 +130,9 @@ class ReportViewModel {
                     return "\(totalWeight)kg"
                 }
             }
-        } else if let thisWeekReportType = type as? ThisWeekReportType {
+        } else if let thisWeekReportType = type as? ReportType {
             switch thisWeekReportType {
-            case .thisWeekTotalSets:
+            case .totalSets:
                 let weekTotalSetCount = weekTotalSets(workoutDays: workoutDays)
                 let totalSetsStringCount = String(weekTotalSetCount).count
                 if totalSetsStringCount >= 4 {
@@ -141,7 +141,7 @@ class ReportViewModel {
                 } else {
                     return String(weekTotalSetCount)
                 }
-            case .thisWeekTotalReps:
+            case .totalReps:
                 let weekTotalRepCount = weekTotalReps(workoutDays: workoutDays)
                 let totalRepsStringCount = String(weekTotalRepCount).count
                 if totalRepsStringCount >= 4 {
@@ -150,7 +150,7 @@ class ReportViewModel {
                 } else {
                     return String(weekTotalRepCount)
                 }
-            case .thisWeekTotalLoad:
+            case .totalLoad:
                 let weekTotalWeight = weekTotalLoad(workoutDays: workoutDays)
                 let totalLoadStringCount = String(weekTotalWeight).count
                 if totalLoadStringCount >= 4 {
@@ -167,11 +167,11 @@ class ReportViewModel {
     
     // 今週と先週の比較用(トータル)
     func fetchComparisonReport(type: Reportable, workoutDays: [WorkoutDay]) -> String {
-        guard let type = type as? ThisWeekReportType else {
+        guard let type = type as? ReportType else {
             fatalError("Invalid Report Type")
         }
         switch type {
-        case .thisWeekTotalSets:
+        case .totalSets:
             let thisWeekTotalSetsCount = weekTotalSets(workoutDays: workoutDays)
             let lastWeekTotalSetsCount = weekTotalSets(workoutDays: workoutDays, isThisWeek: false)
             let result = abs(thisWeekTotalSetsCount) - abs(lastWeekTotalSetsCount)
@@ -180,7 +180,7 @@ class ReportViewModel {
             } else {
                 return "- \(result)"
             }
-        case .thisWeekTotalReps:
+        case .totalReps:
             let thisWeekTotalRepsCount = weekTotalReps(workoutDays: workoutDays)
             let lastWeekTotalRepsCount = weekTotalReps(workoutDays: workoutDays, isThisWeek: false)
             let result = abs(thisWeekTotalRepsCount) - abs(lastWeekTotalRepsCount)
@@ -189,7 +189,7 @@ class ReportViewModel {
             } else {
                 return "- \(result)"
             }
-        case .thisWeekTotalLoad:
+        case .totalLoad:
             let thisWeekTotalLoadCount = weekTotalLoad(workoutDays: workoutDays)
             let lastWeekTotalLoadCount = weekTotalLoad(workoutDays: workoutDays, isThisWeek: false)
             let result = abs(thisWeekTotalLoadCount) - abs(lastWeekTotalLoadCount)
@@ -208,13 +208,59 @@ class ReportViewModel {
     }
     
     // 棒グラフ用のデータ
-    func barMarkData(parts: Parts, workoutDays: [WorkoutDay]) -> [BarMarkReport] {
-        let thisWeekDates = Date().currentWeekDates
-        let lastWeekDates = Date().lastWeekDates
+    func barMarkData(parts: Parts, workoutDays: [WorkoutDay], timePeriod: TimePeriod) -> [BarMarkReport] {
         
-        // 今週の部位(仮: 胸)のセット・レップ・総負荷量のデータを取得
-        let filteredThisWeekWorkouts = workoutDays.filter { workoutDay in
-            thisWeekDates.contains { date in
+        let currentPeriod: Periodable? = switch timePeriod {
+        case .thisWeek:
+            WeekPeriod.thisWeek
+        case .thisMonth:
+            MonthPeriod.thisMonth
+        case .thisYear:
+            YearPeriod.thisYear
+        case .today:
+            TodayPeriod.today
+        default:
+            nil
+        }
+        
+        let previousPeriod: Periodable? = switch timePeriod {
+        case .thisWeek:
+            WeekPeriod.lastWeek
+        case .thisMonth:
+            MonthPeriod.lastMonth
+        case .thisYear:
+            YearPeriod.lastYear
+        default:
+            nil
+        }
+        
+        let currentPeriodDates: [Date] = switch timePeriod {
+        case .thisWeek:
+            Date().currentWeekDates
+        case .thisMonth:
+            Date().currentMonthDates
+        case .thisYear:
+            Date().currentYearDates
+        case .today:
+            [Date()]
+        default:
+            []
+        }
+        
+        let previousPeriodDates: [Date] = switch timePeriod {
+        case .thisWeek:
+            Date().lastWeekDates
+        case .thisMonth:
+            Date().lastMonthDates
+        case .thisYear:
+            Date().lastYearDates
+        default:
+            []
+        }
+        
+        // 今週・今月・今年の部位(仮: 胸)のセット・レップ・総負荷量のデータを取得
+        let filteredCurrentPeriodWorkouts = workoutDays.filter { workoutDay in
+            currentPeriodDates.contains { date in
                 date.zeroClock == workoutDay.createdAt.zeroClock
             }
         }.flatMap { workoutDay in
@@ -222,25 +268,29 @@ class ReportViewModel {
                 workout.exercise?.parts == parts
             }
         }
-        let thisWeekTotalSet = filteredThisWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let currentPeriodTotalSet = filteredCurrentPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.workoutSetInfo.count
         }
-        let thisWeekTotalRep = filteredThisWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let currentPeriodTotalRep = filteredCurrentPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.totalRep
         }
-        let thisWeekTotalLoad = filteredThisWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let currentPeriodTotalLoad = filteredCurrentPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.totalWeight
         }
         
-        let thisWeekBarMarkReports: [BarMarkReport] = [
-            .init(period: WeekPeriod.thisWeek, value: thisWeekTotalSet, category: BarMarkReportCategory.set),
-            .init(period: WeekPeriod.thisWeek, value: thisWeekTotalRep, category: BarMarkReportCategory.rep),
-            .init(period: WeekPeriod.thisWeek, value: thisWeekTotalLoad, category: BarMarkReportCategory.totalLoad),
+        
+        guard let currentPeriod else {
+            return []
+        }
+        let currentPeriodBarMarkReports: [BarMarkReport] = [
+            .init(period: currentPeriod, value: currentPeriodTotalSet, category: BarMarkReportCategory.set),
+            .init(period: currentPeriod, value: currentPeriodTotalRep, category: BarMarkReportCategory.rep),
+            .init(period: currentPeriod, value: currentPeriodTotalLoad, category: BarMarkReportCategory.totalLoad)
         ]
         
-        // 先週の部位(仮: 胸)のセット・レップ・総負荷量のデータを取得
-        let filteredLastWeekWorkouts = workoutDays.filter { workoutDay in
-            lastWeekDates.contains { date in
+        // 先週・先月・去年の部位(仮: 胸)のセット・レップ・総負荷量のデータを取得
+        let filteredPreviousPeriodWorkouts = workoutDays.filter { workoutDay in
+            previousPeriodDates.contains { date in
                 date.zeroClock == workoutDay.createdAt.zeroClock
             }
         }.flatMap { workoutDay in
@@ -248,30 +298,45 @@ class ReportViewModel {
                 workout.exercise?.parts == parts
             }
         }
-        let lastWeekTotalSet = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let previousPeriodTotalSet = filteredPreviousPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.workoutSetInfo.count
         }
-        let lastWeekTotalRep = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let previousPeriodTotalRep = filteredPreviousPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.totalRep
         }
-        let lastWeekTotalLoad = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let previousPeriodTotalLoad = filteredPreviousPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.totalWeight
         }
         
-        let lastWeekBarMarkReports: [BarMarkReport] = [
-            .init(period: WeekPeriod.lastWeek, value: lastWeekTotalSet, category: BarMarkReportCategory.set),
-            .init(period: WeekPeriod.lastWeek, value: lastWeekTotalRep, category: BarMarkReportCategory.rep),
-            .init(period: WeekPeriod.lastWeek, value: lastWeekTotalLoad, category: BarMarkReportCategory.totalLoad),
+        guard let previousPeriod else {
+            //　今日の場合のみ通る
+            return currentPeriodBarMarkReports
+        }
+        let previousPeriodBarMarkReports: [BarMarkReport] = [
+            .init(period: previousPeriod, value: previousPeriodTotalSet, category: BarMarkReportCategory.set),
+            .init(period: previousPeriod, value: previousPeriodTotalRep, category: BarMarkReportCategory.rep),
+            .init(period: previousPeriod, value: previousPeriodTotalLoad, category: BarMarkReportCategory.totalLoad)
         ]
         
-        return lastWeekBarMarkReports + thisWeekBarMarkReports
+        return previousPeriodBarMarkReports + currentPeriodBarMarkReports
     }
     
-    // 今週と先週の比較用(部位ごと)
-    func getWeekCompareData(value: Int, category: BarMarkReportCategory, workoutDays: [WorkoutDay], parts: Parts) -> String {
-        let lastWeekDates = Date().lastWeekDates
-        let filteredLastWeekWorkouts = workoutDays.filter { workoutDay in
-            lastWeekDates.contains { date in
+    // 今週と先週・今月と先月・今年と去年の比較用(部位ごと)
+    func getWeekCompareData(value: Int, category: BarMarkReportCategory, workoutDays: [WorkoutDay], parts: Parts, timePeriod: TimePeriod) -> String {
+        
+        let previousPeriodDates: [Date] = switch timePeriod {
+        case .thisWeek:
+            Date().lastWeekDates
+        case .thisMonth:
+            Date().lastMonthDates
+        case .thisYear:
+            []
+        default:
+            fatalError()
+        }
+        
+        let filteredPreviousPeriodWorkouts = workoutDays.filter { workoutDay in
+            previousPeriodDates.contains { date in
                 date.zeroClock == workoutDay.createdAt.zeroClock
             }
         }.flatMap { workoutDay in
@@ -279,38 +344,38 @@ class ReportViewModel {
                 workout.exercise?.parts == parts
             }
         }
-        let lastWeekTotalSet = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let previousPeriodTotalSet = filteredPreviousPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.workoutSetInfo.count
         }
-        let lastWeekTotalRep = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let previousPeriodTotalRep = filteredPreviousPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.totalRep
         }
-        let lastWeekTotalLoad = filteredLastWeekWorkouts.reduce(into: 0) { partialResult, workout in
+        let previousPeriodTotalLoad = filteredPreviousPeriodWorkouts.reduce(into: 0) { partialResult, workout in
             partialResult += workout.totalWeight
         }
         
         switch category {
         case .set:
-            let symbol = if value > lastWeekTotalSet {
+            let symbol = if value > previousPeriodTotalSet {
                 "+"
             } else {
-                lastWeekTotalSet == 0 ? "" : "-"
+                previousPeriodTotalSet == 0 ? "" : "-"
             }
-            return symbol + String(abs(value) - abs(lastWeekTotalSet))
+            return symbol + String(abs(value) - abs(previousPeriodTotalSet))
         case .rep:
-            let symbol = if value > lastWeekTotalRep {
+            let symbol = if value > previousPeriodTotalRep {
                 "+"
             } else {
-                lastWeekTotalRep == 0 ? "" : "-"
+                previousPeriodTotalRep == 0 ? "" : "-"
             }
-            return symbol + String(abs(value) - abs(lastWeekTotalRep))
+            return symbol + String(abs(value) - abs(previousPeriodTotalRep))
         case .totalLoad:
-            let symbol = if value > lastWeekTotalLoad {
+            let symbol = if value > previousPeriodTotalLoad {
                 "+"
             } else {
-                lastWeekTotalLoad == 0 ? "" : "-"
+                previousPeriodTotalLoad == 0 ? "" : "-"
             }
-            return symbol + String(abs(value) - abs(lastWeekTotalLoad))
+            return symbol + String(abs(value) - abs(previousPeriodTotalLoad))
         }
     }
     
