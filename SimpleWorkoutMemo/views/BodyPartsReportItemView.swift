@@ -30,26 +30,36 @@ struct BodyPartsReportItemView: View {
                 }
                 VStack(spacing: 6) {
                     switch timePeriod {
-                    case .all, .thisYear:
+                    case .all:
                         EmptyView()
                     case .today:
                         Text(DateFormatter.dateToString(Date().firstDayOfPeriod(for: timePeriod), format: .monthDay))
                             .foregroundStyle(.gray)
                             .font(.regular(size: 12))
-                    case .thisWeek, .thisMonth:
+                    case .thisWeek, .thisMonth, .thisYear:
                         HStack {
                             Text(timePeriod.graphTitle)
-                            Text(DateFormatter.dateToString(Date().firstDayOfPeriod(for: timePeriod), format: .monthDay))
-                            Text("〜")
-                            Text(DateFormatter.dateToString(Date().lastDayOfPeriod(for: timePeriod), format: .monthDay))
+                            Text(DateFormatter.dateToString(Date().firstDayOfPeriod(for: timePeriod), format: timePeriod == .thisYear ? .year : .monthDay))
+                            switch timePeriod {
+                            case .thisWeek, .thisMonth:
+                                Text("〜")
+                                Text(DateFormatter.dateToString(Date().lastDayOfPeriod(for: timePeriod), format: .monthDay))
+                            default:
+                                EmptyView()
+                            }
                         }
                         .foregroundStyle(.gray)
                         .font(.regular(size: 12))
                         HStack {
                             Text(timePeriod.previousGraphTitle)
-                            Text(DateFormatter.dateToString(Date().previousPeriodArray(for: timePeriod).first!, format: .monthDay))
-                            Text("〜")
-                            Text(DateFormatter.dateToString(Date().previousPeriodArray(for: timePeriod).last!, format: .monthDay))
+                            Text(DateFormatter.dateToString(Date().previousPeriodArray(for: timePeriod).first!, format: timePeriod == .thisYear ? .year : .monthDay))
+                            switch timePeriod {
+                            case .thisWeek, .thisMonth:
+                                Text("〜")
+                                Text(DateFormatter.dateToString(Date().previousPeriodArray(for: timePeriod).last!, format: timePeriod == .thisYear ? .year : .monthDay))
+                            default:
+                                EmptyView()
+                            }
                         }
                         .foregroundStyle(.gray)
                         .font(.regular(size: 12))
@@ -93,8 +103,7 @@ struct BodyPartsReportItemView: View {
                             VStack(spacing: 0) {
                                 Text("\(Int(data.value))")
                                     .font(.medium(size: 16))
-                                if let weekPeriod = data.period as? WeekPeriod,
-                                   weekPeriod == .thisWeek {
+                                if data.period.isThisPeriod {
                                     Text(viewModel.getWeekCompareData(
                                         value: data.value,
                                         category: data.category,
@@ -121,16 +130,31 @@ struct BodyPartsReportItemView: View {
     }
 }
 
-#Preview {
-    @Previewable @State var timePeriod: TimePeriod = .thisWeek
-    BodyPartsReportItemView(timePeriod: $timePeriod,
-                            viewModel: ReportViewModel(),
-                            parts: .chest)
-}
-
 #Preview("today", body: {
     @Previewable @State var timePeriod: TimePeriod = .today
     BodyPartsReportItemView(timePeriod: $timePeriod,
                             viewModel: ReportViewModel(),
                             parts: .chest)
 })
+
+#Preview("week", body: {
+    @Previewable @State var timePeriod: TimePeriod = .thisWeek
+    BodyPartsReportItemView(timePeriod: $timePeriod,
+                            viewModel: ReportViewModel(),
+                            parts: .chest)
+})
+
+#Preview("month", body: {
+    @Previewable @State var timePeriod: TimePeriod = .thisMonth
+    BodyPartsReportItemView(timePeriod: $timePeriod,
+                            viewModel: ReportViewModel(),
+                            parts: .chest)
+})
+
+#Preview("year", body: {
+    @Previewable @State var timePeriod: TimePeriod = .thisYear
+    BodyPartsReportItemView(timePeriod: $timePeriod,
+                            viewModel: ReportViewModel(),
+                            parts: .chest)
+})
+

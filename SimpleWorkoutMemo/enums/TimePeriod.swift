@@ -75,6 +75,21 @@ protocol Periodable {
     var title: String { get }
 }
 
+extension Periodable {
+    var isThisPeriod: Bool {
+        return switch self {
+        case let week as WeekPeriod:
+            week == .thisWeek
+        case let month as MonthPeriod:
+            month == .thisMonth
+        case let year as YearPeriod:
+            year == .thisYear
+        default:
+            false
+        }
+    }
+}
+
 enum TodayPeriod: Periodable {
     case today
     

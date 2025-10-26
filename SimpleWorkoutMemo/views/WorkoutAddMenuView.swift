@@ -81,6 +81,5 @@ struct WorkoutAddMenuView: View {
 
 #Preview {
     @Previewable @State var selectedDate: Date? = Date()
-    
     WorkoutAddMenuView(viewModel: HomeViewModel())
 }

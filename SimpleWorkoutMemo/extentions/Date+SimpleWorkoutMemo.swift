@@ -191,7 +191,9 @@ extension Date {
             firstDayOfWeek
         case .thisMonth:
             firstDayOfMonth
-        case .thisYear, .all:
+        case .thisYear:
+            Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year))!
+        case .all:
             fatalError()
         }
     }
@@ -202,19 +204,25 @@ extension Date {
             lastDayOfWeek
         case .thisMonth:
             lastDateOfMonth
-        case .thisYear, .all:
+        case .thisYear:
+            Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year - 1))!
+        case .all:
             fatalError()
         }
     }
     
     func previousPeriodArray(for timePeriod: TimePeriod) -> [Date] {
         switch timePeriod {
-        case .today, .thisYear, .all:
+        case .today, .all:
             fatalError()
         case .thisWeek:
             lastWeekDates
         case .thisMonth:
             lastMonthDates
+        case .thisYear:
+            [
+                Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year - 1))!
+            ]
         }
     }
     

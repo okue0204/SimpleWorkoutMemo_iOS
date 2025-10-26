@@ -330,7 +330,7 @@ class ReportViewModel {
         case .thisMonth:
             Date().lastMonthDates
         case .thisYear:
-            []
+            Date().lastYearDates
         default:
             fatalError()
         }
@@ -356,25 +356,13 @@ class ReportViewModel {
         
         switch category {
         case .set:
-            let symbol = if value > previousPeriodTotalSet {
-                "+"
-            } else {
-                previousPeriodTotalSet == 0 ? "" : "-"
-            }
+            let symbol = value > previousPeriodTotalSet ? "+" : ""
             return symbol + String(abs(value) - abs(previousPeriodTotalSet))
         case .rep:
-            let symbol = if value > previousPeriodTotalRep {
-                "+"
-            } else {
-                previousPeriodTotalRep == 0 ? "" : "-"
-            }
+            let symbol = value > previousPeriodTotalRep ? "+" : ""
             return symbol + String(abs(value) - abs(previousPeriodTotalRep))
         case .totalLoad:
-            let symbol = if value > previousPeriodTotalLoad {
-                "+"
-            } else {
-                previousPeriodTotalLoad == 0 ? "" : "-"
-            }
+            let symbol = value > previousPeriodTotalLoad ? "+" : ""
             return symbol + String(abs(value) - abs(previousPeriodTotalLoad))
         }
     }
