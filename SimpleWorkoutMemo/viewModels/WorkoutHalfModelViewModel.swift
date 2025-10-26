@@ -96,11 +96,13 @@ class WorkoutHalfModelViewModel {
         do {
             if workoutDay.workouts.count == 1 {
                 let removeWorkout = workoutDay.workouts[index]
+                removeSetInfo(workoutDay: workoutDay, at: index)
                 workoutDay.workouts.remove(at: index)
                 try workoutRepository.delete(removeWorkout)
                 try workoutRepository.delete(workoutDay)
             } else {
                 let removeWorkout = workoutDay.workouts[index]
+                removeSetInfo(workoutDay: workoutDay, at: index)
                 workoutDay.workouts.remove(at: index)
                 try workoutRepository.delete(removeWorkout)
             }

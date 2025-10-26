@@ -181,11 +181,13 @@ class HomeViewModel {
         do {
             if workoutDay.workouts.count == 1 {
                 let removeWorkout = workoutDay.workouts[index]
+                removeSetInfo(workoutDay: workoutDay, at: index)
                 workoutDay.workouts.remove(at: index)
                 try workoutRepository.delete(removeWorkout)
                 delete(for: workoutDay)
             } else {
                 let removeWorkout = workoutDay.workouts[index]
+                removeSetInfo(workoutDay: workoutDay, at: index)
                 workoutDay.workouts.remove(at: index)
                 try workoutRepository.delete(removeWorkout)
             }

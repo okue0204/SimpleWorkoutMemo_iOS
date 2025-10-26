@@ -334,7 +334,7 @@ class ReportViewModel {
     }
     
     func showSettingTargetDaysAlertIfNeeded() {
-        if !appStorageManager.didShowSettingTargetDays, !appStorageManager.isShowLastTimeAppLaunch {
+        if !appStorageManager.didShowSettingTargetDays {
             didShowSettingTargetDays = true
             isShowSettingTargetDays.toggle()
         }

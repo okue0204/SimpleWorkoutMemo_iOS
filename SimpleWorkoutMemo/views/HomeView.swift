@@ -93,8 +93,8 @@ struct HomeView: View {
             }
         }
         .task {
-            await appOpen.loadAd()
             await viewModel.isShowUpdateAlert()
+            await appOpen.loadAd()
         }
         .onChange(of: appOpen.appOpenAdLoaded) { oldValue, newValue in
             Task {

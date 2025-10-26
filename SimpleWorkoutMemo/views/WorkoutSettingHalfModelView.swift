@@ -38,7 +38,6 @@ struct WorkoutSettingHalfModelView: View {
                     .padding(.vertical, 6)
                     .background(Color(.systemGray5))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .padding(.leading, 6)
                     Spacer()
                     Button(action: {
                         if isEditWorkout == nil {
@@ -72,7 +71,6 @@ struct WorkoutSettingHalfModelView: View {
                     .padding(.vertical, 6)
                     .background(Color(.systemGray5))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .padding(.trailing, 6)
                 }
                 Text(isEditWorkout != nil ? "トレーニング編集" : "トレーニング追加")
                     .foregroundStyle(.white)
