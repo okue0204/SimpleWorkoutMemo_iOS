@@ -9,13 +9,15 @@ import SwiftUI
 
 struct ContainerView: View {
     
-    @State var viewModel = HomeViewModel()
+    @State var homeViewModel = HomeViewModel()
+    @State var calendarViewModel = CalendarViewModel()
+    @State var reportViewModel = ReportViewModel()
     @State var selectedTab: Tab = .home
     @State var selectedDate: Date?
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView(viewModel: viewModel)
+            HomeView(viewModel: homeViewModel)
                 .environmentObject(AppStorageManager.shared)
                 .tabItem {
                     VStack {
@@ -26,16 +28,16 @@ struct ContainerView: View {
                     }
                 }
                 .tag(Tab.home)
-            CalendarView(viewModel: CalendarViewModel(), selectedDate: $selectedDate)
+            CalendarView(viewModel: calendarViewModel, selectedDate: $selectedDate)
                 .tabItem {
                     VStack {
                         Image(systemName: Tab.calendar.imageName)
                         Text(Tab.calendar.title)
                             .font(.bold(size: 12))
-                            .foregroundStyle(selectedTab == .report ? .blue : .gray)
+                            .foregroundStyle(selectedTab == .calendar ? .blue : .gray)
                     }
                 }
-            ReportView(viewModel: ReportViewModel())
+            ReportView(viewModel: reportViewModel)
                 .environmentObject(AppStorageManager.shared)
                 .tabItem {
                     VStack {

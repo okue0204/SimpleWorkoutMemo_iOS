@@ -18,7 +18,7 @@ struct WorkoutAddMenuView: View {
             Spacer()
             Menu {
                 ForEach(Parts.allCases.reversed(), id: \.id) { part in
-                    let exercises = viewModel.filteredExercises.filter { $0.parts == part }
+                    let exercises = exercises.filter { $0.parts == part }
                     if !exercises.isEmpty {
                         Menu(part.title) {
                             Menu("自重") {

@@ -158,7 +158,7 @@ class HomeViewModel {
     @MainActor
     func addWorkout(_ workoutDays: [WorkoutDay], exercise: Exercise) {
         if let todayWorkoutDay = workoutDays.first(where: { workoutDay in
-            workoutDay.createdAt.zeroClock == Date().zeroClock
+            workoutDay.createdAt.zeroClock == Date()
         }) {
             let newWorkout = Workout(exercise: exercise)
             todayWorkoutDay.workouts.append(newWorkout)
@@ -168,7 +168,7 @@ class HomeViewModel {
             setTodayWorkout(workoutDays: workoutDays)
         } else {
             let newWorkout = Workout(exercise: exercise)
-            let newWorkoutDay = WorkoutDay(createdAt: Date().zeroClock, workouts: [newWorkout])
+            let newWorkoutDay = WorkoutDay(createdAt: Date().addAndSubtractDay(14).zeroClock, workouts: [newWorkout])
             let setInfo = WorkoutSetInfo(weight: "", rep: "", workout: newWorkout)
             newWorkout.workoutSetInfo.append(setInfo)
             insert(newWorkoutDay)

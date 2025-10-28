@@ -10,7 +10,7 @@ import SwiftUI
 import Observation
 
 @Observable
-class ReportViewModel {
+class ReportViewModel: ObservableObject {
     
     private let appStorageManager = AppStorageManager.shared
     
@@ -82,7 +82,7 @@ class ReportViewModel {
         return weekTotalWeight
     }
     
-    func fetchReport(type: Reportable, workoutDays: [WorkoutDay]) -> String {
+    func fetchPeriodReport(type: Reportable, workoutDays: [WorkoutDay]) -> String {
         if let reportType = type as? AllReportType {
             switch reportType {
             case .allTotalDays:
@@ -370,15 +370,6 @@ class ReportViewModel {
     // 今週のトレーニング回数
     func thisWeekWorkoutCount(workoutDays: [WorkoutDay]) -> Int {
         let thisWeekDates = Date().currentWeekDates
-        let hoge = workoutDays.map { workoutDay in
-            DateFormatter.dateToString(workoutDay.createdAt)
-        }
-        print("+++++ hoge \(hoge)")
-        
-        let fuga = thisWeekDates.map { date in
-            DateFormatter.dateToString(date)
-        }
-        print("+++++ fuga \(fuga)")
         return workoutDays.filter { workoutDay in
             thisWeekDates.contains { date in
                 date.zeroClock == workoutDay.createdAt.zeroClock

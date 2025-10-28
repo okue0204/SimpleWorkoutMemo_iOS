@@ -24,6 +24,15 @@ class Workout: Identifiable, ObservableObject {
         workoutSetInfo.sorted { $0.createdAt < $1.createdAt }
     }
     
+    var maxWeight: Double {
+        let result = workoutSetInfo.compactMap { setInfo in
+            Double(setInfo.weight)
+        }.sorted { rhs, lhs in
+            rhs > lhs
+        }.first ?? 0
+        return round(result * 10) / 10
+    }
+    
     var totalWeightString: String {
         let totalWeight = workoutSetInfo.reduce(into: 0) { partialResult, workoutSetInfo in
             partialResult += (Double(workoutSetInfo.rep) ?? 0) * (Double(workoutSetInfo.weight) ?? 0)

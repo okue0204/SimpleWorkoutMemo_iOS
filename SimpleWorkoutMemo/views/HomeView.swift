@@ -39,7 +39,7 @@ struct HomeView: View {
                 ScrollView {
                     DateHeaderView(selectedDate: $selectedDate)
                     let workoutDays = workoutDays.filter { day in
-                        day.createdAt.zeroClock == Date().zeroClock
+                        day.createdAt.zeroClock == Date().addAndSubtractDay(14).zeroClock
                     }
                     BannerViewContainer {
                         isHideBanner = true

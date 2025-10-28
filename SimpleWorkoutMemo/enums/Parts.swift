@@ -13,6 +13,7 @@ enum Parts: String, CaseIterable, Identifiable, Codable {
     case back
     case biceps
     case triceps
+    case forearm
     case shoulders
     case legs
     case abs
@@ -27,6 +28,8 @@ enum Parts: String, CaseIterable, Identifiable, Codable {
             "二頭"
         case .triceps:
             "三頭"
+        case .forearm:
+            "前腕"
         case .shoulders:
             "肩"
         case .legs:
@@ -46,6 +49,8 @@ enum Parts: String, CaseIterable, Identifiable, Codable {
                 .green
         case .triceps:
                 .orange
+        case .forearm:
+                .yellow
         case .shoulders:
                 .purple
         case .legs:

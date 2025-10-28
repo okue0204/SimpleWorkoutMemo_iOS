@@ -176,6 +176,11 @@ extension Date {
         }
     }
     
+    // 推移グラフ用
+    var midDate: Date {
+        Calendar.appCalendar.date(bySettingHour: 12, minute: 0, second: 0, of: self)!
+    }
+    
     // 指定した数だけ日数を進めたり引いたり
     func addAndSubtractDay(_ value: Int) -> Date {
         Calendar.appCalendar.date(byAdding: .day, value: value, to: self) ?? Date()

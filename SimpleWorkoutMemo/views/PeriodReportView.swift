@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct OtherReportView: View {
+struct PeriodReportView: View {
     
-    let viewModel: ReportViewModel
+    @Bindable var viewModel: ReportViewModel
     let timePeriod: TimePeriod
     
     var body: some View {
@@ -60,5 +60,6 @@ struct OtherReportView: View {
 }
 
 #Preview {
-    OtherReportView(viewModel: ReportViewModel(), timePeriod: .today)
+    @Previewable @State var viewModel = ReportViewModel()
+    PeriodReportView(viewModel: viewModel, timePeriod: .today)
 }

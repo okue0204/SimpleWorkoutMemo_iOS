@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import Charts
 
-struct BodyPartsReportItemView: View {
+struct BodyPartsReportGraphView: View {
     @Query var workoutDays: [WorkoutDay]
     @Binding var timePeriod: TimePeriod
     
@@ -80,10 +80,8 @@ struct BodyPartsReportItemView: View {
                         .foregroundStyle(by: .value("Category", data.category.title))
                         .position(by: .value("Category", data.category.title))
                         .annotation(position: .top) {
-                            VStack(spacing: 0) {
-                                Text("\(Int(data.value))")
-                                    .font(.medium(size: 16))
-                            }
+                            Text("\(Int(data.value))")
+                                .font(.medium(size: 16))
                         }
                     }
                 }
@@ -132,28 +130,28 @@ struct BodyPartsReportItemView: View {
 
 #Preview("today", body: {
     @Previewable @State var timePeriod: TimePeriod = .today
-    BodyPartsReportItemView(timePeriod: $timePeriod,
+    BodyPartsReportGraphView(timePeriod: $timePeriod,
                             viewModel: ReportViewModel(),
                             parts: .chest)
 })
 
 #Preview("week", body: {
     @Previewable @State var timePeriod: TimePeriod = .thisWeek
-    BodyPartsReportItemView(timePeriod: $timePeriod,
+    BodyPartsReportGraphView(timePeriod: $timePeriod,
                             viewModel: ReportViewModel(),
                             parts: .chest)
 })
 
 #Preview("month", body: {
     @Previewable @State var timePeriod: TimePeriod = .thisMonth
-    BodyPartsReportItemView(timePeriod: $timePeriod,
+    BodyPartsReportGraphView(timePeriod: $timePeriod,
                             viewModel: ReportViewModel(),
                             parts: .chest)
 })
 
 #Preview("year", body: {
     @Previewable @State var timePeriod: TimePeriod = .thisYear
-    BodyPartsReportItemView(timePeriod: $timePeriod,
+    BodyPartsReportGraphView(timePeriod: $timePeriod,
                             viewModel: ReportViewModel(),
                             parts: .chest)
 })

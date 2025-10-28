@@ -19,7 +19,7 @@ class AppOpenAdManager: NSObject, ObservableObject {
     
     func loadAd() async {
         do {
-            appOpenAd = try await AppOpenAd.load(with: EnvironmentConstant.adOpenId, request: Request())
+            appOpenAd = try await AppOpenAd.load(with: "EnvironmentConstant.adOpenId", request: Request())
             appOpenAd?.fullScreenContentDelegate = self
             appOpenAdLoaded = true
         } catch {

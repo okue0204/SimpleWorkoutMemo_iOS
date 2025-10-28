@@ -47,7 +47,7 @@ struct SelectWorkoutMenuBottomView: View {
                                         isEditWorkout: nil) {
                 onUpdateExercise?()
             }
-            .presentationDetents([.fraction(1/3)])
+            .presentationDetents([.fraction(1/2)])
         }
     }
 }

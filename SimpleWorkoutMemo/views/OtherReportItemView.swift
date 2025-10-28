@@ -17,7 +17,7 @@ struct OtherReportItemView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 12) {
-            Text(viewModel.fetchReport(type: reportType, workoutDays: workoutDays))
+            Text(viewModel.fetchPeriodReport(type: reportType, workoutDays: workoutDays))
                 .font(.bold(size: 28))
                 .foregroundStyle(.white)
                 .lineLimit(1)
@@ -25,17 +25,6 @@ struct OtherReportItemView: View {
             Text(reportType.title(for: timePeriod))
                 .font(.medium(size: 12))
                 .foregroundStyle(.white)
-//            if isThisWeek {
-//                VStack(spacing: 0) {
-//                    Text("先週対比")
-//                        .font(.regular(size: 12))
-//                        .foregroundStyle(.gray)
-//                    Text(viewModel.fetchComparisonReport(type: reportType,
-//                                                         workoutDays: workoutDays))
-//                        .font(.regular(size: 12))
-//                        .foregroundStyle(.gray)
-//                }
-//            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)

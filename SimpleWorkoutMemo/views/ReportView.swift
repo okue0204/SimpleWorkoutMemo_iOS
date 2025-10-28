@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ReportView: View {
     @EnvironmentObject var appStorageManager: AppStorageManager
-    @State var viewModel: ReportViewModel
+    @Bindable var viewModel: ReportViewModel
     @State private var settingTargetText: String = ""
     @State private var isHideBanner: Bool = false
+    
+    @Query var exercises: [Exercise]
     
     var body: some View {
         NavigationStack {
@@ -31,10 +34,11 @@ struct ReportView: View {
                             .frame(height: isHideBanner ? 0 : 50)
                             ContinuousRecordView(viewModel: viewModel)
                                 .environmentObject(appStorageManager)
-                            OtherReportView(viewModel: viewModel,
-                                            timePeriod: .today)
-                            OtherReportView(viewModel: viewModel,
-                                            timePeriod: .all)
+                            PeriodReportView(viewModel: viewModel, timePeriod: .all)
+                            PeriodReportView(viewModel: viewModel, timePeriod: .today)
+                            VolumeReportView(volumeReport: .maxVolume)
+                            VolumeReportView(volumeReport: .totalVolume)
+                                .padding(.bottom, 20)
                         }
                     }
                     Spacer()
