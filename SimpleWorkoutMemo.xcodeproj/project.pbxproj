@@ -11,6 +11,8 @@
 		3C0D36BB2EA06BC600E44723 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3C0D36B52EA06BC600E44723 /* FirebaseCore */; };
 		3C79A4632E9D9DED00E3C058 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3C79A4622E9D9DED00E3C058 /* FirebaseCore */; };
 		3C79A4692E9D9FF800E3C058 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3C79A4682E9D9FF800E3C058 /* FirebaseAnalytics */; };
+		3CE2C31F2EB200F9007B1F8E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3CE2C31E2EB200F9007B1F8E /* Lottie */; };
+		3CE2C3212EB20101007B1F8E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3CE2C3202EB20101007B1F8E /* Lottie */; };
 		3CF326762EA1D51A00DDD0D6 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 3CF326752EA1D51A00DDD0D6 /* GoogleMobileAds */; };
 		3CF326782EA1D52100DDD0D6 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 3CF326772EA1D52100DDD0D6 /* GoogleMobileAds */; };
 		3CF3267B2EA1D5DA00DDD0D6 /* SwiftyBeaver in Frameworks */ = {isa = PBXBuildFile; productRef = 3CF3267A2EA1D5DA00DDD0D6 /* SwiftyBeaver */; };
@@ -63,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CE2C31F2EB200F9007B1F8E /* Lottie in Frameworks */,
 				3CF326762EA1D51A00DDD0D6 /* GoogleMobileAds in Frameworks */,
 				3C0D36BA2EA06BC600E44723 /* FirebaseAnalytics in Frameworks */,
 				3C0D36BB2EA06BC600E44723 /* FirebaseCore in Frameworks */,
@@ -74,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CE2C3212EB20101007B1F8E /* Lottie in Frameworks */,
 				3CF326782EA1D52100DDD0D6 /* GoogleMobileAds in Frameworks */,
 				3C79A4692E9D9FF800E3C058 /* FirebaseAnalytics in Frameworks */,
 				3C79A4632E9D9DED00E3C058 /* FirebaseCore in Frameworks */,
@@ -133,6 +137,7 @@
 				3C0D36B72EA06BC600E44723 /* FirebaseAnalytics */,
 				3CF326752EA1D51A00DDD0D6 /* GoogleMobileAds */,
 				3CF3267C2EA1D5E100DDD0D6 /* SwiftyBeaver */,
+				3CE2C31E2EB200F9007B1F8E /* Lottie */,
 			);
 			productName = SimpleWorkoutMemo;
 			productReference = 3C0D36C02EA06BC600E44723 /* SimpleWorkoutMemo_stg.app */;
@@ -159,6 +164,7 @@
 				3C79A4682E9D9FF800E3C058 /* FirebaseAnalytics */,
 				3CF326772EA1D52100DDD0D6 /* GoogleMobileAds */,
 				3CF3267A2EA1D5DA00DDD0D6 /* SwiftyBeaver */,
+				3CE2C3202EB20101007B1F8E /* Lottie */,
 			);
 			productName = SimpleWorkoutMemo;
 			productReference = 3C6A83CB2E7E534000488359 /* SimpleWorkoutMemo.app */;
@@ -192,6 +198,7 @@
 				3C79A4602E9D9DC000E3C058 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				3CF326742EA1D50F00DDD0D6 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				3CF326792EA1D5A800DDD0D6 /* XCRemoteSwiftPackageReference "SwiftyBeaver" */,
+				3CE2C31D2EB1FFCE007B1F8E /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3C6A83CC2E7E534000488359 /* Products */;
@@ -572,6 +579,14 @@
 				minimumVersion = 12.4.0;
 			};
 		};
+		3CE2C31D2EB1FFCE007B1F8E /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 		3CF326742EA1D50F00DDD0D6 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
@@ -610,6 +625,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3C79A4602E9D9DC000E3C058 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
+		};
+		3CE2C31E2EB200F9007B1F8E /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3CE2C31D2EB1FFCE007B1F8E /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		3CE2C3202EB20101007B1F8E /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3CE2C31D2EB1FFCE007B1F8E /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
 		};
 		3CF326752EA1D51A00DDD0D6 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
