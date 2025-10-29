@@ -116,12 +116,13 @@ struct HomeView: View {
                 viewModel.didShowRequestReview = true
             }
         })
-        .alert("最新バージョンにアップデートして下さい。", isPresented: $viewModel.isShowUpdateAlert, actions: {
+        .alert("最新バージョンがあります。", isPresented: $viewModel.isShowUpdateAlert, actions: {
             Button("OK") {
                 UIApplication.shared.open(EnvironmentConstant.appStoreURL)
             }
+            Button("キャンセル") {}
         }, message: {
-            Text("引き続きワークアウトメモを使用するには、アップデートが必要です。")
+            Text("アップデートして、快適にトレーニングライフを送りましょう😊")
         })
     }
 }

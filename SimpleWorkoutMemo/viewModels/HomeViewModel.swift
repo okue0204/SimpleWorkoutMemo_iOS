@@ -27,6 +27,7 @@ class HomeViewModel {
     private var workoutRepository: WorkoutRepository?
     private var exerciseRepository: ExerciseRepository?
     private var modelContext: ModelContext?
+    private var shouldShowUpdateAlert = true
     
     func setContext(context: ModelContext) {
         modelContext = context
@@ -63,8 +64,9 @@ class HomeViewModel {
     
     @MainActor
     func isShowUpdateAlert() async {
-        if await ForceUpdate.shared.shouldUpdate() {
+        if await ForceUpdate.shared.shouldUpdate(), shouldShowUpdateAlert {
             isShowUpdateAlert.toggle()
+            shouldShowUpdateAlert = false
         } else {
             // nothing to do
         }
