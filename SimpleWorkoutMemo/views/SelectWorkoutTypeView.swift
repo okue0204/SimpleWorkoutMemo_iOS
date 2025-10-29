@@ -13,6 +13,7 @@ struct SelectWorkoutTypeView: View {
         HStack(spacing: 0) {
             Spacer()
             Button {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 selectedWorkoutType = .freeWeight
             } label: {
                 HStack(spacing: 8) {
@@ -45,6 +46,7 @@ struct SelectWorkoutTypeView: View {
             }
             Spacer()
             Button {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 selectedWorkoutType = .machine
             } label: {
                 HStack(spacing: 8) {
@@ -77,6 +79,7 @@ struct SelectWorkoutTypeView: View {
             }
             Spacer()
             Button {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 selectedWorkoutType = .bodyweight
             } label: {
                 HStack(spacing: 8) {

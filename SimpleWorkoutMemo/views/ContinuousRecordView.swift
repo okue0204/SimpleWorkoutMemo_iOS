@@ -18,6 +18,7 @@ struct ContinuousRecordView: View {
     var body: some View {
         Button {
             isShowChangeTargetDay.toggle()
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
         } label: {
             VStack(spacing: 12) {
                 HStack {

@@ -19,6 +19,7 @@ struct TextFieldHalfModelView: View {
             ZStack {
                 HStack(spacing: 0) {
                     Button(action: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         dismiss()
                     }) {
                         Text("キャンセル")
@@ -35,6 +36,7 @@ struct TextFieldHalfModelView: View {
                         if let targetDays = Int(text) {
                             viewModel.settingTargetDays = targetDays
                         }
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         dismiss()
                     }) {
                         Text("完了")

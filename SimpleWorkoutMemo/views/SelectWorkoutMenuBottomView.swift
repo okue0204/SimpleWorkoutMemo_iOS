@@ -17,6 +17,7 @@ struct SelectWorkoutMenuBottomView: View {
     var body: some View {
         HStack {
             Button(action: {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 isShowWorkoutSetting.toggle()
             }) {
                 Text("種目を追加")
@@ -28,6 +29,7 @@ struct SelectWorkoutMenuBottomView: View {
             .clipShape(RoundedRectangle(cornerRadius: 25))
             .padding(.horizontal, 12)
             Button(action: {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 dismiss()
             }) {
                 ZStack {

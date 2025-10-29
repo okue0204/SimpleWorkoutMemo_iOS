@@ -45,7 +45,7 @@ struct ReportTrendView: View {
                 }
                 .onChange(of: selectedParts) { oldValue, newValue in
                     if let newValue, selectedParts?.id == newValue.id {
-                        viewModel.fetchExercise(for: newValue, exercises: exercises)
+                        viewModel.filterExercise(for: newValue, exercises: exercises)
                         withAnimation {
                             proxy.scrollTo(newValue.id, anchor: .trailing)
                         }
@@ -57,7 +57,7 @@ struct ReportTrendView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             selectedParts = .chest
-            viewModel.fetchExercise(for: .chest, exercises: exercises)
+            viewModel.filterExercise(for: .chest, exercises: exercises)
         }
     }
 }

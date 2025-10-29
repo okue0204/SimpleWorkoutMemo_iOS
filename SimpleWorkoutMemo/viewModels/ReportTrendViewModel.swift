@@ -15,7 +15,7 @@ class ReportTrendViewModel {
     var exercises: [Exercise] = []
     
     // 部位別のexerciseの数を取得
-    func fetchExercise(for parts: Parts, exercises: [Exercise]) {
+    func filterExercise(for parts: Parts, exercises: [Exercise]) {
         let exercises = exercises.filter { execise in
             execise.parts.id == parts.id
         }

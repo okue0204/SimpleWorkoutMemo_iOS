@@ -206,6 +206,7 @@ extension WorkoutItemView {
         var body: some View {
             HStack(spacing: 12) {
                 Button(action: {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     // set数を減らす
                     guard workout.workoutSetInfo.count != 1 else {
                         return
@@ -225,6 +226,7 @@ extension WorkoutItemView {
                     .frame(width: 1, height: 16)
                     .foregroundStyle(.gray)
                 Button(action: {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     // set数を増やす
                     guard workout.workoutSetInfo.count < 10 else {
                         return

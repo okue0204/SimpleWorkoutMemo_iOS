@@ -27,6 +27,7 @@ struct WorkoutSettingHalfModelView: View {
             ZStack {
                 HStack(spacing: 0) {
                     Button(action: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         dismiss()
                     }) {
                         Text("キャンセル")
@@ -40,6 +41,7 @@ struct WorkoutSettingHalfModelView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     Spacer()
                     Button(action: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         if isEditWorkout == nil {
                             if let selectedParts, let selectedWorkoutType, !text.isEmpty {
                                 viewModel.addExercise(.init(parts: selectedParts,
@@ -82,6 +84,7 @@ struct WorkoutSettingHalfModelView: View {
                 LazyVGrid(columns: Array(repeating: .init(), count: 7)) {
                     ForEach(Parts.allCases) { parts in
                         Button {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
                             selectedParts = parts
                         } label: {
                             ZStack {
@@ -136,7 +139,7 @@ struct WorkoutSettingHalfModelView: View {
                 text = exercise.exerciseName
             }
         }
-        .alert("種目名を入力して下さい。",  isPresented: $isShowAddExerciseAlert) {}
+        .alert("すべての項目を入力して下さい。",  isPresented: $isShowAddExerciseAlert) {}
     }
 }
 

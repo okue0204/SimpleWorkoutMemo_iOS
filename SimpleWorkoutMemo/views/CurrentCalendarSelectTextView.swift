@@ -22,6 +22,7 @@ struct CurrentCalendarSelectTextView : View {
             Spacer()
             HStack(spacing: 12) {
                 Button(action: {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     let calendarMonth = viewModel.todayCalendarMonth()
                     currentPositionDate = calendarMonth.date.zeroClock
                     withAnimation {
@@ -38,6 +39,7 @@ struct CurrentCalendarSelectTextView : View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 HStack(spacing: 28) {
                     Button(action: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         // 先月
                         let date = if let currentPositionDate {
                             currentPositionDate.addMonth(-1).onlyYearAndMonth
@@ -55,6 +57,7 @@ struct CurrentCalendarSelectTextView : View {
                             .frame(width: 18, height: 18)
                     }
                     Button(action: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         // 来月
                         let date = if let currentPositionDate {
                             currentPositionDate.onlyYearAndMonth

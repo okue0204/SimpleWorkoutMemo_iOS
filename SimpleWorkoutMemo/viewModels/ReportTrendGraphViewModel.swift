@@ -24,7 +24,6 @@ class ReportTrendGraphViewModel {
     var firstLineMarkDate: Date = Date()
     var lastLineMarkDate: Date = Date()
     var lineMarkData: [LineMarkReport] = []
-    var exercises: [Exercise] = []
     var uniqueYears: [Int] = []
     
     private func roundUp(toMultipleOf multiple: Double) -> Double {
@@ -43,14 +42,6 @@ class ReportTrendGraphViewModel {
         }
     }
     
-    // 部位別のexerciseの数を取得
-    func fetchExercise(for parts: Parts, exercises: [Exercise]) {
-        let exercises = exercises.filter { execise in
-            execise.parts.id == parts.id
-        }
-        self.exercises = exercises
-    }
-    
     // 種目別最大重量の推移 or 部位別トータルボリュームの推移
     func lineMarkData(exercise: Exercise, volumeType: VolumeType, workoutDays: [WorkoutDay], targetYear: Int) {
         switch volumeType {
@@ -62,6 +53,7 @@ class ReportTrendGraphViewModel {
                     LineMarkReport(value: workout.maxWeight, createdAt: workoutDay.createdAt.zeroClock)
                 }
             }.filter { report in
+                // 1年間分のみ取得
                 let value = targetYear - Date().year
                 return Date.yearRange(for: value).contains(report.createdAt)
             }
@@ -96,9 +88,14 @@ class ReportTrendGraphViewModel {
         lastLineMarkDate = dates.last ?? Date()
     }
     
-    func uniqueWorkoutYears() {
+    func uniqueWorkoutYears(exercise: Exercise, workoutDays: [WorkoutDay]) {
+        let filteredWorkoutDays = workoutDays.filter { workoutDay in
+            workoutDay.workouts.contains { workout in
+                workout.exercise?.id == exercise.id
+            }
+        }
         let years = Set(
-            lineMarkData.compactMap { data in
+            filteredWorkoutDays.compactMap { data in
                 data.createdAt.year
             }
         ).sorted()

@@ -77,6 +77,7 @@ struct CalendarView: View {
                 viewModel.createCalendarMonth()
             }
             .onChange(of: selectedDate, { oldValue, newValue in
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 if let newValue,
                    let workoutDay = viewModel.workoutDay(for: newValue, from: workoutDays),
                    !workoutDay.workouts.isEmpty {

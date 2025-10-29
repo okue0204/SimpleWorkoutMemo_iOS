@@ -37,6 +37,7 @@ struct ContainerView: View {
                             .foregroundStyle(selectedTab == .calendar ? .blue : .gray)
                     }
                 }
+                .tag(Tab.calendar)
             ReportView(viewModel: reportViewModel)
                 .environmentObject(AppStorageManager.shared)
                 .tabItem {
@@ -50,6 +51,9 @@ struct ContainerView: View {
                 .tag(Tab.report)
         }
         .ignoresSafeArea()
+        .onChange(of: selectedTab) { oldValue, newValue in
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        }
     }
 }
 

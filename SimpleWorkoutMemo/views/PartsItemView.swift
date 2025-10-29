@@ -15,6 +15,7 @@ struct PartsItemView: View {
     var body: some View {
         Button(action: {
             // 部位に対応する種目を表示する
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             selectedParts = parts
             withAnimation {
                 scrollPosition = parts.id

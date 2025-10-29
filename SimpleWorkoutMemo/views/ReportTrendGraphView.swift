@@ -88,7 +88,6 @@ struct ReportTrendGraphView: View {
                                         )
                                         .foregroundStyle(chartColor)
                                     }
-                                    
                                 }
                                 if let selectedDate {
                                     RuleMark(x: .value("Date", selectedDate))
@@ -152,7 +151,7 @@ struct ReportTrendGraphView: View {
                                    targetYear: Date().year)
             viewModel.minAndMaxValue()
             viewModel.firstAndLastLineMarkDate()
-            viewModel.uniqueWorkoutYears()
+            viewModel.uniqueWorkoutYears(exercise: exercise, workoutDays: workoutDays)
         }
         .onChange(of: scrollPosition) { oldValue, newValue in
             if let newValue {
