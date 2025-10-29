@@ -190,6 +190,10 @@ extension Date {
         Calendar.appCalendar.date(byAdding: .month, value: value, to: self) ?? Date()
     }
     
+    func addYear(_ value: Int) -> Date {
+        Calendar.appCalendar.date(byAdding: .year, value: value, to: self) ?? Date()
+    }
+    
     func firstDayOfPeriod(for timePeriod: TimePeriod) -> Date {
         switch timePeriod {
         case .today, .thisWeek:
@@ -228,6 +232,20 @@ extension Date {
             [
                 Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year - 1))!
             ]
+        }
+    }
+    
+    static func yearRange(for value: Int) -> ClosedRange<Date> {
+        let startDate = Date().addYear(value).firstDayOfYear
+        let endDate = Date().addYear(value).lastDayOfYear
+        return (startDate ... endDate)
+    }
+    
+    static func createDate(year: Int) -> Date {
+        if year == Date().year {
+            Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: Date().month, day: Date().day))!
+        } else {
+            Calendar.appCalendar.date(from: .init(calendar: .appCalendar, year: year, month: 1, day: 1))!
         }
     }
     

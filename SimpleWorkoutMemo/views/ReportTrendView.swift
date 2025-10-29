@@ -20,7 +20,7 @@ struct ReportTrendView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
+            ScrollView(.vertical) {
                 VStack(spacing: 20) {
                     ForEach(viewModel.exercises, id: \.id) { exercise in
                         ReportTrendGraphView(viewModel: ReportTrendGraphViewModel(),

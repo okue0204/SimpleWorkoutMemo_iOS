@@ -12,24 +12,12 @@ import Observation
 @Observable
 class ReportTrendGraphViewModel {
     
-    let mock: [LineMarkReport] = [
-        .init(value: 30, createdAt: Date().zeroClock),
-        .init(value: 32, createdAt: Date().addAndSubtractDay(1).zeroClock),
-        .init(value: 34, createdAt: Date().addAndSubtractDay(2).zeroClock),
-        .init(value: 36, createdAt: Date().addAndSubtractDay(3).zeroClock),
-        .init(value: 38, createdAt: Date().addAndSubtractDay(4).zeroClock),
-        .init(value: 40, createdAt: Date().addAndSubtractDay(5).zeroClock),
-        .init(value: 42, createdAt: Date().addAndSubtractDay(6).zeroClock),
-        .init(value: 44, createdAt: Date().addAndSubtractDay(7).zeroClock),
-        .init(value: 46, createdAt: Date().addAndSubtractDay(8).zeroClock),
-        .init(value: 48, createdAt: Date().addAndSubtractDay(9).zeroClock),
-        .init(value: 30, createdAt: Date().addAndSubtractDay(10).zeroClock),
-        .init(value: 28, createdAt: Date().addAndSubtractDay(11).zeroClock),
-        .init(value: 40, createdAt: Date().addAndSubtractDay(12).zeroClock),
-        .init(value: 40, createdAt: Date().addAndSubtractDay(13).zeroClock),
-        .init(value: 40, createdAt: Date().addAndSubtractDay(14).zeroClock),
-        .init(value: 50, createdAt: Date().addAndSubtractDay(15).zeroClock),
-    ]
+    private let mock: [LineMarkReport] = (0..<800).map { num in
+        .init(
+            value: Double.random(in: 0...30),
+            createdAt: Date().addAndSubtractDay(num).zeroClock
+        )
+    }
     
     var minLineMarkValue: Double = 0
     var maxLineMarkValue: Double = 0
@@ -37,6 +25,7 @@ class ReportTrendGraphViewModel {
     var lastLineMarkDate: Date = Date()
     var lineMarkData: [LineMarkReport] = []
     var exercises: [Exercise] = []
+    var uniqueYears: [Int] = []
     
     private func roundUp(toMultipleOf multiple: Double) -> Double {
         /*
@@ -44,9 +33,14 @@ class ReportTrendGraphViewModel {
          例: 48 → 60
          単位を20に設定
          */
-        let n: Double = 20
-        let ceil = ceil(multiple / n)
-        return ceil * n
+        let digitCount = String(Int(multiple)).count
+        let unit = Double(digitCount == 3 ? 50 : 20)
+        let ceil = ceil(multiple / unit)
+        if digitCount < 3 {
+            return ceil * unit
+        } else {
+            return multiple * 2
+        }
     }
     
     // 部位別のexerciseの数を取得
@@ -58,7 +52,7 @@ class ReportTrendGraphViewModel {
     }
     
     // 種目別最大重量の推移 or 部位別トータルボリュームの推移
-    func lineMarkData(exercise: Exercise, volumeType: VolumeType, workoutDays: [WorkoutDay]) {
+    func lineMarkData(exercise: Exercise, volumeType: VolumeType, workoutDays: [WorkoutDay], targetYear: Int) {
         switch volumeType {
         case .maxVolume:
             let lineMark = workoutDays.flatMap { workoutDay in
@@ -67,7 +61,16 @@ class ReportTrendGraphViewModel {
                 }.map { workout in
                     LineMarkReport(value: workout.maxWeight, createdAt: workoutDay.createdAt.zeroClock)
                 }
+            }.filter { report in
+                let value = targetYear - Date().year
+                return Date.yearRange(for: value).contains(report.createdAt)
             }
+            
+            let hoge = mock.filter { report in
+                let value = targetYear - Date().year
+                return Date.yearRange(for: value).contains(report.createdAt)
+            }
+            
             lineMarkData = lineMark
         case .totalVolume:
             break
@@ -91,5 +94,14 @@ class ReportTrendGraphViewModel {
         let dates = lineMarkData.map { $0.createdAt }
         firstLineMarkDate = dates.first ?? Date()
         lastLineMarkDate = dates.last ?? Date()
+    }
+    
+    func uniqueWorkoutYears() {
+        let years = Set(
+            lineMarkData.compactMap { data in
+                data.createdAt.year
+            }
+        ).sorted()
+        uniqueYears = years.isEmpty ? [Date().year] : years
     }
 }
