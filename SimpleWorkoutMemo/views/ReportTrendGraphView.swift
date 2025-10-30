@@ -18,6 +18,7 @@ struct ReportTrendGraphView: View {
     @State private var selectedValue: Double?
     @State private var scrollPosition: Int?
     @State private var currentYearDate: Date = Date()
+    @State private var isViewActionDisabled: Bool = false
     
     let volumeType: VolumeType
     let exercise: Exercise
@@ -28,24 +29,62 @@ struct ReportTrendGraphView: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack {
+            HStack {
                 ForEach(viewModel.uniqueYears, id: \.self) { _ in
                     VStack(spacing: 10) {
-                        Text(exercise.exerciseName)
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 16))
-                            .padding(.top, 20)
+                        ZStack {
+                            Text(exercise.exerciseName)
+                                .foregroundStyle(.white)
+                                .font(.medium(size: 16))
+                                .padding(.top, 20)
+                            if viewModel.uniqueYears.count > 1 {
+                                HStack {
+                                    if viewModel.uniqueYears.first != currentYearDate.year {
+                                        Button(action: {
+                                            isViewActionDisabled = true
+                                            withAnimation {
+                                                scrollPosition = currentYearDate.year - 1
+                                            } completion: {
+                                                isViewActionDisabled = false
+                                            }
+                                        }) {
+                                            Image(.icWorkoutLeftArrow)
+                                                .resizable()
+                                                .frame(width: 16, height: 16)
+                                                .foregroundStyle(.white)
+                                        }
+                                    }
+                                    Spacer()
+                                    if viewModel.uniqueYears.last != currentYearDate.year {
+                                        Button(action: {
+                                            isViewActionDisabled = true
+                                            withAnimation {
+                                                scrollPosition =  currentYearDate.year + 1
+                                            } completion: {
+                                                isViewActionDisabled = false
+                                            }
+                                        }) {
+                                            Image(.icWorkoutRightArrow)
+                                                .resizable()
+                                                .frame(width: 16, height: 16)
+                                                .foregroundStyle(.white)
+                                        }
+                                    }
+                                }
+                                .padding(.top, 20)
+                                .padding(.horizontal, 12)
+                            }
+                        }
                         if !viewModel.lineMarkData.isEmpty {
-                            VStack(spacing: 0) {
+                            VStack(spacing: 2) {
                                 Text(DateFormatter.dateToString(selectedDate ?? currentYearDate,
                                                                 format: .yearMonthDay))
-                                    .foregroundStyle(.white)
-                                    .font(.medium(size: 14))
+                                .foregroundStyle(.white)
+                                .font(.regular(size: 14))
                                 Text(String(selectedValue?.description ?? "0") + "kg")
                                     .foregroundStyle(.white)
-                                    .font(.semiBold(size: 16))
+                                    .font(.medium(size: 14))
                             }
-                            .padding(.top, 6)
                         }
                         if viewModel.lineMarkData.isEmpty {
                             HStack {
@@ -164,6 +203,7 @@ struct ReportTrendGraphView: View {
                 currentYearDate = Date.createDate(year: newValue)
             }
         }
+        .disabled(isViewActionDisabled)
     }
 }
 
