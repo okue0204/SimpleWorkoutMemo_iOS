@@ -12,9 +12,9 @@ import Observation
 @Observable
 class ReportTrendGraphViewModel {
     
-    private let mock: [LineMarkReport] = (0..<800).map { num in
+    private let mock: [LineMarkReport] = (0..<49).map { num in
         .init(
-            value: Double.random(in: 0...30),
+            value: Double.random(in: 10...50),
             createdAt: Date().addAndSubtractDay(num).zeroClock
         )
     }
@@ -57,12 +57,12 @@ class ReportTrendGraphViewModel {
                 let value = targetYear - Date().year
                 return Date.yearRange(for: value).contains(report.createdAt)
             }
-            
+            let startDate = Date()
             let hoge = mock.filter { report in
                 let value = targetYear - Date().year
                 return Date.yearRange(for: value).contains(report.createdAt)
             }
-            
+            let fuga = Date().timeIntervalSince(startDate)
             lineMarkData = lineMark
         case .totalVolume:
             break
@@ -99,6 +99,9 @@ class ReportTrendGraphViewModel {
                 data.createdAt.year
             }
         ).sorted()
-        uniqueYears = years.isEmpty ? [Date().year] : years
+        
+        let mock = [2025, 2026, 2027]
+        
+        uniqueYears = years.isEmpty ? [Date().year] : mock
     }
 }

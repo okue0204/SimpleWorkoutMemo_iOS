@@ -36,7 +36,6 @@ struct ReportTrendGraphView: View {
                             Text(exercise.exerciseName)
                                 .foregroundStyle(.white)
                                 .font(.medium(size: 16))
-                                .padding(.top, 20)
                             if viewModel.uniqueYears.count > 1 {
                                 HStack {
                                     if viewModel.uniqueYears.first != currentYearDate.year {
@@ -48,10 +47,16 @@ struct ReportTrendGraphView: View {
                                                 isViewActionDisabled = false
                                             }
                                         }) {
-                                            Image(.icWorkoutLeftArrow)
-                                                .resizable()
-                                                .frame(width: 16, height: 16)
-                                                .foregroundStyle(.white)
+                                            ZStack {
+                                                Circle()
+                                                    .fill()
+                                                    .frame(width: 30, height: 30)
+                                                    .foregroundStyle(.gray.opacity(0.3))
+                                                Image(.icWorkoutLeftArrow)
+                                                    .resizable()
+                                                    .frame(width: 14, height: 14)
+                                                    .foregroundStyle(.white)
+                                            }
                                         }
                                     }
                                     Spacer()
@@ -64,28 +69,41 @@ struct ReportTrendGraphView: View {
                                                 isViewActionDisabled = false
                                             }
                                         }) {
-                                            Image(.icWorkoutRightArrow)
-                                                .resizable()
-                                                .frame(width: 16, height: 16)
-                                                .foregroundStyle(.white)
+                                            ZStack {
+                                                Circle()
+                                                    .fill()
+                                                    .frame(width: 30, height: 30)
+                                                    .foregroundStyle(.gray.opacity(0.3))
+                                                Image(.icWorkoutRightArrow)
+                                                    .resizable()
+                                                    .frame(width: 14, height: 14)
+                                                    .foregroundStyle(.white)
+                                            }
                                         }
                                     }
                                 }
-                                .padding(.top, 20)
                                 .padding(.horizontal, 12)
                             }
                         }
-                        if !viewModel.lineMarkData.isEmpty {
-                            VStack(spacing: 2) {
-                                Text(DateFormatter.dateToString(selectedDate ?? currentYearDate,
-                                                                format: .yearMonthDay))
-                                .foregroundStyle(.white)
-                                .font(.regular(size: 14))
-                                Text(String(selectedValue?.description ?? "0") + "kg")
+                        .padding(.top, 12)
+                        HStack {
+                            if !viewModel.lineMarkData.isEmpty {
+                                Text("\(String(viewModel.uniqueYears.first(where: { $0 == scrollPosition }) ?? Date().year))年")
                                     .foregroundStyle(.white)
-                                    .font(.medium(size: 14))
+                                    .font(.regular(size: 14))
+                                Spacer()
+                                HStack(spacing: 2) {
+                                    Text(DateFormatter.dateToString(selectedDate ?? currentYearDate,
+                                                                    format: .monthDay))
+                                    .foregroundStyle(.white)
+                                    .font(.regular(size: 14))
+                                    Text(String(selectedValue?.description ?? "0") + "kg")
+                                        .foregroundStyle(.white)
+                                        .font(.medium(size: 14))
+                                }
                             }
                         }
+                        .padding(.horizontal, 20)
                         if viewModel.lineMarkData.isEmpty {
                             HStack {
                                 Spacer()
@@ -96,82 +114,10 @@ struct ReportTrendGraphView: View {
                                 Spacer()
                             }
                         } else {
-                            Chart {
-                                ForEach(viewModel.lineMarkData, id: \.id) { data in
-                                    AreaMark(
-                                        x: .value("Date",
-                                                  data.createdAt.midDate,
-                                                  unit: .day,
-                                                  calendar: .autoupdatingCurrent),
-                                        y: .value("Value", data.value)
-                                    )
-                                    .foregroundStyle(.linearGradient(
-                                        .init(colors: [chartColor.opacity(0.3),
-                                                       chartColor.opacity(0.1)]),
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    ))
-                                    LineMark(
-                                        x: .value("Date",
-                                                  data.createdAt.midDate,
-                                                  unit: .day,
-                                                  calendar: .autoupdatingCurrent),
-                                        y: .value("Value", data.value)
-                                    )
-                                    .foregroundStyle(chartColor)
-                                    
-                                    if viewModel.lineMarkData.count == 1 {
-                                        PointMark(
-                                            x: .value("Date", data.createdAt.midDate),
-                                            y: .value("Value", data.value)
-                                        )
-                                        .foregroundStyle(chartColor)
-                                    }
-                                }
-                                if let selectedDate {
-                                    RuleMark(x: .value("Date", selectedDate))
-                                        .foregroundStyle(chartColor)
-                                }
-                                
-                                if let selectedDate, let selectedValue {
-                                    PointMark(
-                                        x: .value("Date", selectedDate),
-                                        y: .value("Value", selectedValue)
-                                    )
-                                    .symbol {
-                                        Circle()
-                                            .fill()
-                                            .frame(width: 12, height: 12)
-                                            .foregroundStyle(chartColor)
-                                            .shadow(radius: 1)
-                                    }
-                                }
-                            }
-                            .frame(height: 140)
-                            .padding(.bottom, 24)
-                            .padding(.horizontal, 12)
-                            .chartXSelection(value: $selectedDate)
-                            .chartXScale(domain: viewModel.firstLineMarkDate.midDate ... viewModel.lastLineMarkDate.midDate)
-                            .chartYScale(domain: 0 ... viewModel.maxLineMarkValue)
-                            .chartGesture { proxy in
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { value in
-                                        proxy.selectXValue(at: value.location.x)
-                                    }
-                                    .onEnded { value in
-                                        selectedDate = nil
-                                        selectedValue = nil
-                                    }
-                            }
-                            .onChange(of: selectedDate) {
-                                guard let selectedDate else {
-                                    return
-                                }
-                                selectedValue = viewModel.selectedLineMarkValue(for: selectedDate)
-                            }
-                            .onChange(of: selectedValue) {
-                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                            }
+                            LineChartView(selectedDate: $selectedDate,
+                                          selectedValue: $selectedValue,
+                                          viewModel: viewModel,
+                                          exercise: exercise)
                         }
                     }
                     .background(Color(.systemGray6))
