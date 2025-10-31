@@ -12,8 +12,10 @@ import Charts
 struct BodyPartsReportGraphView: View {
     @Query var workoutDays: [WorkoutDay]
     @Binding var timePeriod: TimePeriod
+    @State var viewModel: BodyPartsReportGraphViewModel
+    @State private var isShowDetail = false
+    @State private var barMarkReport: BarMarkReport?
     
-    let viewModel: ReportViewModel
     let parts: Parts
     
     var body: some View {
@@ -69,54 +71,62 @@ struct BodyPartsReportGraphView: View {
             }
             .padding(.horizontal, 12)
             switch timePeriod {
-            case .today:
-                Chart {
-                    ForEach(viewModel.barMarkData(parts: parts, workoutDays: workoutDays, timePeriod: .today)) { data in
-                        BarMark(
-                            x: .value("Name", data.period.title),
-                            y: .value("Value", data.value),
-                            width: 16
-                        )
-                        .foregroundStyle(by: .value("Category", data.category.title))
-                        .position(by: .value("Category", data.category.title))
-                        .annotation(position: .top) {
-                            Text("\(Int(data.value))")
-                                .font(.medium(size: 16))
-                        }
-                    }
-                }
-                .frame(height: 200)
-                .padding(.horizontal, 12)
-            case .thisWeek, .thisMonth, .thisYear:
-                Chart {
-                    ForEach(viewModel.barMarkData(parts: parts, workoutDays: workoutDays, timePeriod: timePeriod)) { data in
-                        BarMark(
-                            x: .value("Name", data.period.title),
-                            y: .value("Value", data.value),
-                            width: 16
-                        )
-                        .foregroundStyle(by: .value("Category", data.category.title))
-                        .position(by: .value("Category", data.category.title))
-                        .annotation(position: .top) {
-                            VStack(spacing: 0) {
-                                Text("\(Int(data.value))")
-                                    .font(.medium(size: 16))
-                                if data.period.isThisPeriod {
-                                    Text(viewModel.getWeekCompareData(
-                                        value: data.value,
-                                        category: data.category,
-                                        workoutDays: workoutDays,
-                                        parts: parts,
-                                        timePeriod: timePeriod))
-                                    .foregroundStyle(.green)
-                                    .font(.bold(size: 12))
+            case .today, .thisWeek, .thisMonth, .thisYear:
+                VStack {
+                    Chart {
+                        ForEach(viewModel.barMarkData) { data in
+                            BarMark(
+                                x: .value("Name", data.period.title),
+                                y: .value("Value", data.value),
+                                width: 16
+                            )
+                            .foregroundStyle(by: .value("Category", data.category.title))
+                            .position(by: .value("Category", data.category.title))
+                            .annotation(position: .top) {
+                                VStack(spacing: 0) {
+                                    Text("\(data.value)")
+                                        .font(.regular(size: 14))
+                                        .foregroundStyle(.white)
+                                    switch data.category {
+                                    case .set:
+                                        if data.period.isThisPeriod {
+                                            Text(viewModel.setCompareData)
+                                            .foregroundStyle(.green)
+                                            .font(.bold(size: 12))
+                                        }
+                                    case .rep:
+                                        if data.period.isThisPeriod {
+                                            Text(viewModel.repCompareData)
+                                            .foregroundStyle(.green)
+                                            .font(.bold(size: 12))
+                                        }
+                                    case .totalLoad:
+                                        if data.period.isThisPeriod {
+                                            Text(viewModel.totalWeightCompareData)
+                                            .foregroundStyle(.green)
+                                            .font(.bold(size: 12))
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+                    .frame(height: 200)
+                    .padding(.horizontal, 12)
+                    Button {
+                        withAnimation {
+                            isShowDetail.toggle()
+                        }
+                    } label: {
+                        Text(isShowDetail ? "レポートデータを閉じる" : "さらにレポートデータを表示")
+                            .foregroundStyle(.blue)
+                            .font(.regular(size: 14))
+                    }
+                    .padding(.top, 12)
+                    if isShowDetail, let barMarkReport {
+                        Text(barMarkReport.category.title)
+                    }
                 }
-                .frame(height: 200)
-                .padding(.horizontal, 12)
             case .all:
                 fatalError("Invalid timePeriod")
             }
@@ -125,34 +135,41 @@ struct BodyPartsReportGraphView: View {
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .padding(.horizontal, 20)
+        .onAppear {
+            viewModel.barMarkData(parts: parts, workoutDays: workoutDays, timePeriod: timePeriod)
+            viewModel.getCompareData(workoutDays: workoutDays, parts: parts, timePeriod: timePeriod)
+        }
+        .onChange(of: timePeriod) { oldValue, newValue in
+            viewModel.barMarkData(parts: parts, workoutDays: workoutDays, timePeriod: newValue)
+            viewModel.getCompareData(workoutDays: workoutDays, parts: parts, timePeriod: newValue)
+        }
     }
 }
 
 #Preview("today", body: {
     @Previewable @State var timePeriod: TimePeriod = .today
     BodyPartsReportGraphView(timePeriod: $timePeriod,
-                            viewModel: ReportViewModel(),
+                            viewModel: BodyPartsReportGraphViewModel(),
                             parts: .chest)
 })
 
 #Preview("week", body: {
     @Previewable @State var timePeriod: TimePeriod = .thisWeek
     BodyPartsReportGraphView(timePeriod: $timePeriod,
-                            viewModel: ReportViewModel(),
+                            viewModel: BodyPartsReportGraphViewModel(),
                             parts: .chest)
 })
 
 #Preview("month", body: {
     @Previewable @State var timePeriod: TimePeriod = .thisMonth
     BodyPartsReportGraphView(timePeriod: $timePeriod,
-                            viewModel: ReportViewModel(),
+                            viewModel: BodyPartsReportGraphViewModel(),
                             parts: .chest)
 })
 
 #Preview("year", body: {
     @Previewable @State var timePeriod: TimePeriod = .thisYear
     BodyPartsReportGraphView(timePeriod: $timePeriod,
-                            viewModel: ReportViewModel(),
+                            viewModel: BodyPartsReportGraphViewModel(),
                             parts: .chest)
 })
-

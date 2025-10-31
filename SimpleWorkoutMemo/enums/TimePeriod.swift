@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum TimePeriod: String, CaseIterable, Identifiable, Hashable {
+enum TimePeriod: String, CaseIterable, Identifiable, Hashable, Periodable {
     case today
     case thisWeek
     case thisMonth
@@ -71,7 +71,7 @@ enum TimePeriod: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
-protocol Periodable {
+protocol Periodable: Equatable {
     var title: String { get }
 }
 

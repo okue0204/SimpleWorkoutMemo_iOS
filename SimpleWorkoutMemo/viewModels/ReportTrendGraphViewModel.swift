@@ -84,8 +84,8 @@ class ReportTrendGraphViewModel {
     
     func firstAndLastLineMarkDate() {
         let dates = lineMarkData.map { $0.createdAt }
-        firstLineMarkDate = dates.first ?? Date()
-        lastLineMarkDate = dates.last ?? Date()
+        firstLineMarkDate = dates.min() ?? Date()
+        lastLineMarkDate = dates.max() ?? Date()
     }
     
     func uniqueWorkoutYears(exercise: Exercise, workoutDays: [WorkoutDay]) {

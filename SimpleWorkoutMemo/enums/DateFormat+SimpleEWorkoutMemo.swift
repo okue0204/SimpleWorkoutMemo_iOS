@@ -12,6 +12,7 @@ enum DateFormat {
     case yearMonth
     case monthDay
     case year
+    case yearMonthDayHourMinuteSecond
     
     var formatString: String {
         switch self {
@@ -23,6 +24,8 @@ enum DateFormat {
             "MM月dd日"
         case .year:
             "yyyy年"
+        case .yearMonthDayHourMinuteSecond:
+            "yyyy年MM月dd日HH時mm分ss秒"
         }
     }
 }

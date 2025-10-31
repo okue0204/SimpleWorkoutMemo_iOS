@@ -41,8 +41,8 @@ struct BodyPartsReportView: View {
                 .padding(.bottom, isHideBanner ? 0 : 20)
                 ForEach(Parts.allCases, id: \.id) { parts in
                     BodyPartsReportGraphView(timePeriod: $timePeriod,
-                                            viewModel: viewModel,
-                                            parts: parts)
+                                             viewModel: BodyPartsReportGraphViewModel(),
+                                             parts: parts)
                 }
                 .padding(.bottom, 20)
             }
