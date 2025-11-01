@@ -23,8 +23,6 @@ struct ReportView: View {
                     Spacer()
                         .frame(maxWidth: .infinity)
                         .frame(height: geometry.safeAreaInsets.top)
-                    HeaderView(title: "レポート", imageResource: nil, isFromHome: false) { _ in }
-                        .padding(.bottom, 12)
                     ScrollView {
                         VStack(spacing: 20) {
                             BannerViewContainer {
@@ -47,6 +45,8 @@ struct ReportView: View {
                 }
                 .ignoresSafeArea()
             }
+            .navigationTitle("レポート")
+            .toolbarTitleDisplayMode(.inline)
         }
         .onAppear(perform: {
             viewModel.showSettingTargetDaysAlertIfNeeded()

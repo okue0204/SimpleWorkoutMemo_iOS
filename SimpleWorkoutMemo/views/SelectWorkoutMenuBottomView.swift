@@ -20,10 +20,7 @@ struct SelectWorkoutMenuBottomView: View {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 isShowWorkoutSetting.toggle()
             }) {
-                Text("種目を追加")
-                    .font(.medium(size: 16))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity, maxHeight: 50)
+                addWorkoutButton()
             }
             .background(Color(.systemGray5))
             .clipShape(RoundedRectangle(cornerRadius: 25))
@@ -32,14 +29,7 @@ struct SelectWorkoutMenuBottomView: View {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 dismiss()
             }) {
-                ZStack {
-                    Circle()
-                        .fill(.blue.opacity(0.2))
-                        .frame(width: 50, height: 50)
-                    Image(.icWorkoutClose)
-                        .resizable()
-                        .frame(width: 16, height: 16)
-                }
+                closeButton()
             }
             .padding(.trailing, 20)
         }
@@ -50,6 +40,42 @@ struct SelectWorkoutMenuBottomView: View {
                 onUpdateExercise?()
             }
             .presentationDetents([.fraction(1/2)])
+        }
+    }
+    
+    @ViewBuilder
+    private func addWorkoutButton() -> some View {
+        if #available(iOS 26.0, *) {
+            Text("種目を追加")
+                .font(.medium(size: 16))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, maxHeight: 50)
+                .glassEffect()
+        } else {
+            Text("種目を追加")
+                .font(.medium(size: 16))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, maxHeight: 50)
+        }
+    }
+    
+    @ViewBuilder
+    private func closeButton() -> some View {
+        if #available(iOS 26.0, *) {
+            Image(.icWorkoutClose)
+                .resizable()
+                .frame(width: 16, height: 16)
+                .padding()
+                .glassEffect()
+        } else {
+            ZStack {
+                Circle()
+                    .fill(.blue.opacity(0.2))
+                    .frame(width: 50, height: 50)
+                Image(.icWorkoutClose)
+                    .resizable()
+                    .frame(width: 16, height: 16)
+            }
         }
     }
 }

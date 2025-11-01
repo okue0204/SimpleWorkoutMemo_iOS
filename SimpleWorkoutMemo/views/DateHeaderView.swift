@@ -17,7 +17,6 @@ struct DateHeaderView: View {
                 .font(.regular(size: 18))
         }
         .padding(.horizontal, 20)
-        .padding(.top, 20)
     }
 }
 

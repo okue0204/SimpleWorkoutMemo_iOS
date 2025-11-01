@@ -58,15 +58,7 @@ struct WorkoutAddMenuView: View {
                     }
                 }
             } label: {
-                ZStack {
-                    Circle()
-                        .fill(Color(.systemGray5))
-                        .frame(width: 60, height: 60)
-                    Image(.icWorkoutAdd)
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .foregroundStyle(.blue)
-                }
+                addButton()
             }
         }
         .padding(.trailing, 26)
@@ -76,6 +68,28 @@ struct WorkoutAddMenuView: View {
             viewModel.setTodayWorkout(workoutDays: workoutDays)
             viewModel.filter(for: exercises)
         })
+    }
+    
+    @ViewBuilder
+    private func addButton() -> some View {
+        if #available(iOS 26.0, *) {
+            Image(.icWorkoutAdd)
+                .resizable()
+                .frame(width: 20, height: 20)
+                .padding()
+                .foregroundStyle(.blue)
+                .glassEffect()
+        } else {
+            ZStack {
+                Circle()
+                    .fill(Color(.systemGray5))
+                    .frame(width: 60, height: 60)
+                Image(.icWorkoutAdd)
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(.blue)
+            }
+        }
     }
 }
 

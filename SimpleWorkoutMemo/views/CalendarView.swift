@@ -24,79 +24,77 @@ struct CalendarView: View {
     }
     
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                Spacer()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: geometry.safeAreaInsets.top)
-                HeaderView(title: "WorkoutCalendar",
-                           imageResource: nil,
-                           isFromHome: false) { _ in
-                    dismiss()
-                }
-                           .padding(.bottom, 12)
-                           .background(.black)
-                BannerViewContainer {
-                    isHideBanner = true
-                }
-                .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
-                CurrentCalendarSelectTextView(currentPositionDate: $currentPositionDate,
-                                              scrollPosition: $scrollPosition,
-                                              viewModel: viewModel)
-                WeekDayView()
-                ScrollView(.vertical) {
-                    VStack(spacing: 0) {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHStack {
-                                ForEach(viewModel.calendars, id: \.id) { calendarMonth in
-                                    MonthView(selectedDate: $selectedDate,
-                                              viewModel: viewModel,
-                                              calendarMonth: calendarMonth)
+        NavigationStack {
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    Spacer()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: geometry.safeAreaInsets.top)
+                    BannerViewContainer {
+                        isHideBanner = true
+                    }
+                    .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
+                    CurrentCalendarSelectTextView(currentPositionDate: $currentPositionDate,
+                                                  scrollPosition: $scrollPosition,
+                                                  viewModel: viewModel)
+                    WeekDayView()
+                    ScrollView(.vertical) {
+                        VStack(spacing: 0) {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHStack {
+                                    ForEach(viewModel.calendars, id: \.id) { calendarMonth in
+                                        MonthView(selectedDate: $selectedDate,
+                                                  viewModel: viewModel,
+                                                  calendarMonth: calendarMonth)
+                                    }
                                 }
+                                .scrollTargetLayout()
                             }
-                            .scrollTargetLayout()
+                            .scrollTargetBehavior(.viewAligned)
+                            .scrollPosition(id: $scrollPosition)
+                            .onChange(of: scrollPosition) { oldValue, newValue in
+                                currentPositionDate = viewModel.currentPositionDate(for: newValue)
+                            }
                         }
-                        .scrollTargetBehavior(.viewAligned)
-                        .scrollPosition(id: $scrollPosition)
-                        .onChange(of: scrollPosition) { oldValue, newValue in
-                            currentPositionDate = viewModel.currentPositionDate(for: newValue)
+                        .background(Color(.systemGray6))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .padding(.bottom, 20)
+                    }
+                    .padding(.horizontal, 12)
+                    Spacer()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: geometry.safeAreaInsets.bottom)
+                }
+                .background(.black)
+                .ignoresSafeArea(.all)
+                .onAppear {
+                    AnalyticsManager.logEvent(.showCalendar)
+                    viewModel.createCalendarMonth()
+                }
+                .onChange(of: selectedDate, { oldValue, newValue in
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    if let newValue,
+                       let workoutDay = viewModel.workoutDay(for: newValue, from: workoutDays),
+                       !workoutDay.workouts.isEmpty {
+                        DispatchQueue.main.async {
+                            isShowSheet.toggle()
                         }
                     }
-                    .background(Color(.systemGray6))
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                }
-                .padding(.horizontal, 12)
-                Spacer()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: geometry.safeAreaInsets.bottom)
-            }
-            .background(.black)
-            .ignoresSafeArea(.all)
-            .onAppear {
-                AnalyticsManager.logEvent(.showCalendar)
-                viewModel.createCalendarMonth()
-            }
-            .onChange(of: selectedDate, { oldValue, newValue in
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                if let newValue,
-                   let workoutDay = viewModel.workoutDay(for: newValue, from: workoutDays),
-                   !workoutDay.workouts.isEmpty {
-                    DispatchQueue.main.async {
-                        isShowSheet.toggle()
+                })
+                .sheet(isPresented: $isShowSheet, onDismiss: {
+                    selectedDate = nil
+                }, content: {
+                    if let selectedDate,
+                       let workoutDay = viewModel.workoutDay(for: selectedDate, from: workoutDays) {
+                        WorkoutHalfModelView(viewModel: WorkoutHalfModelViewModel(),
+                                             selectedDate: $selectedDate,
+                                             workoutDay: workoutDay)
+                            .presentationDetents([.medium, .large])
                     }
-                }
-            })
-            .sheet(isPresented: $isShowSheet, onDismiss: {
-                selectedDate = nil
-            }, content: {
-                if let selectedDate,
-                   let workoutDay = viewModel.workoutDay(for: selectedDate, from: workoutDays) {
-                    WorkoutHalfModelView(viewModel: WorkoutHalfModelViewModel(),
-                                         selectedDate: $selectedDate,
-                                         workoutDay: workoutDay)
-                        .presentationDetents([.medium, .large])
-                }
-            })
+                })
+            }
+            .navigationTitle("ワークアウトカレンダー")
+            .toolbarTitleDisplayMode(.inline)
         }
     }
 }

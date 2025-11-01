@@ -42,91 +42,102 @@ struct SettingView: View {
     }
     
     var body: some View {
-        HeaderView(title: "設定",
-                   imageResource: .icWorkoutClose,
-                   isFromHome: false) { _ in
-            dismiss()
-        }
-                   .padding(.vertical, 12)
-        BannerViewContainer {
-            isHideBanner = true
-        }
-        .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
-        VStack(spacing: 0) {
-            List {
-                Section {
-                    Button {
-                        settingSheetType = .term
-                    } label: {
-                        Text("利用規約")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 16))
-                    }
-                    Button {
-                        settingSheetType = .privacy
-                    } label: {
-                        Text("プライバシーポリシー")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 16))
-                    }
-                } header: {
-                    Text("インフォメーション")
-                        .font(.regular(size: 14))
-                }
-                Section {
-                    Button {
-                        settingSheetType = .inquiry
-                    } label: {
-                        Text("お問い合わせ")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 16))
-                    }
-                    Button {
-                        requestReview()
-                        AnalyticsManager.logEvent(.showReview)
-                    } label: {
-                        Text("レビュー")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 16))
-                    }
-                } header: {
-                    Text("フィードバック")
-                        .font(.regular(size: 14))
-                }
-    //            Section {
-    //                Button {
-    //                    AnalyticsManager.logEvent(.showShare)
-    //                } label: {
-    //                    Text("共有")
-    //                        .foregroundStyle(.white)
-    //                        .font(.regular(size: 16))
-    //                }
-    //            } header: {
-    //                Text("シェア")
-    //                    .font(.regular(size: 14))
-    //            }
-                Section {
-                    HStack {
-                        Text("バージョン")
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 16))
-                        Spacer()
-                        Text(EnvironmentConstant.appVersion)
-                            .foregroundStyle(.white)
-                            .font(.regular(size: 16))
-                    }
-                } header: {
-                    Text("その他")
-                        .font(.regular(size: 14))
-                }
-            }
-            .sheet(item: $settingSheetType) { $0 }
+        NavigationStack {
             BannerViewContainer {
                 isHideBanner = true
             }
-            .frame(width: displayWidth, height: isHideBanner ? 0 : 100)
+            .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
+            VStack(spacing: 0) {
+                List {
+                    Section {
+                        Button {
+                            settingSheetType = .term
+                        } label: {
+                            Text("利用規約")
+                                .foregroundStyle(.white)
+                                .font(.regular(size: 16))
+                        }
+                        Button {
+                            settingSheetType = .privacy
+                        } label: {
+                            Text("プライバシーポリシー")
+                                .foregroundStyle(.white)
+                                .font(.regular(size: 16))
+                        }
+                    } header: {
+                        Text("インフォメーション")
+                            .font(.regular(size: 14))
+                    }
+                    Section {
+                        Button {
+                            settingSheetType = .inquiry
+                        } label: {
+                            Text("お問い合わせ")
+                                .foregroundStyle(.white)
+                                .font(.regular(size: 16))
+                        }
+                        Button {
+                            requestReview()
+                            AnalyticsManager.logEvent(.showReview)
+                        } label: {
+                            Text("レビュー")
+                                .foregroundStyle(.white)
+                                .font(.regular(size: 16))
+                        }
+                    } header: {
+                        Text("フィードバック")
+                            .font(.regular(size: 14))
+                    }
+        //            Section {
+        //                Button {
+        //                    AnalyticsManager.logEvent(.showShare)
+        //                } label: {
+        //                    Text("共有")
+        //                        .foregroundStyle(.white)
+        //                        .font(.regular(size: 16))
+        //                }
+        //            } header: {
+        //                Text("シェア")
+        //                    .font(.regular(size: 14))
+        //            }
+                    Section {
+                        HStack {
+                            Text("バージョン")
+                                .foregroundStyle(.white)
+                                .font(.regular(size: 16))
+                            Spacer()
+                            Text(EnvironmentConstant.appVersion)
+                                .foregroundStyle(.white)
+                                .font(.regular(size: 16))
+                        }
+                    } header: {
+                        Text("その他")
+                            .font(.regular(size: 14))
+                    }
+                }
+                .sheet(item: $settingSheetType) { $0 }
+                BannerViewContainer {
+                    isHideBanner = true
+                }
+                .frame(width: displayWidth, height: isHideBanner ? 0 : 100)
+            }
+            .ignoresSafeArea(.container)
+            .navigationTitle("設定")
+            .toolbarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(.icWorkoutClose)
+                            .resizable()
+                            .frame(width: 16, height: 16)
+                            .foregroundStyle(.white)
+                    }
+
+                }
+            }
         }
-        .ignoresSafeArea(.container)
     }
 }
 
