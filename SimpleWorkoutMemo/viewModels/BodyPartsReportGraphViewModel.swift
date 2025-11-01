@@ -16,6 +16,8 @@ class BodyPartsReportGraphViewModel {
     var setCompareData: String = ""
     var repCompareData: String = ""
     var totalWeightCompareData: String = ""
+    var percentageCompareData: String = ""
+    var isUpPercentage: Bool?
     
     // 棒グラフ用のデータ
     func barMarkData(parts: Parts, workoutDays: [WorkoutDay], timePeriod: TimePeriod) {
@@ -134,8 +136,7 @@ class BodyPartsReportGraphViewModel {
     }
     
     // BarMarkReportの共通集計関数
-    private func currentValues<T: Periodable>(currentPeriod: T) -> (set: Int, rep: Int, totalLoad: Int) {
-        // 型が一致 & 現在期間に該当するデータだけ抽出
+    private func filterBarMarkPeriodValues<T: Periodable>(currentPeriod: T) -> (set: Int, rep: Int, totalLoad: Int) {
         let filtered: [(category: BarMarkReportCategory, value: Int)] = barMarkData.compactMap { report -> (BarMarkReportCategory, Int)? in
             guard let period = report.period as? T, period == currentPeriod else { return nil }
             return (report.category, report.value)
@@ -193,11 +194,11 @@ class BodyPartsReportGraphViewModel {
         
         let currentValue: (set: Int, rep: Int, totalLoad: Int) = switch timePeriod {
         case .thisWeek:
-            currentValues(currentPeriod: WeekPeriod.thisWeek)
+            filterBarMarkPeriodValues(currentPeriod: WeekPeriod.thisWeek)
         case .thisMonth:
-            currentValues(currentPeriod: MonthPeriod.thisMonth)
+            filterBarMarkPeriodValues(currentPeriod: MonthPeriod.thisMonth)
         case .thisYear:
-            currentValues(currentPeriod: YearPeriod.thisYear)
+            filterBarMarkPeriodValues(currentPeriod: YearPeriod.thisYear)
         default:
             fatalError()
         }
@@ -213,5 +214,51 @@ class BodyPartsReportGraphViewModel {
         setCompareData = setSymbol + String(abs(currentValue.set) - abs(previousPeriodTotalSet)) + (isShowSetFire ? "🔥" : "")
         repCompareData = repSymbol + String(abs(currentValue.rep) - abs(previousPeriodTotalRep)) + (isShowRepFire ? "🔥" : "")
         totalWeightCompareData = totalWeightSymbol + String(abs(currentValue.totalLoad) - abs(previousPeriodTotalLoad)) + (isShowTotalWeightFire ? "🔥" : "")
+    }
+    
+    // データを比較して何%成長orダウンしたか計算
+    func calculatePercentage(timePeriod: TimePeriod) {
+        guard timePeriod != .today else { return }
+        
+        let currentValue: (set: Int, rep: Int, totalLoad: Int) = switch timePeriod {
+        case .thisWeek:
+            filterBarMarkPeriodValues(currentPeriod: WeekPeriod.thisWeek)
+        case .thisMonth:
+            filterBarMarkPeriodValues(currentPeriod: MonthPeriod.thisMonth)
+        case .thisYear:
+            filterBarMarkPeriodValues(currentPeriod: YearPeriod.thisYear)
+        default:
+            fatalError()
+        }
+        
+        let previousValue: (set: Int, rep: Int, totalLoad: Int) = switch timePeriod {
+        case .thisWeek:
+            filterBarMarkPeriodValues(currentPeriod: WeekPeriod.lastWeek)
+        case .thisMonth:
+            filterBarMarkPeriodValues(currentPeriod: MonthPeriod.lastMonth)
+        case .thisYear:
+            filterBarMarkPeriodValues(currentPeriod: YearPeriod.lastYear)
+        default:
+            fatalError()
+        }
+        
+        let currentTotalLoad = Double(currentValue.totalLoad)
+        let previousTotalLoad = Double(previousValue.totalLoad)
+        
+        guard currentTotalLoad != 0, previousTotalLoad != 0 else {
+            isUpPercentage = nil
+            percentageCompareData = "0%"
+            return
+        }
+        
+        let result = if currentTotalLoad > previousTotalLoad {
+            // 増加率計算
+            "+" + String(Int((currentTotalLoad - previousTotalLoad) / previousTotalLoad * 100)) + "%"
+        } else {
+            // 減少率計算
+            "-" + String(Int((previousTotalLoad - currentTotalLoad) / previousTotalLoad * 100)) + "%"
+        }
+        isUpPercentage = currentTotalLoad > previousTotalLoad
+        percentageCompareData = result
     }
 }

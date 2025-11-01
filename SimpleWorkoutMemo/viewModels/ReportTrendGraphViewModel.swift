@@ -100,8 +100,6 @@ class ReportTrendGraphViewModel {
             }
         ).sorted()
         
-        let mock = [2025, 2026, 2027]
-        
-        uniqueYears = years.isEmpty ? [Date().year] : mock
+        uniqueYears = years.isEmpty ? [Date().year] : years
     }
 }

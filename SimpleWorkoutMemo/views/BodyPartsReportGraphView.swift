@@ -14,7 +14,6 @@ struct BodyPartsReportGraphView: View {
     @Binding var timePeriod: TimePeriod
     @State var viewModel: BodyPartsReportGraphViewModel
     @State private var isShowDetail = false
-    @State private var barMarkReport: BarMarkReport?
     
     let parts: Parts
     
@@ -113,18 +112,53 @@ struct BodyPartsReportGraphView: View {
                     }
                     .frame(height: 200)
                     .padding(.horizontal, 12)
-                    Button {
-                        withAnimation {
-                            isShowDetail.toggle()
+                    if timePeriod == .thisWeek || timePeriod == .thisMonth || timePeriod == .thisYear {
+                        Button {
+                            withAnimation {
+                                isShowDetail.toggle()
+                            }
+                        } label: {
+                            Text(isShowDetail ? "レポートデータを閉じる" : "さらにレポートデータを表示")
+                                .foregroundStyle(.blue)
+                                .font(.regular(size: 14))
                         }
-                    } label: {
-                        Text(isShowDetail ? "レポートデータを閉じる" : "さらにレポートデータを表示")
-                            .foregroundStyle(.blue)
-                            .font(.regular(size: 14))
-                    }
-                    .padding(.top, 12)
-                    if isShowDetail, let barMarkReport {
-                        Text(barMarkReport.category.title)
+                        .padding(.top, 12)
+                        if isShowDetail {
+                            Divider()
+                                .padding(.horizontal, 12)
+                            ScrollView {
+                                VStack(spacing: 0) {
+                                    HStack {
+                                        Text("パーセント")
+                                            .foregroundStyle(.white)
+                                            .font(.semiBold(size: 16))
+                                        Spacer()
+                                    }
+                                    .padding(.bottom, 6)
+                                    HStack {
+                                        Text("総負荷量")
+                                            .font(.medium(size: 14))
+                                            .foregroundStyle(.white)
+                                            .padding(.leading, 12)
+                                        Spacer()
+                                        HStack(spacing: 0) {
+                                            Text(viewModel.percentageCompareData)
+                                                .font(.bold(size: 14))
+                                                .foregroundStyle(.white)
+                                            if let isUpPercentage = viewModel.isUpPercentage {
+                                                Text(isUpPercentage ? "🔥" : "😞")
+                                            }
+                                        }
+                                        .padding(.trailing, 12)
+                                    }
+                                    .padding(.vertical, 12)
+                                    .background(Color(.systemGray5))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                .padding(.horizontal, 20)
+                                .padding(.top, 12)
+                            }
+                        }
                     }
                 }
             case .all:
@@ -138,10 +172,12 @@ struct BodyPartsReportGraphView: View {
         .onAppear {
             viewModel.barMarkData(parts: parts, workoutDays: workoutDays, timePeriod: timePeriod)
             viewModel.getCompareData(workoutDays: workoutDays, parts: parts, timePeriod: timePeriod)
+            viewModel.calculatePercentage(timePeriod: timePeriod)
         }
         .onChange(of: timePeriod) { oldValue, newValue in
             viewModel.barMarkData(parts: parts, workoutDays: workoutDays, timePeriod: newValue)
             viewModel.getCompareData(workoutDays: workoutDays, parts: parts, timePeriod: newValue)
+            viewModel.calculatePercentage(timePeriod: timePeriod)
         }
     }
 }

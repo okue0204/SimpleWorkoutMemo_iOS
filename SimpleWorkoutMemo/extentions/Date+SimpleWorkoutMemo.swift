@@ -52,7 +52,8 @@ extension Date {
         if weekNumber == WeekDay.sunday.rawValue {
             return Calendar.appCalendar.date(byAdding: .day, value: 0, to: self) ?? Date()
         } else {
-            return Calendar.appCalendar.date(byAdding: .day, value: -weekNumber, to: self) ?? Date()
+            let value = weekNumber - 1
+            return Calendar.appCalendar.date(byAdding: .day, value: -value, to: self) ?? Date()
         }
     }
     
@@ -130,7 +131,7 @@ extension Date {
     
     // 今月のDateの配列
     var currentMonthDates: [Date] {
-        (1...lastDateOfMonth.day).compactMap { num in
+        (0...lastDateOfMonth.day - 1).compactMap { num in
             Calendar.appCalendar.date(byAdding: .day, value: num, to: firstDayOfMonth)
         }
     }
