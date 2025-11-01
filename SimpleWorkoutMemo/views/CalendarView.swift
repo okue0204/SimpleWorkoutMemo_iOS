@@ -45,7 +45,7 @@ struct CalendarView: View {
                                               viewModel: viewModel)
                 WeekDayView()
                 ScrollView(.vertical) {
-                    LazyVStack(spacing: 0) {
+                    VStack(spacing: 0) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             LazyHStack {
                                 ForEach(viewModel.calendars, id: \.id) { calendarMonth in
