@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct VolumeReportView: View {
-    
+    @EnvironmentObject var subscription: SubscriptionManager
     @State private var isShowDetail: Bool = false
     
     let volumeReport: VolumeType

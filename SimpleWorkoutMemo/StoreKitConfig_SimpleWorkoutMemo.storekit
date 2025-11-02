@@ -1,0 +1,117 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "F729A446",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6754129501",
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_developerTeamID" : "5BR9PKVDZT",
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 783826196.32548702,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21822012",
+      "localizations" : [
+
+      ],
+      "name" : "SimpleWorkoutMemoSubscription",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6754811188",
+          "introductoryOffer" : {
+            "internalID" : "223224FD",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2W"
+          },
+          "localizations" : [
+            {
+              "description" : "広告非表示と機能解放",
+              "displayName" : "1ヶ月プラン",
+              "locale" : "ja"
+            }
+          ],
+          "productID" : "SimpleWorkoutMemoMonthlyPlan",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "1ヶ月プラン",
+          "subscriptionGroupID" : "21822012",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6754811134",
+          "introductoryOffer" : {
+            "internalID" : "6E75737A",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2W"
+          },
+          "localizations" : [
+            {
+              "description" : "広告非表示と機能解放",
+              "displayName" : "1年プラン",
+              "locale" : "ja"
+            }
+          ],
+          "productID" : "SimpleWorkoutMemoYearyPlan",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "1年プラン",
+          "subscriptionGroupID" : "21822012",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

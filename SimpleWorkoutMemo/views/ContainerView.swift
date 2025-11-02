@@ -19,6 +19,7 @@ struct ContainerView: View {
         TabView(selection: $selectedTab) {
             HomeView(viewModel: homeViewModel)
                 .environmentObject(AppStorageManager.shared)
+                .environmentObject(SubscriptionManager.shared)
                 .tabItem {
                     VStack {
                         Image(systemName: Tab.home.imageName)
@@ -29,6 +30,7 @@ struct ContainerView: View {
                 }
                 .tag(Tab.home)
             CalendarView(viewModel: calendarViewModel, selectedDate: $selectedDate)
+                .environmentObject(SubscriptionManager.shared)
                 .tabItem {
                     VStack {
                         Image(systemName: Tab.calendar.imageName)
@@ -40,6 +42,7 @@ struct ContainerView: View {
                 .tag(Tab.calendar)
             ReportView(viewModel: reportViewModel)
                 .environmentObject(AppStorageManager.shared)
+                .environmentObject(SubscriptionManager.shared)
                 .tabItem {
                     VStack {
                         Image(systemName: Tab.report.imageName)

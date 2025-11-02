@@ -10,6 +10,7 @@ import SwiftData
 
 struct ReportView: View {
     @EnvironmentObject var appStorageManager: AppStorageManager
+    @EnvironmentObject var subscription: SubscriptionManager
     @Bindable var viewModel: ReportViewModel
     @State private var settingTargetText: String = ""
     @State private var isHideBanner: Bool = false
@@ -29,7 +30,7 @@ struct ReportView: View {
                                 isHideBanner = true
                             }
                             .frame(maxWidth: .infinity)
-                            .frame(height: isHideBanner ? 0 : 50)
+                            .frame(height: subscription.isSubscribed ? 0 : isHideBanner ? 0 : 50)
                             ContinuousRecordView(viewModel: viewModel)
                                 .environmentObject(appStorageManager)
                             PeriodReportView(viewModel: viewModel, timePeriod: .all)
@@ -37,6 +38,7 @@ struct ReportView: View {
                             VolumeReportView(volumeReport: .maxVolume)
                             VolumeReportView(volumeReport: .totalVolume)
                                 .padding(.bottom, 20)
+                                .environmentObject(SubscriptionManager.shared)
                         }
                     }
                     Spacer()
@@ -68,4 +70,5 @@ struct ReportView: View {
 #Preview {
     ReportView(viewModel: ReportViewModel())
         .environmentObject(AppStorageManager.shared)
+        .environmentObject(SubscriptionManager.shared)
 }

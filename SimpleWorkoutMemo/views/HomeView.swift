@@ -12,6 +12,7 @@ struct HomeView: View {
         
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
+    @EnvironmentObject var subscription: SubscriptionManager
     @EnvironmentObject var appStorageManager: AppStorageManager
     @StateObject var appOpen = AppOpenAdManager()
     @State var viewModel: HomeViewModel
@@ -37,10 +38,6 @@ struct HomeView: View {
                         let workoutDays = workoutDays.filter { day in
                             day.createdAt.zeroClock == Date().zeroClock
                         }
-                        BannerViewContainer {
-                            isHideBanner = true
-                        }
-                        .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
                         ForEach(workoutDays, id: \.id) { workoutDay in
                             ForEach(workoutDay.workouts, id: \.id) { workout in
                                 let previousWorkout = viewModel.fetchPreviousWorkout(workoutDays: self.workoutDays, todayWorkout: workout)
@@ -64,9 +61,20 @@ struct HomeView: View {
                         Color.clear.padding(.bottom, 80)
                     }
                 }
-                if isInitialized {
-                    WorkoutAddMenuView(viewModel: viewModel)
-                        .padding(.top, 12)
+                VStack {
+                    if isInitialized {
+                        WorkoutAddMenuView(viewModel: viewModel)
+                            .padding(.top, 12)
+                    }
+                    if !subscription.isSubscribed {
+                        BannerViewContainer {
+                            isHideBanner = true
+                        }
+                        .frame(
+                            width: displayWidth,
+                            height: isHideBanner ? 0 : 50
+                        )
+                    }
                 }
             }
             .navigationTitle("今日のトレーニング")
@@ -161,4 +169,5 @@ struct HomeView: View {
 #Preview {
     HomeView(viewModel: HomeViewModel(), headerAction: .app)
         .environmentObject(AppStorageManager.shared)
+        .environmentObject(SubscriptionManager.shared)
 }

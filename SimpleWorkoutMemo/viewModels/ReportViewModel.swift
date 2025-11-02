@@ -34,12 +34,9 @@ class ReportViewModel: ObservableObject {
         }
     }
     
-    private func weekTotalSets(workoutDays: [WorkoutDay], isThisWeek: Bool = true) -> Int {
-        let weekDates = isThisWeek ? Date().currentWeekDates : Date().lastWeekDates
+    private func todayTotalSets(workoutDays: [WorkoutDay]) -> Int {
         let weekWorkoutDays = workoutDays.filter { workoutDay in
-            weekDates.contains { date in
-                date.zeroClock == workoutDay.createdAt.zeroClock
-            }
+            workoutDay.createdAt.zeroClock == Date().zeroClock
         }
         let weekTotalSetCount = weekWorkoutDays.reduce(into: 0) { partialResult, workoutDay in
             let sets = workoutDay.workouts.map { workout in
@@ -50,12 +47,9 @@ class ReportViewModel: ObservableObject {
         return weekTotalSetCount
     }
     
-    private func weekTotalReps(workoutDays: [WorkoutDay], isThisWeek: Bool = true) -> Int {
-        let weekDates = isThisWeek ? Date().currentWeekDates : Date().lastWeekDates
+    private func todayTotalReps(workoutDays: [WorkoutDay]) -> Int {
         let weekWorkoutDays = workoutDays.filter { workoutDay in
-            weekDates.contains { date in
-                date.zeroClock == workoutDay.createdAt.zeroClock
-            }
+            workoutDay.createdAt.zeroClock == Date().zeroClock
         }
         let weekTotalRepCount = weekWorkoutDays.reduce(into: 0) { partialResult, workoutDay in
             let reps = workoutDay.workouts.map { workout in
@@ -66,12 +60,9 @@ class ReportViewModel: ObservableObject {
         return weekTotalRepCount
     }
     
-    private func weekTotalLoad(workoutDays: [WorkoutDay], isThisWeek: Bool = true) -> Int {
-        let weekDates = isThisWeek ? Date().currentWeekDates : Date().lastWeekDates
+    private func todayTotalLoad(workoutDays: [WorkoutDay]) -> Int {
         let weekWorkoutDays = workoutDays.filter { workoutDay in
-            weekDates.contains { date in
-                date.zeroClock == workoutDay.createdAt.zeroClock
-            }
+            workoutDay.createdAt.zeroClock == Date().zeroClock
         }
         let weekTotalWeight = weekWorkoutDays.reduce(into: 0) { partialResult, workoutDay in
             let totalWeight = workoutDay.workouts.map { workout in
@@ -130,34 +121,34 @@ class ReportViewModel: ObservableObject {
                     return "\(totalWeight)kg"
                 }
             }
-        } else if let thisWeekReportType = type as? ReportType {
-            switch thisWeekReportType {
+        } else if let reportType = type as? ReportType {
+            switch reportType {
             case .totalSets:
-                let weekTotalSetCount = weekTotalSets(workoutDays: workoutDays)
-                let totalSetsStringCount = String(weekTotalSetCount).count
+                let todayTotalSetCount = todayTotalSets(workoutDays: workoutDays)
+                let totalSetsStringCount = String(todayTotalSetCount).count
                 if totalSetsStringCount >= 4 {
                     let result = Double(totalSetsStringCount) / 1000
                     return String(format: "%.1f", result) + "k"
                 } else {
-                    return String(weekTotalSetCount)
+                    return String(todayTotalSetCount)
                 }
             case .totalReps:
-                let weekTotalRepCount = weekTotalReps(workoutDays: workoutDays)
-                let totalRepsStringCount = String(weekTotalRepCount).count
+                let todayTotalReps = todayTotalReps(workoutDays: workoutDays)
+                let totalRepsStringCount = String(todayTotalReps).count
                 if totalRepsStringCount >= 4 {
                     let result = Double(totalRepsStringCount) / 1000
                     return String(format: "%.1f", result) + "k"
                 } else {
-                    return String(weekTotalRepCount)
+                    return String(todayTotalReps)
                 }
             case .totalLoad:
-                let weekTotalWeight = weekTotalLoad(workoutDays: workoutDays)
-                let totalLoadStringCount = String(weekTotalWeight).count
+                let todayTotalLoad = todayTotalLoad(workoutDays: workoutDays)
+                let totalLoadStringCount = String(todayTotalLoad).count
                 if totalLoadStringCount >= 4 {
-                    let result = Double(weekTotalWeight) / 1000
+                    let result = Double(todayTotalLoad) / 1000
                     return String(format: "%.1f", result) + "t"
                 } else {
-                    return "\(weekTotalWeight)kg"
+                    return "\(todayTotalLoad)kg"
                 }
             }
         } else {

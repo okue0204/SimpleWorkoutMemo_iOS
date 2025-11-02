@@ -50,6 +50,9 @@
             ReferencedContainer = "container:SimpleWorkoutMemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../../SimpleWorkoutMemo/StoreKitConfig_SimpleWorkoutMemo.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

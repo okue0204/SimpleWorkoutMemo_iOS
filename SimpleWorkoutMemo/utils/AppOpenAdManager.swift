@@ -13,6 +13,8 @@ import SwiftyBeaver
 @MainActor
 class AppOpenAdManager: NSObject, ObservableObject {
     
+    private let subscription = SubscriptionManager.shared
+    
     @Published var appOpenAdLoaded: Bool = false
     @Published var adDismissed: Bool = false
     var appOpenAd: AppOpenAd?
@@ -29,7 +31,7 @@ class AppOpenAdManager: NSObject, ObservableObject {
     
     func presentAppOpenAd() {
         guard let appOpenAd,
-              let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+              let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene, !subscription.isSubscribed else {
             return
         }
         appOpenAd.present(from: scene.windows.first?.rootViewController)

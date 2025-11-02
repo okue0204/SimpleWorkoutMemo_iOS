@@ -10,6 +10,7 @@ import SwiftData
 import FirebaseCore
 import SwiftyBeaver
 import GoogleMobileAds
+import StoreKit
 
 let log = SwiftyBeaver.self
 
@@ -32,6 +33,14 @@ struct SimpleWorkoutMemoApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+
+    init() {
+        // Start listening for StoreKit transaction updates at launch
+        SubscriptionManager.shared.startListeningForTransactions()
+        Task {
+            await SubscriptionManager.shared.updateSubscriptionStatus()
+        }
+    }
 
     var body: some Scene {
         @State var viewModel = HomeViewModel()
@@ -58,3 +67,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 }
+

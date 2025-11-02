@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct CalendarView: View {
+    @EnvironmentObject var subscription: SubscriptionManager
     @Environment(\.dismiss) var dismiss
     @Query private var workoutDays: [WorkoutDay]
     @State var viewModel: CalendarViewModel
@@ -33,7 +34,8 @@ struct CalendarView: View {
                     BannerViewContainer {
                         isHideBanner = true
                     }
-                    .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
+                    .frame(width: displayWidth,
+                           height: subscription.isSubscribed ? 0 : isHideBanner ? 0 : 50)
                     CurrentCalendarSelectTextView(currentPositionDate: $currentPositionDate,
                                                   scrollPosition: $scrollPosition,
                                                   viewModel: viewModel)
@@ -104,4 +106,5 @@ struct CalendarView: View {
     
     CalendarView(viewModel: CalendarViewModel(),
                  selectedDate: $selectedDate)
+    .environmentObject(SubscriptionManager.shared)
 }

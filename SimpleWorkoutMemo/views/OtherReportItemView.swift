@@ -29,9 +29,7 @@ struct OtherReportItemView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)
         .padding(.horizontal, 6)
-        .background(
-            LinearGradient(colors: [.orange.opacity(0.4), .red.opacity(0.4)], startPoint: .top, endPoint: .bottom)
-        )
+        .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

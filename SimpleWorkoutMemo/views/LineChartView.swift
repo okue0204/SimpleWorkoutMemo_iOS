@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct LineChartView: View {
-    
+    @EnvironmentObject var subscription: SubscriptionManager
     @Binding var selectedDate: Date?
     @Binding var selectedValue: Double?
     
@@ -87,6 +87,7 @@ struct LineChartView: View {
         .frame(height: 140)
         .padding(.bottom, 24)
         .padding(.horizontal, 12)
+        .blur(radius: blurRadius())
         .chartXSelection(value: $selectedDate)
         .chartXScale(domain: viewModel.firstLineMarkDate.midDate ... viewModel.lastLineMarkDate.midDate)
         .chartYScale(domain: 0 ... viewModel.maxLineMarkValue)
@@ -108,6 +109,14 @@ struct LineChartView: View {
         }
         .onChange(of: selectedValue) {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        }
+    }
+    
+    private func blurRadius() -> CGFloat {
+        if !subscription.isSubscribed {
+            8
+        } else {
+            0
         }
     }
 }

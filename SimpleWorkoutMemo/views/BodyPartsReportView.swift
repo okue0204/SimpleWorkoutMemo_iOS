@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BodyPartsReportView: View {
-    
+    @EnvironmentObject var subscription: SubscriptionManager
     @State private var isHideBanner: Bool = false
     @State private var timePeriod: TimePeriod = .today
     
@@ -37,12 +37,13 @@ struct BodyPartsReportView: View {
                     isHideBanner = true
                 }
                 .frame(maxWidth: .infinity)
-                .frame(height: isHideBanner ? 0 : 50)
+                .frame(height: subscription.isSubscribed ? 0 : isHideBanner ? 0 : 50)
                 .padding(.bottom, isHideBanner ? 0 : 20)
                 ForEach(Parts.allCases, id: \.id) { parts in
                     BodyPartsReportGraphView(timePeriod: $timePeriod,
                                              viewModel: BodyPartsReportGraphViewModel(),
                                              parts: parts)
+                    .environmentObject(SubscriptionManager.shared)
                 }
                 .padding(.bottom, 20)
             }
@@ -57,4 +58,5 @@ struct BodyPartsReportView: View {
 
 #Preview {
     BodyPartsReportView(viewModel: ReportViewModel())
+        .environmentObject(SubscriptionManager.shared)
 }

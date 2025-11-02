@@ -13,6 +13,7 @@ struct ExerciseId: Identifiable {
 }
 
 struct WorkoutListView: View {
+    @EnvironmentObject var subscription: SubscriptionManager
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) var dismiss
     @Query private var exercises: [Exercise]
@@ -66,7 +67,8 @@ struct WorkoutListView: View {
             BannerViewContainer {
                 isHideBanner = true
             }
-            .frame(width: displayWidth, height: isHideBanner ? 0 : 50)
+            .frame(width: displayWidth,
+                   height: subscription.isSubscribed ? 0 : isHideBanner ? 0 : 50)
             ScrollViewReader { proxy in
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 20) {
@@ -109,4 +111,5 @@ struct WorkoutListView: View {
 
 #Preview {
     WorkoutListView(viewModel: WorkoutListViewModel())
+        .environmentObject(SubscriptionManager.shared)
 }
