@@ -28,7 +28,8 @@ class ForceUpdate {
                        let latestVersion = results.first?["version"] as? String {
                         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
                         log.debug("最新バージョン: \(latestVersion)")
-                        return latestVersion != version
+                        return false
+//                        return latestVersion != version
                     } else {
                         return false
                     }

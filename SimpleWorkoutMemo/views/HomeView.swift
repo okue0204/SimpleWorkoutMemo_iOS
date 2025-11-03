@@ -58,13 +58,12 @@ struct HomeView: View {
                                 .padding(.vertical, 6)
                             }
                         }
-                        Color.clear.padding(.bottom, 80)
+                        Color.clear.padding(.bottom, !subscription.isSubscribed ? 120 : 80)
                     }
                 }
-                VStack {
+                VStack(spacing: 0) {
                     if isInitialized {
                         WorkoutAddMenuView(viewModel: viewModel)
-                            .padding(.top, 12)
                     }
                     if !subscription.isSubscribed {
                         BannerViewContainer {
