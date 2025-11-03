@@ -74,6 +74,7 @@ struct HomeView: View {
                             width: displayWidth,
                             height: isHideBanner ? 0 : 50
                         )
+                        .padding(.bottom, 6)
                     }
                 }
             }
