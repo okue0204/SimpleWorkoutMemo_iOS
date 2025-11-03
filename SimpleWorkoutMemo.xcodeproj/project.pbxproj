@@ -11,6 +11,8 @@
 		3C0D36BB2EA06BC600E44723 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3C0D36B52EA06BC600E44723 /* FirebaseCore */; };
 		3C79A4632E9D9DED00E3C058 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3C79A4622E9D9DED00E3C058 /* FirebaseCore */; };
 		3C79A4692E9D9FF800E3C058 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3C79A4682E9D9FF800E3C058 /* FirebaseAnalytics */; };
+		3CC2975A2EB86EC7000B9BD7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC297592EB86EC6000B9BD7 /* StoreKit.framework */; };
+		3CC2975B2EB86ECF000B9BD7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC297592EB86EC6000B9BD7 /* StoreKit.framework */; };
 		3CE2C31F2EB200F9007B1F8E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3CE2C31E2EB200F9007B1F8E /* Lottie */; };
 		3CE2C3212EB20101007B1F8E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3CE2C3202EB20101007B1F8E /* Lottie */; };
 		3CF326762EA1D51A00DDD0D6 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 3CF326752EA1D51A00DDD0D6 /* GoogleMobileAds */; };
@@ -22,6 +24,7 @@
 /* Begin PBXFileReference section */
 		3C0D36C02EA06BC600E44723 /* SimpleWorkoutMemo_stg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWorkoutMemo_stg.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C6A83CB2E7E534000488359 /* SimpleWorkoutMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWorkoutMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CC297592EB86EC6000B9BD7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,6 +71,7 @@
 				3CE2C31F2EB200F9007B1F8E /* Lottie in Frameworks */,
 				3CF326762EA1D51A00DDD0D6 /* GoogleMobileAds in Frameworks */,
 				3C0D36BA2EA06BC600E44723 /* FirebaseAnalytics in Frameworks */,
+				3CC2975A2EB86EC7000B9BD7 /* StoreKit.framework in Frameworks */,
 				3C0D36BB2EA06BC600E44723 /* FirebaseCore in Frameworks */,
 				3CF3267D2EA1D5E100DDD0D6 /* SwiftyBeaver in Frameworks */,
 			);
@@ -80,6 +84,7 @@
 				3CE2C3212EB20101007B1F8E /* Lottie in Frameworks */,
 				3CF326782EA1D52100DDD0D6 /* GoogleMobileAds in Frameworks */,
 				3C79A4692E9D9FF800E3C058 /* FirebaseAnalytics in Frameworks */,
+				3CC2975B2EB86ECF000B9BD7 /* StoreKit.framework in Frameworks */,
 				3C79A4632E9D9DED00E3C058 /* FirebaseCore in Frameworks */,
 				3CF3267B2EA1D5DA00DDD0D6 /* SwiftyBeaver in Frameworks */,
 			);
@@ -109,6 +114,7 @@
 		3C79A4612E9D9DED00E3C058 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3CC297592EB86EC6000B9BD7 /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
