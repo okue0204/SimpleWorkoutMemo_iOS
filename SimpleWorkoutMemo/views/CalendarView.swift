@@ -46,6 +46,7 @@ struct CalendarView: View {
                                 LazyHStack {
                                     ForEach(viewModel.calendars, id: \.id) { calendarMonth in
                                         MonthView(selectedDate: $selectedDate,
+                                                  workoutDays: workoutDays,
                                                   viewModel: viewModel,
                                                   calendarMonth: calendarMonth)
                                     }

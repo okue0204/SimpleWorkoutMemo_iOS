@@ -12,11 +12,11 @@ import Observation
 @Observable
 class CalendarViewModel {
     
-    // 現在から未来100年のdateの配列
+    // 現在から未来50年のdateの配列
     var calendars: [CalendarMonth] = []
     
     func createCalendarMonth() {
-        calendars = (0...100).map { int in
+        calendars = (0...600).map { int in
             CalendarMonth(
                 id: UUID().uuidString,
                 date: Date().addMonth(int)

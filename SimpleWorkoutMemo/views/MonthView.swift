@@ -11,7 +11,7 @@ import SwiftData
 struct MonthView: View {
     
     @Binding var selectedDate: Date?
-    @Query var workoutDays: [WorkoutDay]
+    let workoutDays: [WorkoutDay]
     let viewModel: CalendarViewModel
     let calendarMonth: CalendarMonth
     
@@ -70,6 +70,7 @@ struct MonthView: View {
 #Preview {
     @Previewable @State var selectedDate: Date? = Date()
     MonthView(selectedDate: $selectedDate,
+              workoutDays: [],
               viewModel: CalendarViewModel(),
               calendarMonth: .init(id: UUID().uuidString, date: Date()))
 }

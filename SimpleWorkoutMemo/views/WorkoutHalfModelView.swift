@@ -20,6 +20,7 @@ struct WorkoutHalfModelView: View {
         VStack(spacing: 0) {
             DateHeaderView(selectedDate: $selectedDate)
                 .frame(maxWidth: .infinity)
+                .padding(.top, 20)
             ScrollView {
                 ForEach(workoutDay.workouts, id: \.id) { workout in
                     WorkoutItemView(focusedField: $focusedField,

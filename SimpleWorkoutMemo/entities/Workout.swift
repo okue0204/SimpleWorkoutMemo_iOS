@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Workout: Identifiable, ObservableObject {
+class Workout: Identifiable {
     @Attribute(.unique) var id: String = UUID().uuidString
     @Relationship var exercise: Exercise?
     @Relationship(deleteRule: .cascade, inverse: \WorkoutSetInfo.workout)
